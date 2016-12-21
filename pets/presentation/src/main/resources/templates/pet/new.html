@@ -1,0 +1,155 @@
+<!doctype html>
+<!--suppress HtmlUnknownAttribute-->
+<!--suppress HtmlUnknownTag -->
+<html lang="" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>Pets</title>
+  <meta name="description" content="" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon"
+        href="../../public/img/dog.ico"
+        th:href="@{/img/dog.ico}"
+  />
+
+  <link rel="stylesheet"
+        href="../../public/css/normalize.min.css"
+        th:href="@{/css/normalize.min.css}" />
+  <link rel="stylesheet"
+        href="../../public/css/main.css"
+        th:href="@{/css/main.css}" />
+
+  <script src="//cdn.jsdelivr.net/modernizr/2.8.3/modernizr.min.js"
+          th:src="@{/webjars/modernizr/2.8.3/modernizr.min.js}"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  <script
+    defer="defer"
+    src="https://code.getmdl.io/1.2.1/material.min.js"
+    th:src="@{/webjars/material-design-lite/1.2.1/dist/material.min.js}"
+  ></script>
+  <link rel="stylesheet"
+        href="https://code.getmdl.io/1.2.1/material.blue-pink.min.css"
+        th:href="@{/webjars/material-design-lite/1.2.1/dist/material.blue-pink.min.css}"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdn.rawgit.com/CreativeIT/getmdl-select/master/getmdl-select.min.css"
+    th:href="@{/webjars/getmdl-select/1.0.4/getmdl-select.min.css}" />
+  <script
+    defer="defer"
+    src="https://cdn.rawgit.com/CreativeIT/getmdl-select/master/getmdl-select.min.js"
+    th:src="@{/webjars/getmdl-select/1.0.4/getmdl-select.min.js}"></script>
+</head>
+<body>
+
+<div class="header-container">
+  <header class="wrapper clearfix">
+    <h1 class="title"><img
+      src="../../public/img/dog.svg"
+      th:src="@{/img/dog.svg}"
+      height="48"
+      style="margin-bottom: 4px"
+    /> Pets</h1>
+  </header>
+</div>
+
+<div class="main-container">
+  <div class="main wrapper clearfix">
+
+    <article>
+      <header>
+        <h1>Adding new pet!</h1>
+        <a href="#new" th:href="@{./}">go back</a>
+      </header>
+      <section>
+        <h6 style="color: red" th:if="${violations}">Errors in form!</h6>
+        <ol th:if="${violations}" style="color: red">
+          <li
+            th:each="violation : ${violations}"
+            th:text="${violation.path} + ': ' + ${violation.message}"
+          >Argh!</li>
+        </ol>
+
+        <form th:action="@{/pets/new}" th:object="${newPet}" method="post">
+          <fieldset>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input class="mdl-textfield__input"
+                     type="text"
+                     id="petName"
+                     th:field="*{petName}"
+              />
+              <label class="mdl-textfield__label" for="petName">Pet name</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
+              <input class="mdl-textfield__input"
+                     id="race"
+                     th:field="*{race}"
+                     value=""
+                     type="text"
+                     readonly="readonly"
+                     tabIndex="-1"
+                     data-val=""
+              />
+              <label class="mdl-textfield__label" for="race">Pet race</label>
+              <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu" for="race">
+                <li class="mdl-menu__item"
+                    data-val="LYNX"
+                    th:each="race : ${races}"
+                    th:attr="data-val = ${race.id}"
+                    th:text="${race.name}">lynx</li>
+              </ul>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input class="mdl-textfield__input"
+                     type="text"
+                     id="ownerName"
+                     th:field="*{ownerName}"
+              />
+              <label class="mdl-textfield__label" for="ownerName">Owner name</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input class="mdl-textfield__input"
+                     type="text"
+                     id="ownerSurname"
+                     th:field="*{ownerSurname}"
+              />
+              <label class="mdl-textfield__label" for="ownerSurname">Owner surname</label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <!-- Accent-colored raised button -->
+            <button type="submit"
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+              Add pet!
+            </button>
+          </fieldset>
+        </form>
+      </section>
+      <hr />
+      <footer>
+        <a href="#new" th:href="@{./}">go back</a>
+      </footer>
+    </article>
+
+    <aside>
+      <h3>Summary</h3>
+      <p>This example is showing a use of basic <code>RegisterNewPetUseCase</code>. It is written as a clean architecture example. Credits to Robert C. Martin "Uncle Bob".</p>
+    </aside>
+
+  </div> <!-- #main -->
+</div> <!-- #main-container -->
+
+<div class="footer-container">
+  <footer class="wrapper">
+
+  </footer>
+</div>
+
+<script
+  src="//ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"
+  th:src="@{/webjars/jquery/1.12.2/jquery.min.js}"></script>
+
+<script src="../../public/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>
