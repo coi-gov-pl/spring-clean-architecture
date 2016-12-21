@@ -1,5 +1,7 @@
 # spring-clean-architecture
 
+[![Build Status](https://travis-ci.org/coi-gov-pl/spring-clean-architecture.svg?branch=develop)](https://travis-ci.org/coi-gov-pl/spring-clean-architecture)
+
 An example web app structured using [Clean Architecture][clean-arch],
 implemented using [Spring Framework][spring].
 
