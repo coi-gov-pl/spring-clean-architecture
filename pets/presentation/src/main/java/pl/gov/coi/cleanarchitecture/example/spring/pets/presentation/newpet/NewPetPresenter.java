@@ -8,12 +8,10 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registern
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.RacePresenter;
 import pl.gov.coi.cleanarchitecture.presentation.Presenter;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -24,8 +22,7 @@ import java.util.stream.StreamSupport;
   access = AccessLevel.PACKAGE
 )
 class NewPetPresenter implements Presenter<NewPetView>, RegisterNewPetResponse {
-  @Nullable
-  private List<RegisterNewPetResponseModel.Violation> violations;
+  private Violations violations = new Violations(Collections.emptyList());
   private final RacePresenter racePresenter;
 
   @Override
@@ -49,15 +46,14 @@ class NewPetPresenter implements Presenter<NewPetView>, RegisterNewPetResponse {
 
   @Override
   public void setViolations(Iterable<RegisterNewPetResponseModel.Violation> violations) {
-    this.violations = StreamSupport
-      .stream(violations.spliterator(), false)
-      .collect(Collectors.toList());
+    this.violations = new Violations(violations);
   }
 
   @Override
   public boolean isSuccessful() {
     return Optional.ofNullable(violations)
-      .map(List::isEmpty)
+      .map(Violations::isSuccessful)
       .orElse(true);
   }
+
 }

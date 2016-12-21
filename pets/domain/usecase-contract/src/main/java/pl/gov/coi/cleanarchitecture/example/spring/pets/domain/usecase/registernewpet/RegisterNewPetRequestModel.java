@@ -2,6 +2,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.register
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
@@ -11,6 +12,7 @@ import org.hibernate.validator.constraints.NotBlank;
 public interface RegisterNewPetRequestModel {
   @RequiredArgsConstructor
   @Getter
+  @ToString
   class Ownership {
     @NotBlank
     private final String name;

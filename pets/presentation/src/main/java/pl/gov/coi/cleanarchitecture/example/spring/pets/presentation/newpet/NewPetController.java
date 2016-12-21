@@ -10,7 +10,10 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registern
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetUseCase;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.RacePresenter;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
+
+import java.util.Optional;
 
 import static pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet.NewPetView.NEW_PET_FORM_OBJECT;
 
@@ -46,10 +49,7 @@ public class NewPetController {
     RegisterNewPetRequest request = new RegisterNewPetRequest(
       form.getPetName(),
       form.getRaceEnum(),
-      new RegisterNewPetRequestModel.Ownership(
-        form.getOwnerName(),
-        form.getOwnerSurname()
-      )
+      getOwnership(form)
     );
     NewPetPresenter presenter = NewPetPresenter.create(racePresenter);
     registerNewPetUseCase.execute(request, presenter);
@@ -64,6 +64,29 @@ public class NewPetController {
     return presenter.createView()
       .bind(model)
       .getTemplatePath();
+  }
+
+  @Nullable
+  private RegisterNewPetRequestModel.Ownership getOwnership(NewPetForm form) {
+    String name = form.getOwnerName();
+    String surname = form.getOwnerSurname();
+    if (isNotBlank(name) || isNotBlank(surname)) {
+      return new RegisterNewPetRequestModel.Ownership(
+        form.getOwnerName(),
+        form.getOwnerSurname()
+      );
+    }
+    return null;
+  }
+
+  private boolean isNotBlank(@Nullable String text) {
+    return !isBlank(text);
+  }
+
+  private boolean isBlank(@Nullable String text) {
+    return Optional.ofNullable(text)
+      .map(String::isEmpty)
+      .orElse(true);
   }
 
 }

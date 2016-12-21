@@ -35,24 +35,25 @@
 </head>
 <body>
 
-<div class="header-container">
-  <header class="wrapper clearfix">
-    <h1 class="title"><img
-      src="../../public/img/dog.svg"
-      th:src="@{/img/dog.svg}"
-      height="48"
-      style="margin-bottom: 4px"
-    /> Pets</h1>
-  </header>
-</div>
+
 
 <div class="main-container">
+  <div class="header-container">
+    <header class="wrapper clearfix">
+      <h1 class="title"><img
+        src="../../public/img/dog.svg"
+        th:src="@{/img/dog.svg}"
+        height="48"
+        style="margin-bottom: 4px"
+      /> Pets</h1>
+    </header>
+  </div>
   <div class="main wrapper clearfix">
 
     <article>
       <header>
         <h1>Listing all pets</h1>
-        <a href="#new" th:href="@{/pets/new}">Add new one</a>
+        <a href="#new" th:href="@{/pets/new}">New pet</a>
       </header>
       <section>
         <h5>count: <span th:text="${petCount}">13</span>
@@ -108,10 +109,5 @@
   </footer>
 </div>
 
-<script
-  src="//ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"
-  th:src="@{webjars/jquery/1.12.2/jquery.min.js}"></script>
-
-<script src="../../public/js/main.js" th:src="@{/js/main.js}"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registern
 import pl.gov.coi.cleanarchitecture.usecase.Request;
 
 import javax.annotation.Nullable;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -26,8 +27,8 @@ public class RegisterNewPetRequest implements Request {
   @Size(max = 20)
   private final String name;
   @NotNull
-  @NotBlank
   private final RegisterNewPetRequestModel.Race race;
   @Nullable
+  @Valid
   private final Ownership ownership;
 }

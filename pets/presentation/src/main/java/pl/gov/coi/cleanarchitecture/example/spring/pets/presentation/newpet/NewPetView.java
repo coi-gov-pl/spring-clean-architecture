@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.SpringView;
 
-import java.util.Optional;
-
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 19.12.16
@@ -33,8 +31,7 @@ class NewPetView implements SpringView<NewPetViewModel> {
   @Override
   public NewPetView bind(Model model) {
     model.addAttribute("races", viewModel.getRaceViewModel());
-    Optional.ofNullable(viewModel.getViolations())
-      .ifPresent(violations -> model.addAttribute("violations", violations));
+    model.addAttribute("violations", viewModel.getViolations());
     return this;
   }
 }

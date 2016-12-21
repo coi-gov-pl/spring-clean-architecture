@@ -23,6 +23,8 @@ class PetsGatewayImpl implements PetsGateway {
     this.pets = new HashSet<>();
 
     Person ksuszynski = new Person("Krzysztof", "Suszyński");
+    Person panderson = new Person("Pamela", "Anderson");
+    Person llohan = new Person("Lindsay", "Lohan");
 
     pets.add(create(
       "Frodo",
@@ -33,7 +35,7 @@ class PetsGatewayImpl implements PetsGateway {
     pets.add(create(
       "Kitie",
       Race.CAT,
-      ksuszynski,
+      panderson,
       Instant.parse("2005-04-11T11:00:00.000Z")
     ));
     pets.add(create(
@@ -47,7 +49,7 @@ class PetsGatewayImpl implements PetsGateway {
     pets.add(create(
       "Hillburn",
       Race.DOG,
-      ksuszynski,
+      llohan,
       Instant.EPOCH
     ));
   }

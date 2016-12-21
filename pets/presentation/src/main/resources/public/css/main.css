@@ -1,4 +1,5 @@
 /*! HTML5 Boilerplate v5.0 | MIT License | http://h5bp.com/ */
+
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 html {
     color: #222;
@@ -7,12 +8,12 @@ html {
 }
 
 ::-moz-selection {
-    background: #ff8f5f;
+    background: #F50057;
     text-shadow: none;
 }
 
 ::selection {
-    background: #ff8f5f;
+    background: #F50057;
     text-shadow: none;
 }
 
@@ -70,18 +71,29 @@ body {
    =================== */
 
 .header-container {
-    border-bottom: 20px solid #303F9F;
+    border-bottom: 20px solid #2196F3;
 }
-
+html, body {
+	height: 100%;
+}
+.main-container {
+	min-height: 100%;
+	height: auto !important; /* This line and the next line are not necessary unless you need IE6 support */
+	height: 100%;
+	margin: 0 auto; /* the bottom margin is the negative value of the footer's height */
+}
+.footer-container {
+  height: 40px; /* .push must be the same height as .footer */
+}
 .footer-container,
 .main aside {
-    border-top: 20px solid #303F9F;
+    border-top: 20px solid #2196F3;
 }
 
 .header-container,
 .footer-container,
 .main aside {
-    background: #3F51B5;
+    background: #1976D2;
 }
 
 .title {

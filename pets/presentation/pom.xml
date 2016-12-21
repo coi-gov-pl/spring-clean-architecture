@@ -49,10 +49,6 @@
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
-      <artifactId>jquery</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.webjars</groupId>
       <artifactId>modernizr</artifactId>
     </dependency>
     <dependency>
@@ -61,7 +57,7 @@
     </dependency>
     <dependency>
       <groupId>org.webjars.npm</groupId>
-      <artifactId>getmdl-select</artifactId>
+      <artifactId>mdl-select-component</artifactId>
     </dependency>
   </dependencies>
 </project>
