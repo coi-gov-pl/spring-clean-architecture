@@ -52,17 +52,18 @@
 
     <article>
       <header>
-        <h1>Listing all pets</h1>
-        <a href="#new" th:href="@{/pets/new}">New pet</a>
+        <h1>Listing all active pets</h1>
       </header>
       <section>
-        <h5>count: <span th:text="${petCount}">13</span>
+        <form th:action="@{/pets/new}">
           <button
-            style="float: right; margin-top: -20px;"
+            onclick=""
+            style="float: right; margin-top: -10px;"
             class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect mdl-button--colored">
-            <i class="material-icons">remove</i>
+            <i class="material-icons">add</i>
           </button>
-        </h5>
+        </form>
+        <h6>count: <span th:text="${petCount}">13</span></h6>
       </section>
       <section>
         <table style="width: 100%" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">

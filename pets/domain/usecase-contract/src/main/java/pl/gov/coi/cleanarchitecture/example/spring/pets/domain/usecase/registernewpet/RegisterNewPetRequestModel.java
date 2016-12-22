@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.hibernate.validator.constraints.NotBlank;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.validation.constraint.Capitalized;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -15,8 +16,10 @@ public interface RegisterNewPetRequestModel {
   @ToString
   class Ownership {
     @NotBlank
+    @Capitalized
     private final String name;
     @NotBlank
+    @Capitalized
     private final String surname;
   }
 

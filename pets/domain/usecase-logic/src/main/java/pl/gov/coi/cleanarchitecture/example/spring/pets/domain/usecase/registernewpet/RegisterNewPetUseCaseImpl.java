@@ -7,7 +7,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registern
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
+import javax.validation.Validator;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -20,19 +20,20 @@ import java.util.stream.StreamSupport;
 class RegisterNewPetUseCaseImpl implements RegisterNewPetUseCase {
   private final PetsGateway petsGateway;
   private final RegisterNewPetRequestToPetMapper mapper;
+  private final Validator validator;
 
   @Inject
   RegisterNewPetUseCaseImpl(PetsGateway petsGateway,
-                            RegisterNewPetRequestToPetMapper mapper) {
+                            RegisterNewPetRequestToPetMapper mapper,
+                            Validator validator) {
     this.petsGateway = petsGateway;
     this.mapper = mapper;
+    this.validator = validator;
   }
 
   @Override
   public void execute(RegisterNewPetRequest request, RegisterNewPetResponse response) {
-    Set<ConstraintViolation<RegisterNewPetRequest>> violations = Validation
-      .buildDefaultValidatorFactory()
-      .getValidator()
+    Set<ConstraintViolation<RegisterNewPetRequest>> violations = validator
       .validate(request);
     if (violations.isEmpty()) {
       Pet pet = mapper.asPet(request);

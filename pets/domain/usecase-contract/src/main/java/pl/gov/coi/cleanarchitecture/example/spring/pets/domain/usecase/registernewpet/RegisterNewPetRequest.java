@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.hibernate.validator.constraints.NotBlank;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetRequestModel.Ownership;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.validation.constraint.Capitalized;
 import pl.gov.coi.cleanarchitecture.usecase.Request;
 
 import javax.annotation.Nullable;
@@ -25,10 +25,11 @@ public class RegisterNewPetRequest implements Request {
   @NotNull
   @NotBlank
   @Size(max = 20)
+  @Capitalized
   private final String name;
   @NotNull
   private final RegisterNewPetRequestModel.Race race;
   @Nullable
   @Valid
-  private final Ownership ownership;
+  private final RegisterNewPetRequestModel.Ownership ownership;
 }
