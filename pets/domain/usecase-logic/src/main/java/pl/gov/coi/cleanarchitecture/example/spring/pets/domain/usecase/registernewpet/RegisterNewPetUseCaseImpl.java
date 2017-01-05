@@ -1,11 +1,9 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet;
 
-import org.springframework.stereotype.Service;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetResponseModel.Violation;
 
-import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.Set;
@@ -16,13 +14,11 @@ import java.util.stream.StreamSupport;
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 19.12.16
  */
-@Service
 class RegisterNewPetUseCaseImpl implements RegisterNewPetUseCase {
   private final PetsGateway petsGateway;
   private final RegisterNewPetRequestToPetMapper mapper;
   private final Validator validator;
 
-  @Inject
   RegisterNewPetUseCaseImpl(PetsGateway petsGateway,
                             RegisterNewPetRequestToPetMapper mapper,
                             Validator validator) {

@@ -17,5 +17,6 @@
     <module>presentation</module>
     <module>domain</module>
     <module>persistence-stub</module>
+    <module>configuration</module>
   </modules>
 </project>

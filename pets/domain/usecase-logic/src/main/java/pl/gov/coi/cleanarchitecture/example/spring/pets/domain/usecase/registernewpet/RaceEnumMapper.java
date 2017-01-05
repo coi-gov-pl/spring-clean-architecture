@@ -1,6 +1,5 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet;
 
-import org.springframework.stereotype.Component;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.mapper.EnumMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
 import pl.wavesoftware.eid.exceptions.Eid;
@@ -10,7 +9,6 @@ import pl.wavesoftware.eid.exceptions.EidIllegalArgumentException;
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 21.12.16
  */
-@Component
 class RaceEnumMapper implements EnumMapper<RegisterNewPetRequestModel.Race, Race> {
   @Override
   public Race map(RegisterNewPetRequestModel.Race input) {
