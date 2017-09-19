@@ -16,4 +16,4 @@ Watch youtube video of Robert C. Martin "Uncle Bob" on Clean Architecture and De
 
 ### Strict mode :-)
 
-If you are interested to see example of complete separation of domain logic from frameworks (in ex.: Spring Context), you might look at branch: `feature/external-spring-configuration` (See diff here: https://github.com/coi-gov-pl/spring-clean-architecture/compare/feature/external-spring-configuration). That way is advised by Uncle Bob, but personally I don't advise that as a default strategy due to unnecessary hassle it generates and dim prospects of profit.
+If you are interested to see example of complete separation of domain logic from frameworks (in ex.: Spring Context), you might look at branch: `feature/external-spring-configuration` (See diff here: https://github.com/coi-gov-pl/spring-clean-architecture/compare/feature/external-spring-configuration). That way is advised by Uncle Bob.
