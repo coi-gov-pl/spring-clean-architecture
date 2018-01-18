@@ -16,6 +16,7 @@
   <modules>
     <module>presentation</module>
     <module>domain</module>
+    <module>persistence-hibernate</module>
     <module>persistence-stub</module>
     <module>configuration</module>
   </modules>

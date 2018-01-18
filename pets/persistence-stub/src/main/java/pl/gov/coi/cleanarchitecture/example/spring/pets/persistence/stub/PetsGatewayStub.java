@@ -1,6 +1,5 @@
-package pl.gov.coi.cleanarchitecture.example.spring.pets.persistance;
+package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.stub;
 
-import org.springframework.stereotype.Service;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
@@ -15,11 +14,10 @@ import java.util.Set;
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 19.12.16
  */
-@Service
-class PetsGatewayImpl implements PetsGateway {
+final class PetsGatewayStub implements PetsGateway {
   private final Set<Pet> pets;
 
-  PetsGatewayImpl() {
+  PetsGatewayStub() {
     this.pets = new HashSet<>();
 
     Person ksuszynski = new Person("Krzysztof", "Suszyński");

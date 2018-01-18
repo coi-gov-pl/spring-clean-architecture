@@ -1,4 +1,4 @@
-package pl.gov.coi.cleanarchitecture.example.spring.pets.persistance;
+package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.stub;
 
 import pl.wavesoftware.eid.exceptions.EidIllegalStateException;
 
