@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>pets-domain-model</artifactId>
-  <name>String Clean Architecture :: Pets :: Domain :: Model</name>
+  <name>Spring Clean Architecture :: Pets :: Domain :: Model</name>
 
   <dependencies>
     <dependency>

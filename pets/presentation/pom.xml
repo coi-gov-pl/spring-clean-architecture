@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>pets-presentation</artifactId>
-  <name>String Clean Architecture :: Pets :: Presentation</name>
+  <name>Spring Clean Architecture :: Pets :: Presentation</name>
 
   <dependencies>
     <dependency>

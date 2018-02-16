@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>pets-configuration</artifactId>
-  <name>String Clean Architecture :: Pets :: Configuration</name>
+  <name>Spring Clean Architecture :: Pets :: Configuration</name>
 
   <dependencies>
     <dependency>
