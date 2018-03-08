@@ -11,7 +11,7 @@
 
   <artifactId>pets-pom</artifactId>
   <packaging>pom</packaging>
-  <name>String Clean Architecture :: Pets :: POM</name>
+  <name>Spring Clean Architecture :: Pets :: POM</name>
 
   <modules>
     <module>presentation</module>

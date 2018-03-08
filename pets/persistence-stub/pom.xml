@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>pets-persistence-stub</artifactId>
-  <name>String Clean Architecture :: Pets :: PersistenceStub</name>
+  <name>Spring Clean Architecture :: Pets :: PersistenceStub</name>
 
   <dependencies>
     <dependency>

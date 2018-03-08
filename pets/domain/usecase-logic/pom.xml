@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>pets-domain-usecase-logic</artifactId>
-  <name>String Clean Architecture :: Pets :: Domain :: UseCase Logic</name>
+  <name>Spring Clean Architecture :: Pets :: Domain :: UseCase Logic</name>
 
   <dependencies>
     <dependency>
