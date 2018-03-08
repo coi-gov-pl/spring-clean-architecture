@@ -21,7 +21,7 @@ class CapitalizedValidatorImpl implements CapitalizedValidator {
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
-    if (value == null || EMPTY_STRING.equals(value)) {
+    if (EMPTY_STRING.equals(value)) {
       return false;
     }
     boolean allGood = true;

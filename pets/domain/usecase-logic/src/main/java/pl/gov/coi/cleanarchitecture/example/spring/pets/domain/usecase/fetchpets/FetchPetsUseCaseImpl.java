@@ -40,7 +40,7 @@ class FetchPetsUseCaseImpl implements FetchPetsUseCase {
 
   private FetchPetsResponseModel.Pet toResponseModel(Pet pet) {
     FetchPetsResponseModel.Owner owner = null;
-    Optional<Ownership> optionalOwnership = Optional.ofNullable(pet.getOwnership());
+    Optional<Ownership> optionalOwnership = pet.getOwnership();
     if (optionalOwnership.isPresent()) {
       owner = new FetchPetsResponseModel.Owner(
         optionalOwnership.get().getPerson().getName(),

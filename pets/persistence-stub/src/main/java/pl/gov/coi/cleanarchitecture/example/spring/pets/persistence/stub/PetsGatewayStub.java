@@ -1,12 +1,12 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.stub;
 
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,7 +54,7 @@ final class PetsGatewayStub implements PetsGateway {
 
   @Override
   public Iterable<Pet> getAllActive() {
-    return pets;
+    return Collections.unmodifiableSet(pets);
   }
 
   @Override
@@ -65,14 +65,12 @@ final class PetsGatewayStub implements PetsGateway {
     return newOne;
   }
 
-  private Pet create(String name, Race race, Person owner, Instant instant) {
+  private static Pet create(String name, Race race, Person owner, Instant instant) {
     Pet pet = new Pet(name, race);
-    Ownership ownership = new Ownership(pet, owner, instant);
-    pet.setOwnership(ownership);
-    return pet;
+    return pet.setOwner(owner, instant);
   }
 
-  private Pet create(String name, Race race) {
+  private static Pet create(String name, Race race) {
     return new Pet(name, race);
   }
 }

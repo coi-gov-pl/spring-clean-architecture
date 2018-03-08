@@ -1,10 +1,10 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.validation.constraint;
 
-import org.hibernate.validator.constraints.NotBlank;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.validation.validator.CapitalizedValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
+import javax.validation.constraints.NotBlank;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

@@ -4,25 +4,37 @@ import lombok.AccessLevel;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
  * @since 2018-01-18
  */
 @Setter
-@MappedSuperclass
-public abstract class AbstractEntity {
+@Embeddable
+public class Record {
   @NotNull
   private Long id;
   @Setter(AccessLevel.PROTECTED)
   private Long recordVersion;
   @NotNull
-  private Date created;
+  private LocalDateTime created;
   @NotNull
-  private Date modified;
+  private LocalDateTime modified;
+
+  Record() {
+    // empty
+  }
 
   @GenericGenerator(
     name = "idSequenceGenerator",
@@ -36,7 +48,7 @@ public abstract class AbstractEntity {
 
   @PrePersist
   protected void beforePersistAbstractEntity() {
-    Date now = new Date();
+    LocalDateTime now = LocalDateTime.now();
     if (created == null) {
       created = now;
     }
@@ -45,7 +57,7 @@ public abstract class AbstractEntity {
 
   @PreUpdate
   protected void beforeUpdateAbstractEntity() {
-    modified = new Date();
+    modified = LocalDateTime.now();
   }
 
   @Version
@@ -55,13 +67,13 @@ public abstract class AbstractEntity {
 
   @Column
   @Temporal(TemporalType.TIMESTAMP)
-  public Date getCreated() {
+  public LocalDateTime getCreated() {
     return created;
   }
 
   @Column
   @Temporal(TemporalType.TIMESTAMP)
-  public Date getModified() {
+  public LocalDateTime getModified() {
     return modified;
   }
 }

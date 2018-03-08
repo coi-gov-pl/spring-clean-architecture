@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 final class HibernatePetsGateway implements PetsGateway {
 
+  private static final int DEFAULT_PAGING = 100;
   private final EntityManager entityManager;
   private final PetToPetDataMapper mapper;
 
@@ -29,7 +30,7 @@ final class HibernatePetsGateway implements PetsGateway {
         "LEFT JOIN FETCH OwnershipData o " +
         "LEFT JOIN FETCH Person pp", PetData.class
     );
-    query.setMaxResults(100);
+    query.setMaxResults(DEFAULT_PAGING);
     List<PetData> results = query.getResultList();
     return results.stream()
       .map(mapper::map)

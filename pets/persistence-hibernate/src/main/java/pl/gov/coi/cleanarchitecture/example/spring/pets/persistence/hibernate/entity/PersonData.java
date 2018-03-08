@@ -3,7 +3,6 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.e
 import lombok.Setter;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -14,10 +13,10 @@ import java.util.List;
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
  * @since 2018-01-18
  */
-@Entity
+@javax.persistence.Entity
 @Table
 @Setter
-public class PersonData extends AbstractEntity {
+public class PersonData extends Record {
   @NotNull
   private String name;
   @NotNull

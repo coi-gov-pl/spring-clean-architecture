@@ -1,6 +1,9 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity;
 
 import lombok.Setter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +14,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
@@ -20,7 +24,10 @@ import java.util.Date;
 @Setter
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class OwnershipData extends AbstractEntity {
+public class OwnershipData extends Ownership {
+  @Valid
+  private Record record;
+  /*
   @Valid
   @NotNull
   private PetData pet;
@@ -28,11 +35,20 @@ public class OwnershipData extends AbstractEntity {
   @NotNull
   private PersonData person;
   @NotNull
-  private Date from;
+  private LocalDateTime from;
+  */
 
+  /**
+   * Hibernate constructor
+   */
+  public OwnershipData() {
+    super(null, null, null);
+  }
+
+  @Override
   @OneToOne(mappedBy = "ownership")
-  public PetData getPet() {
-    return pet;
+  public Pet getPet() {
+    return super.getPet();
   }
 
   @OneToOne
@@ -42,7 +58,7 @@ public class OwnershipData extends AbstractEntity {
 
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "date_from")
-  public Date getFrom() {
+  public LocalDateTime getFrom() {
     return from;
   }
 }

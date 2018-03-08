@@ -1,7 +1,5 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity;
 
-import lombok.Builder;
-import lombok.Getter;
 import lombok.ToString;
 
 import java.time.Instant;
@@ -10,19 +8,28 @@ import java.time.Instant;
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 19.12.16
  */
-@Getter
-@Builder
 @ToString
-public class Ownership implements Entity {
-  private final Pet pet;
-  private final Person person;
-  private final Instant from;
+public class Ownership extends AbstractOwnership {
 
+  private static final long serialVersionUID = 20180307020359L;
+
+  /**
+   * Ownership constructor
+   *
+   * @param pet a pet
+   * @param person a owner of the pet
+   * @param from a instant of time in which person became owner of this pet
+   */
   public Ownership(Pet pet, Person person, Instant from) {
-    this.pet = pet;
-    this.person = person;
-    this.from = from;
+    super(pet, person, from);
+  }
 
-    person.addOwnership(this);
+  /**
+   * Creates former ownership based of this current ownership
+   *
+   * @return a new former ownership
+   */
+  public FormerOwnership toFormerOwnership() {
+    return new FormerOwnership(getPet(), getPerson(), getFrom(), Instant.now());
   }
 }

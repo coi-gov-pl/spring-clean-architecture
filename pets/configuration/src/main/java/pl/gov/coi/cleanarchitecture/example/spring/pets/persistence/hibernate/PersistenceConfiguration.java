@@ -8,6 +8,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.ExampleData;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper.PetToPetDataMapper;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 /**
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
@@ -18,6 +19,7 @@ import javax.persistence.EntityManager;
 class PersistenceConfiguration {
 
   @Bean
+  @Transactional
   public PetsGateway provide(ExampleData exampleData,
                              PetToPetDataMapper mapper,
                              EntityManager entityManager) {
