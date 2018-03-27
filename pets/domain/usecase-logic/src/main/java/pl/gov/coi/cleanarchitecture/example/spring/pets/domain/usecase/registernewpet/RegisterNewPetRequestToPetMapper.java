@@ -1,12 +1,12 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet;
 
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.mapper.EnumMapper;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.impl.PersonImpl;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.impl.PetImpl;
 
-import java.time.Instant;
 import java.util.Optional;
 
 /**
@@ -23,21 +23,18 @@ class RegisterNewPetRequestToPetMapper {
   Pet asPet(RegisterNewPetRequest request) {
     RegisterNewPetRequestModel.Race raceReq = request.getRace();
     Race race = mapper.map(raceReq);
-    Pet pet = new Pet(
+    Pet pet = new PetImpl(
       request.getName(),
       race
     );
     Optional
       .ofNullable(request.getOwnership())
       .ifPresent(ownershipReq -> {
-        Person person = new Person(
+        Person person = new PersonImpl(
           ownershipReq.getName(),
           ownershipReq.getSurname()
         );
-        Ownership ownershipEntity = new Ownership(
-          pet, person, Instant.now()
-        );
-        pet.setOwnership(ownershipEntity);
+        pet.setOwner(person);
       });
     return pet;
   }

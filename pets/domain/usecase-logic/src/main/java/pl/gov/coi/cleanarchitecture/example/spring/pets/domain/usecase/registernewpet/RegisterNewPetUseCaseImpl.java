@@ -39,17 +39,17 @@ class RegisterNewPetUseCaseImpl implements RegisterNewPetUseCase {
     }
   }
 
-  private Iterable<Violation> toResponseModel(
-      Iterable<ConstraintViolation<RegisterNewPetRequest>> violations) {
-    return StreamSupport.stream(violations.spliterator(), false)
-      .map(this::toViolation)
-      .collect(Collectors.toSet());
-  }
-
-  private Violation toViolation(ConstraintViolation<RegisterNewPetRequest> violation) {
+  private static Violation toViolation(ConstraintViolation<RegisterNewPetRequest> violation) {
     return new Violation(
       violation.getPropertyPath(),
       violation.getMessage()
     );
+  }
+
+  private static Iterable<Violation> toResponseModel(
+    Iterable<ConstraintViolation<RegisterNewPetRequest>> violations) {
+    return StreamSupport.stream(violations.spliterator(), false)
+      .map(RegisterNewPetUseCaseImpl::toViolation)
+      .collect(Collectors.toSet());
   }
 }

@@ -3,6 +3,8 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.stub;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.impl.PersonImpl;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.impl.PetImpl;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 
 import java.time.Instant;
@@ -20,9 +22,9 @@ final class PetsGatewayStub implements PetsGateway {
   PetsGatewayStub() {
     this.pets = new HashSet<>();
 
-    Person ksuszynski = new Person("Krzysztof", "Suszyński");
-    Person panderson = new Person("Pamela", "Anderson");
-    Person llohan = new Person("Lindsay", "Lohan");
+    Person ksuszynski = new PersonImpl("Krzysztof", "Suszyński");
+    Person panderson = new PersonImpl("Pamela", "Anderson");
+    Person llohan = new PersonImpl("Lindsay", "Lohan");
 
     pets.add(create(
       "Frodo",
@@ -66,11 +68,14 @@ final class PetsGatewayStub implements PetsGateway {
   }
 
   private static Pet create(String name, Race race, Person owner, Instant instant) {
-    Pet pet = new Pet(name, race);
-    return pet.setOwner(owner, instant);
+    Pet pet = new PetImpl(name, race);
+    pet.setOwner(owner);
+    pet.getOwnership().ifPresent(ownership -> ownership.setFrom(instant));
+
+    return pet;
   }
 
   private static Pet create(String name, Race race) {
-    return new Pet(name, race);
+    return new PetImpl(name, race);
   }
 }

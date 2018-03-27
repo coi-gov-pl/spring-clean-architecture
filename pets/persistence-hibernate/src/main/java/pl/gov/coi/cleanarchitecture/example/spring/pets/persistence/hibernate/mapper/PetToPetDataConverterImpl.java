@@ -11,17 +11,12 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.en
  */
 @Component
 @RequiredArgsConstructor
-final class PetToPetDataMapperImpl implements PetToPetDataMapper {
+final class PetToPetDataConverterImpl implements PetToPetDataConverter {
 
   private final OwnershipToDataMapper ownershipMapper;
 
   @Override
-  public Pet map(PetData petData) {
-    return null;
-  }
-
-  @Override
-  public PetData map(Pet pet) {
+  public PetData convert(Pet pet) {
     PetData data = new PetData();
     data.setName(pet.getName());
     data.setRace(pet.getRace());

@@ -2,19 +2,10 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.e
 
 import lombok.Setter;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.impl.PetImpl;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 /**
@@ -23,10 +14,17 @@ import java.time.LocalDateTime;
  */
 @Setter
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class OwnershipData extends Ownership {
-  @Valid
+public class OwnershipData implements HasRecord, Ownership {
+
   private Record record;
+
+  @Valid
+  @Embedded
+  @Override
+  public Record getRecord() {
+    return record;
+  }
+
   /*
   @Valid
   @NotNull
@@ -47,7 +45,7 @@ public class OwnershipData extends Ownership {
 
   @Override
   @OneToOne(mappedBy = "ownership")
-  public Pet getPet() {
+  public PetImpl getPet() {
     return super.getPet();
   }
 
@@ -61,4 +59,6 @@ public class OwnershipData extends Ownership {
   public LocalDateTime getFrom() {
     return from;
   }
+
+
 }

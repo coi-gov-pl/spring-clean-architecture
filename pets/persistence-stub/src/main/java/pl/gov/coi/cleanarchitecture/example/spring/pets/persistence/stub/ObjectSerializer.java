@@ -14,7 +14,7 @@ import java.io.ObjectOutputStream;
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 19.12.16
  */
-class ObjectSerializer<T> {
+final class ObjectSerializer<T> {
   T refresh(T instance) {
     return unserialize(serialize(instance));
   }
