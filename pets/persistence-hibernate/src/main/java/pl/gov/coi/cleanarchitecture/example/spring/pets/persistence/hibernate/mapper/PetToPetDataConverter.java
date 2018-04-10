@@ -7,11 +7,6 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.en
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
  * @since 2018-01-18
  */
-public interface PetToPetDataConverter {
-  /**
-   * Converts a pet to entity object
-   * @param pet a pet
-   * @return a pet data object
-   */
-  PetData convert(Pet pet);
+public interface PetToPetDataConverter extends Converter<Pet, PetData> {
+
 }

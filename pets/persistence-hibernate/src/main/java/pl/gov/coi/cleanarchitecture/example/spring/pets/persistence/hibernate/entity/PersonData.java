@@ -1,6 +1,8 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
@@ -11,6 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,11 +23,47 @@ import java.util.List;
  */
 @Entity
 @Table
-@Setter
+@Setter(AccessLevel.PROTECTED)
 @Data
+@NoArgsConstructor
 public class PersonData implements Person, HasRecord {
 
-  private Record record;
+  private Record record = new Record();
+  private String name;
+  private String surname;
+  private List<OwnershipData> ownershipList = new ArrayList<>();
+
+  private PersonData(Person person) {
+    setName(person.getName());
+    setSurname(person.getSurname());
+    ownershipList = new ArrayList<>();
+    person.getOwnerships()
+      .forEach(ownership ->
+        ownershipList.add(OwnershipData.ensureIsData(ownership))
+      );
+  }
+
+  @Override
+  public void addOwnership(Ownership ownership) {
+    ownershipList.add(OwnershipData.ensureIsData(ownership));
+  }
+
+  @Override
+  public int getOwnershipCount() {
+    return ownershipList.size();
+  }
+
+  @Override
+  public boolean hasOwnerships() {
+    return !ownershipList.isEmpty();
+  }
+
+  @Override
+  public Iterable<Ownership> getOwnerships() {
+    return Collections.unmodifiableList(ownershipList);
+  }
+
+  // JPA Mappings
 
   @Valid
   @Embedded
@@ -32,52 +72,21 @@ public class PersonData implements Person, HasRecord {
     return record;
   }
 
-  @Override
-  public int getOwnershipCount() {
-    return 0;
-  }
-
-  @Override
-  public boolean hasOwnerships() {
-    return false;
-  }
-
-  @Override
-  public Iterable<Ownership> getOwnerships() {
-    return null;
-  }
-
   @Column
   @Override
   public String getName() {
-    return super.getName();
+    return name;
   }
 
   @Column
   @Override
   public String getSurname() {
-    return super.getSurname();
+    return surname;
   }
 
-  @Override
-  public void addOwnership(Ownership ownership) {
-
-  }
-
-  @Override
-  public void setName(String name) {
-
-  }
-
-  @Override
-  public void setSurname(String surname) {
-
-  }
-
-  @Override
   @OneToMany
-  protected List<Ownership> getOwnershipsList() {
-    return super.getOwnershipsList();
+  protected List<OwnershipData> getOwnershipsList() {
+    return ownershipList;
   }
 
 }
