@@ -1,5 +1,6 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper;
 
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.OwnershipData;
@@ -12,15 +13,21 @@ import java.util.Optional;
  */
 @Mapper(
   componentModel = "jsr330",
-  uses = { DateMapper.class, FormerOwnershipMapper.class }
+  uses = {
+    PetMapper.class,
+    DateMapper.class,
+    PersonMapper.class,
+    FormerOwnershipMapper.class
+  }
 )
 public interface OwnershipMapper {
-  OwnershipData map(Ownership ownership);
-  Ownership map(OwnershipData data);
+  OwnershipData map(Ownership ownership, @Context CyclicGraphContext context);
+  Ownership map(OwnershipData data, @Context CyclicGraphContext context);
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-  default OwnershipData map(Optional<Ownership> ownership) {
-    return ownership.map(this::map)
+  default OwnershipData map(Optional<Ownership> optional,
+                            @Context CyclicGraphContext context) {
+    return optional.map(ownership -> this.map(ownership, context))
       .orElse(null);
   }
 }

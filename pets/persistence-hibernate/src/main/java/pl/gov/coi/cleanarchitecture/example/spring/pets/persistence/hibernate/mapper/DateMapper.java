@@ -11,7 +11,7 @@ import java.util.Date;
  * @since 12.04.18
  */
 @Mapper(componentModel = "jsr330")
-interface DateMapper {
+public interface DateMapper {
   default Instant map(@NotNull Date date) {
     return date.toInstant();
   }

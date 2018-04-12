@@ -1,5 +1,6 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper;
 
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.FormerOwnership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.FormerOwnershipData;
@@ -13,16 +14,24 @@ import java.util.List;
  */
 @Mapper(
   componentModel = "jsr330",
-  uses = { DateMapper.class, OwnershipMapper.class }
+  uses = {
+    PetMapper.class,
+    DateMapper.class,
+    PersonMapper.class,
+    OwnershipMapper.class
+  }
 )
 public interface FormerOwnershipMapper {
-  FormerOwnershipData map(FormerOwnership formerOwnership);
-  FormerOwnership map(FormerOwnershipData data);
+  FormerOwnershipData map(FormerOwnership formerOwnership,
+                          @Context CyclicGraphContext context);
+  FormerOwnership map(FormerOwnershipData data,
+                      @Context CyclicGraphContext context);
 
-  default List<FormerOwnershipData> map(Iterable<FormerOwnership> formerOwnerships) {
+  default List<FormerOwnershipData> map(Iterable<FormerOwnership> formerOwnerships,
+                                        @Context CyclicGraphContext context) {
     List<FormerOwnershipData> list = new ArrayList<>();
     for (FormerOwnership formerOwnership : formerOwnerships) {
-      list.add(this.map(formerOwnership));
+      list.add(this.map(formerOwnership, context));
     }
     return list;
   }

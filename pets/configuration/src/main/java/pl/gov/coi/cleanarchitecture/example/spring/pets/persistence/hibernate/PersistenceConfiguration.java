@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.ExampleData;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper.PetMapper;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper.PetMapperFacade;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -21,7 +21,7 @@ class PersistenceConfiguration {
   @Bean
   @Transactional
   public PetsGateway provide(ExampleData exampleData,
-                             PetMapper mapper,
+                             PetMapperFacade mapper,
                              EntityManager entityManager) {
     PetsGateway gateway = new HibernatePetsGateway(entityManager, mapper);
     exampleData.createExamples(gateway);
