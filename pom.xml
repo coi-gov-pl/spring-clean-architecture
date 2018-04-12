@@ -19,6 +19,7 @@
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
   </properties>
 
   <dependencyManagement>
@@ -49,6 +50,18 @@
         <groupId>pl.wavesoftware</groupId>
         <artifactId>eid-exceptions</artifactId>
         <version>1.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct-jdk8</artifactId> <!-- use mapstruct-jdk8 for Java 8 or higher -->
+        <version>${org.mapstruct.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct-processor</artifactId>
+        <version>${org.mapstruct.version}</version>
+        <scope>provided</scope>
+        <optional>true</optional>
       </dependency>
       <dependency>
         <groupId>org.webjars</groupId>
@@ -85,7 +98,7 @@
       <plugins>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.5.1</version>
+          <version>3.6.2</version>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>

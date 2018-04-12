@@ -1,19 +1,19 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PetData;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
- * @since 10.04.18
+ * @since 12.04.18
  */
-@Component
-final class PetToPetDataConverterManagerImpl implements
-  ConverterManager<Pet, PetData, PetToPetDataConverter> {
+@Mapper(
+  componentModel = "jsr330",
+  uses = { PersonMapper.class, OwnershipMapper.class, FormerOwnershipMapper.class }
+)
+public interface PetMapper {
 
-  @Override
-  public PetToPetDataConverter open() {
-    return new PetToPetDataConverterImpl();
-  }
+  PetData map(Pet pet);
+  Pet map(PetData data);
 }

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PetData;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper.PetToPetDataConverter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper.PetMapper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -20,7 +20,7 @@ final class HibernatePetsGateway implements PetsGateway {
 
   private static final int DEFAULT_PAGING = 100;
   private final EntityManager entityManager;
-  private final PetToPetDataConverter mapper;
+  private final PetMapper mapper;
 
   @Override
   public Iterable<Pet> getAllActive() {
@@ -28,7 +28,7 @@ final class HibernatePetsGateway implements PetsGateway {
       "SELECT p " +
         "FROM PetData p " +
         "LEFT JOIN FETCH OwnershipData o " +
-        "LEFT JOIN FETCH Person pp", PetData.class
+        "LEFT JOIN FETCH PersonData pp", PetData.class
     );
     query.setMaxResults(DEFAULT_PAGING);
     List<PetData> results = query.getResultList();

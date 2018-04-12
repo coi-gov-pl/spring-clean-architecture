@@ -1,13 +1,8 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity;
 
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.FormerOwnership;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,53 +18,26 @@ import java.util.Date;
  * @since 2018-01-18
  */
 @EqualsAndHashCode(callSuper = true)
-@Setter(AccessLevel.PROTECTED)
 @Entity
 @Table
 @Data
 @NoArgsConstructor
-public class FormerOwnershipData extends OwnershipData implements FormerOwnership {
-  @NotNull
-  private Date toDate;
+public class FormerOwnershipData extends OwnershipData {
+
+  private Date to;
 
   FormerOwnershipData(OwnershipData ownershipData) {
-    toDate = new Date();
+    to = Date.from(Instant.now());
     setPerson(ownershipData.getPerson());
     setPet(ownershipData.getPet());
     setFrom(getFrom());
   }
 
-  static FormerOwnershipData ensureIsData(FormerOwnership formerOwnership) {
-
-  }
-
+  @NotNull
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "date_to")
-  public Date getToDate() {
-    return toDate;
+  public Date getTo() {
+    return to;
   }
 
-  @Override
-  public Instant getTo() {
-    return toDate.toInstant();
-  }
-
-  @Override
-  public void setTo(Instant to) {
-    toDate = Date.from(to);
-  }
-
-  @Override
-  public void setPet(Pet pet) {
-    if (pet instanceof PetData) {
-      super.setPet(pet);
-    } else {
-
-    }
-  }
-
-  @Override
-  public void setPerson(Person owner) {
-
-  }
 }

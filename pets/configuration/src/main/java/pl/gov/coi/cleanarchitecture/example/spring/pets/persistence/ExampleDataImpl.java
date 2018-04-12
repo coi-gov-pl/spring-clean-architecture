@@ -1,8 +1,9 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence;
 
 import org.springframework.stereotype.Component;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.impl.PersonImpl;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.impl.PetImpl;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 
@@ -16,9 +17,9 @@ import java.time.Instant;
 final class ExampleDataImpl implements ExampleData {
   @Override
   public void createExamples(PetsGateway gateway) {
-    PersonImpl ksuszynski = new PersonImpl("Krzysztof", "Suszyński");
-    PersonImpl panderson = new PersonImpl("Pamela", "Anderson");
-    PersonImpl llohan = new PersonImpl("Lindsay", "Lohan");
+    Person ksuszynski = new Person("Krzysztof", "Suszyński");
+    Person panderson = new Person("Pamela", "Anderson");
+    Person llohan = new Person("Lindsay", "Lohan");
 
     gateway.persistNew(create(
       "Frodo",
@@ -34,7 +35,7 @@ final class ExampleDataImpl implements ExampleData {
     ));
     gateway.persistNew(create(
       "Flamer",
-      Race.CAT
+      Race.PIG
     ));
     gateway.persistNew(create(
       "Tom",
@@ -48,14 +49,14 @@ final class ExampleDataImpl implements ExampleData {
     ));
   }
 
-  private PetImpl create(String name, Race race, PersonImpl owner, Instant instant) {
-    PetImpl pet = new PetImpl(name, race);
-    Ownershssip ownership = new Ownershssip(pet, owner, instant);
+  private Pet create(String name, Race race, Person owner, Instant instant) {
+    Pet pet = new Pet(name, race);
+    Ownership ownership = new Ownership(pet, owner, instant);
     pet.setOwnership(ownership);
     return pet;
   }
 
-  private PetImpl create(String name, Race race) {
-    return new PetImpl(name, race);
+  private Pet create(String name, Race race) {
+    return new Pet(name, race);
   }
 }

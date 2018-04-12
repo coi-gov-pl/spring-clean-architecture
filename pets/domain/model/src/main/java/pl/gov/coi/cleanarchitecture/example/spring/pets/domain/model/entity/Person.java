@@ -1,60 +1,68 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
  * @since 2018-03-17
  */
-public interface Person extends Serializable {
-  /**
-   * Gets number of possessed ownership
-   * @return a number of ownerships
-   */
-  int getOwnershipCount();
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public final class Person implements Serializable {
+
+  private static final long serialVersionUID = 20180307221257L;
+
+  private String name;
+  private String surname;
+  private List<Ownership> ownerships = new ArrayList<>();
 
   /**
-   * Return true if have any ownership
-   * @return true if have any ownership
-   */
-  boolean hasOwnerships();
-
-  /**
-   * Get ownership iterable object
-   * @return an ownerships
-   */
-  Iterable<Ownership> getOwnerships();
-
-  /**
-   * Getter for name
-   * @return a name
-   */
-  String getName();
-
-  /**
-   * Getter for surname
-   * @return a surname
-   */
-  String getSurname();
-
-  /**
-   * Adds an ownership by returning modified object
+   * Default constructor
    *
-   * @param ownership an ownership
-   */
-  void addOwnership(Ownership ownership);
-
-  /**
-   * Sets name in modified object
-   *
-   * @param name a name to set
-   */
-  void setName(String name);
-
-  /**
-   * Sets a surname in modified object
-   *
+   * @param name a name
    * @param surname a surname
    */
-  void setSurname(String surname);
+  public Person(String name, String surname) {
+    this.name = name;
+    this.surname = surname;
+  }
+
+  /**
+   * Gets number of possessed ownerships
+   * @return a number of ownerships
+   */
+  public int getOwnershipCount() {
+    return getOwnershipList().size();
+  }
+
+  /**
+   * Returns true if given person have any ownership
+   *
+   * @return true if given person have any ownership
+   */
+  public boolean hasOwnerships() {
+    return !getOwnershipList().isEmpty();
+  }
+
+  public void addOwnership(Ownership ownership) {
+    getOwnershipList().add(ownership);
+    if (ownership.getPerson() != this) {
+      ownership.setPerson(this);
+    }
+  }
+
+  private List<Ownership> getOwnershipList() {
+    if (ownerships == null) {
+      ownerships = new ArrayList<>();
+    }
+    return ownerships;
+  }
+
 }

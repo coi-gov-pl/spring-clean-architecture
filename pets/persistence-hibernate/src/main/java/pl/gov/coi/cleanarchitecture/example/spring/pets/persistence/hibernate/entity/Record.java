@@ -26,7 +26,7 @@ public class Record {
   @NotNull
   private Long id;
   @Setter(AccessLevel.PROTECTED)
-  private Long recordVersion;
+  private Long version;
   @NotNull
   private LocalDateTime created;
   @NotNull
@@ -61,8 +61,8 @@ public class Record {
   }
 
   @Version
-  public Long getRecordVersion() {
-    return recordVersion;
+  public Long getVersion() {
+    return version;
   }
 
   @Column

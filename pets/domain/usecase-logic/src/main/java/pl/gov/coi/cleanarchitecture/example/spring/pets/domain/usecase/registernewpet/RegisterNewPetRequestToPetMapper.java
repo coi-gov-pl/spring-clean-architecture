@@ -4,8 +4,6 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.mapper.EnumMapper
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.impl.PersonImpl;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.impl.PetImpl;
 
 import java.util.Optional;
 
@@ -23,14 +21,14 @@ class RegisterNewPetRequestToPetMapper {
   Pet asPet(RegisterNewPetRequest request) {
     RegisterNewPetRequestModel.Race raceReq = request.getRace();
     Race race = mapper.map(raceReq);
-    Pet pet = new PetImpl(
+    Pet pet = new Pet(
       request.getName(),
       race
     );
     Optional
       .ofNullable(request.getOwnership())
       .ifPresent(ownershipReq -> {
-        Person person = new PersonImpl(
+        Person person = new Person(
           ownershipReq.getName(),
           ownershipReq.getSurname()
         );

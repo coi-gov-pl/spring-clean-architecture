@@ -1,5 +1,8 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.time.Instant;
 
@@ -7,40 +10,20 @@ import java.time.Instant;
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
  * @since 2018-03-07
  */
-public interface Ownership extends Serializable {
-  /**
-   * Pet getter
-   * @return a pet
-   */
-  Pet getPet();
+@Data
+@AllArgsConstructor
+public final class Ownership implements Serializable {
+
+  private static final long serialVersionUID = 20180412143844L;
+
+  private Pet pet;
+  private Person person;
+  private Instant from;
 
   /**
-   * Owner getter
-   * @return an owner
+   * Default constructor
    */
-  Person getPerson();
-
-  /**
-   * Return instant from which ownership is active
-   * @return an from instant time
-   */
-  Instant getFrom();
-
-  /**
-   * Setter for Pet
-   * @param pet a pet
-   */
-  void setPet(Pet pet);
-
-  /**
-   * Setter for owner person
-   * @param owner an owner
-   */
-  void setPerson(Person owner);
-
-  /**
-   * Sets ownership start time
-   * @param from a time to start
-   */
-  void setFrom(Instant from);
+  public Ownership() {
+    from = Instant.now();
+  }
 }

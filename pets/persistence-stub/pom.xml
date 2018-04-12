@@ -19,11 +19,6 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>pl.coi.gov.examples.springcleanarchitecture</groupId>
-      <artifactId>pets-domain-model-impl</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
       <groupId>pl.wavesoftware</groupId>
       <artifactId>eid-exceptions</artifactId>
     </dependency>

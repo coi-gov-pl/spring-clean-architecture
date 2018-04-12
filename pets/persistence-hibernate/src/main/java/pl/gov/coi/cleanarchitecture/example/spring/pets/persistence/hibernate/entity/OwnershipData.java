@@ -1,12 +1,7 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity;
 
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -17,7 +12,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -28,51 +22,12 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @Data
-@Setter(AccessLevel.PROTECTED)
-public class OwnershipData implements HasRecord, Ownership {
+public class OwnershipData implements HasRecord {
 
   private Record record = new Record();
-  private PetData petData;
-  private PersonData personData;
-  private Date fromDate;
-
-  private OwnershipData(Ownership ownership) {
-    setFrom(ownership.getFrom());
-    setPet(ownership.getPet());
-    setPerson(ownership.getPerson());
-  }
-
-  @Override
-  public Pet getPet() {
-    return petData;
-  }
-
-  @Override
-  public Person getPerson() {
-    return personData;
-  }
-
-  @Override
-  public Instant getFrom() {
-    return fromDate.toInstant();
-  }
-
-  @Override
-  public void setPet(Pet pet) {
-    petData = PetData.ensureIsData(pet);
-  }
-
-  @Override
-  public void setPerson(Person owner) {
-    personData = PersonData.ensureIsData(owner);
-  }
-
-  @Override
-  public void setFrom(Instant from) {
-    fromDate = Date.from(from);
-  }
-
-  // JPA Mappings
+  private PetData pet;
+  private PersonData person;
+  private Date from;
 
   @Valid
   @Embedded
@@ -84,21 +39,21 @@ public class OwnershipData implements HasRecord, Ownership {
   @Valid
   @NotNull
   @OneToOne(mappedBy = "ownership")
-  public PetData getPetData() {
-    return petData;
+  public PetData getPet() {
+    return pet;
   }
 
   @Valid
   @NotNull
   @OneToOne
-  public PersonData getPersonData() {
-    return personData;
+  public PersonData getPerson() {
+    return person;
   }
 
   @NotNull
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "date_from")
-  public Date getDateFrom() {
-    return fromDate;
+  public Date getFrom() {
+    return from;
   }
 }
