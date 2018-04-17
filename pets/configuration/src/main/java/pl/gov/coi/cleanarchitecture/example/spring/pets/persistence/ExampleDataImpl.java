@@ -1,6 +1,9 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence;
 
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Service;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
@@ -13,10 +16,18 @@ import java.time.Instant;
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
  * @since 2018-01-18
  */
-@Component
+@Service
+@RequiredArgsConstructor
 final class ExampleDataImpl implements ExampleData {
+  private final PetsGateway gateway;
+
+  @EventListener
+  void onApplicationEvent(ContextRefreshedEvent event) {
+    createExamples();
+  }
+
   @Override
-  public void createExamples(PetsGateway gateway) {
+  public void createExamples() {
     Person ksuszynski = new Person("Krzysztof", "Suszyński");
     Person panderson = new Person("Pamela", "Anderson");
     Person llohan = new Person("Lindsay", "Lohan");

@@ -12,7 +12,6 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.en
 @Service
 @RequiredArgsConstructor
 final class PetMapperFacadeImpl implements PetMapperFacade {
-
   private final PetMapper petMapper;
 
   @Override

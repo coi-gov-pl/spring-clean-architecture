@@ -41,7 +41,7 @@ final class HibernatePetsGateway implements PetsGateway {
   public Pet persistNew(Pet pet) {
     PetData data = mapper.map(pet);
     entityManager.persist(data);
-    PetData persisted = entityManager.find(PetData.class, data.getRecord().getId());
+    PetData persisted = entityManager.find(PetData.class, data.getId());
     return mapper.map(persisted);
   }
 }

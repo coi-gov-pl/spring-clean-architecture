@@ -1,11 +1,14 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper;
 
+import org.hibernate.Hibernate;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.OwnershipData;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -29,5 +32,16 @@ public interface OwnershipMapper {
                             @Context CyclicGraphContext context) {
     return optional.map(ownership -> this.map(ownership, context))
       .orElse(null);
+  }
+
+  default List<Ownership> map(List<OwnershipData> ownershipDataList,
+                              @Context CyclicGraphContext context) {
+    if (!Hibernate.isInitialized(ownershipDataList)) {
+      return new UninitializedList<>(OwnershipData.class);
+    }
+    return ownershipDataList
+      .stream()
+      .map(data -> map(data, context))
+      .collect(Collectors.toList());
   }
 }

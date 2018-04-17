@@ -17,10 +17,10 @@ import java.util.Date;
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
  * @since 2018-01-18
  */
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class FormerOwnershipData extends OwnershipData {
 

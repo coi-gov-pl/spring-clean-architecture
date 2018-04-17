@@ -1,11 +1,13 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -21,20 +23,14 @@ import java.util.Date;
 @Table
 @Entity
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class OwnershipData implements HasRecord {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class OwnershipData extends Record {
 
-  private Record record = new Record();
   private PetData pet;
   private PersonData person;
   private Date from;
-
-  @Valid
-  @Embedded
-  @Override
-  public Record getRecord() {
-    return record;
-  }
 
   @Valid
   @NotNull

@@ -19,14 +19,8 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>pl.coi.gov.examples.springcleanarchitecture</groupId>
-      <artifactId>pets-persistence-hibernate</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>pl.coi.gov.examples.springcleanarchitecture</groupId>
-      <artifactId>pets-persistence-stub</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
