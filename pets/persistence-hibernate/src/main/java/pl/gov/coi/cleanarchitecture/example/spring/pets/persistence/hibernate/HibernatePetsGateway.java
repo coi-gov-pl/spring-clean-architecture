@@ -12,6 +12,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.ma
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,9 +48,11 @@ final class HibernatePetsGateway implements PetsGateway {
   }
 
   @Override
-  public void persistNew(Pet pet) {
-    PetData data = mapper.map(pet);
-    entityManager.persist(data);
+  public void persistNew(Pet... pets) {
+    List<PetData> petDataList = mapper.map(Arrays.asList(pets));
+    for (PetData data : petDataList) {
+      entityManager.persist(data);
+    }
   }
 
   private static int calculateStartPosition(Pagination pagination) {

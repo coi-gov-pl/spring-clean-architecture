@@ -10,6 +10,8 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.Pet
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
@@ -27,7 +29,9 @@ class ExampleDataImpl implements ExampleData {
     Person panderson = new Person("Pamela", "Anderson");
     Person llohan = new Person("Lindsay", "Lohan");
 
-    gateway.persistNew(create(
+    List<Pet> pets = new ArrayList<>();
+
+    pets.add(create(
       "Frodo",
       Race.DOG,
       ksuszynski,
@@ -40,21 +44,26 @@ class ExampleDataImpl implements ExampleData {
       Instant.parse("2005-04-11T11:00:00.000Z")
     );
     kitie.setOwner(panderson);
-    gateway.persistNew(kitie);
-    gateway.persistNew(create(
+    pets.add(kitie);
+    pets.add(create(
       "Flamer",
       Race.PIG
     ));
-    gateway.persistNew(create(
+    pets.add(create(
       "Tom",
-      Race.CAT
+      Race.CAT,
+      llohan,
+      Instant.parse("2011-02-11T13:56:01.000Z")
     ));
-    gateway.persistNew(create(
+    pets.add(create(
       "Hillburn",
       Race.DOG,
       llohan,
       Instant.EPOCH
     ));
+
+    gateway.persistNew(pets.toArray(new Pet[0]));
+
     entityManager.flush();
     entityManager.clear();
   }
@@ -63,6 +72,7 @@ class ExampleDataImpl implements ExampleData {
     Pet pet = create(name, race);
     Ownership ownership = new Ownership(pet, owner, instant);
     pet.setOwnership(ownership);
+    owner.addOwnership(ownership);
     return pet;
   }
 

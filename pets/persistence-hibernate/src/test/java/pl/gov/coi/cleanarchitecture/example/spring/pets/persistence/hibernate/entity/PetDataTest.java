@@ -1,11 +1,14 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
 
 import java.sql.Date;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.TimeZone;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,6 +17,19 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 18.04.18
  */
 public class PetDataTest {
+
+  private TimeZone defaultTimeZone;
+
+  @Before
+  public void before() {
+    defaultTimeZone = TimeZone.getDefault();
+    TimeZone.setDefault(TimeZone.getTimeZone("Europe/Warsaw"));
+  }
+
+  @After
+  public void after() {
+    TimeZone.setDefault(defaultTimeZone);
+  }
 
   @Test
   public void testToString() {

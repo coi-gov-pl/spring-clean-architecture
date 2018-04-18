@@ -7,6 +7,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.In
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -47,7 +48,7 @@ public class PersonData extends Record {
     return surname;
   }
 
-  @OneToMany
+  @OneToMany(cascade = CascadeType.ALL)
   public List<OwnershipData> getOwnerships() {
     return ownerships;
   }

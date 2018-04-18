@@ -40,9 +40,11 @@ final class PetsGatewayStub implements PetsGateway {
   }
 
   @Override
-  public void persistNew(Pet pet) {
-    Pet refreshed = petObjectSerializer.refresh(pet);
-    pets.add(refreshed);
+  public void persistNew(Pet... pets) {
+    for (Pet pet : pets) {
+      Pet refreshed = petObjectSerializer.refresh(pet);
+      this.pets.add(refreshed);
+    }
   }
 
 }

@@ -8,8 +8,10 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.In
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -46,7 +48,7 @@ public class OwnershipData extends Record {
 
   @Valid
   @NotNull
-  @OneToOne(cascade = CascadeType.ALL)
+  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   public PersonData getPerson() {
     return person;
   }

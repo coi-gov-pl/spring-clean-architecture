@@ -10,5 +10,5 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Pagin
  */
 public interface PetsGateway {
   Paginated<Pet> getPets(Pagination pagination);
-  void persistNew(Pet pet);
+  void persistNew(Pet... pet);
 }

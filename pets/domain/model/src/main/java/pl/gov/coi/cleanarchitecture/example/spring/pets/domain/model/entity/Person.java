@@ -56,7 +56,7 @@ public final class Person implements Serializable {
     return Collections.unmodifiableList(getOwnershipList());
   }
 
-  void addOwnership(Ownership ownership) {
+  public void addOwnership(Ownership ownership) {
     getOwnershipList().add(ownership);
     if (ownership.getPerson() != this) {
       ownership.setPerson(this);

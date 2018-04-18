@@ -132,12 +132,17 @@ final class UninitializedList<T> implements List<T> {
     throw newLazyInitializationException();
   }
 
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + "<" + type.getSimpleName() + ">";
+  }
+
   private LazyInitializationException newLazyInitializationException() {
     return new LazyInitializationException(
       "Trying to use uninitialized collection for type: List<"
         + type.getSimpleName()
-        + ">. You need to fetch this collection before using it." +
-        " This prevents lazy loading n+1 problem."
+        + ">. You need to fetch this collection before using it, for ex. using " +
+        "JOIN FETCH in JPQL. This exception prevents lazy loading n+1 problem."
     );
   }
 }

@@ -20,8 +20,6 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.ExampleData;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import java.util.Iterator;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
@@ -60,17 +58,15 @@ public class HibernatePetsGatewayIT {
     assertThat(pageInfo.hasNextPage()).isTrue();
     assertThat(pets.getElements()).hasSize(3);
 
-    // getting second pet which should have former owners list but not fetched (lazy) by gateway
-    Iterator<Pet> iter = pets.getElements().iterator();
-    iter.next();
-    Pet second = iter.next();
+    // getting pet which should have former owners list but not fetched (lazy) by gateway
+    Pet pet = pets.getElements().iterator().next();
     try {
-      second.getFormerOwners().iterator();
+      pet.getFormerOwners().iterator();
       failBecauseExceptionWasNotThrown(LazyInitializationException.class);
     } catch (LazyInitializationException ex) {
       assertThat(ex).hasMessage("Trying to use uninitialized collection for type: " +
-        "List<FormerOwnershipData>. You need to fetch this collection before using it. " +
-        "This prevents lazy loading n+1 problem.");
+        "List<FormerOwnershipData>. You need to fetch this collection before using it, " +
+        "for ex. using JOIN FETCH in JPQL. This exception prevents lazy loading n+1 problem.");
     }
   }
 
