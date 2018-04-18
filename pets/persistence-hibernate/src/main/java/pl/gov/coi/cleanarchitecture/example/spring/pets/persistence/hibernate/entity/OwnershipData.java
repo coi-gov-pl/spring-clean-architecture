@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
@@ -34,14 +35,14 @@ public class OwnershipData extends Record {
 
   @Valid
   @NotNull
-  @OneToOne(mappedBy = "ownership")
+  @OneToOne(cascade = CascadeType.ALL, mappedBy = "ownership")
   public PetData getPet() {
     return pet;
   }
 
   @Valid
   @NotNull
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL)
   public PersonData getPerson() {
     return person;
   }

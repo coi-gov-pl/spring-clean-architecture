@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>app</artifactId>
-  <name>Spring Clean Architecture :: Application</name>
+  <name>SCA :: Application</name>
 
   <dependencies>
     <dependency>

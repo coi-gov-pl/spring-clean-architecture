@@ -8,4 +8,5 @@ import pl.gov.coi.cleanarchitecture.usecase.Response;
  */
 public interface FetchPetsResponse extends Response {
   void setPets(Iterable<FetchPetsResponseModel.Pet> pets);
+  void setPageInfo(long totalNumberOfElements, int elementsPerPage, int pageNumber);
 }

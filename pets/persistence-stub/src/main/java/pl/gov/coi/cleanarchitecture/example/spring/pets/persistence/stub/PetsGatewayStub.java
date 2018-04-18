@@ -2,9 +2,13 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.stub;
 
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.PageInfo;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Paginated;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Pagination;
 
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -12,19 +16,33 @@ import java.util.Set;
  * @since 19.12.16
  */
 final class PetsGatewayStub implements PetsGateway {
-  private final Set<Pet> pets = new HashSet<>();
+  private final Set<Pet> pets = new LinkedHashSet<>();
+  private final ObjectSerializer<Pet> petObjectSerializer = new ObjectSerializer<>();
 
   @Override
-  public Iterable<Pet> getAllActive() {
-    return Collections.unmodifiableSet(pets);
+  public Paginated<Pet> getPets(Pagination pagination) {
+    List<Pet> elements = new ArrayList<>();
+    long skip = (pagination.getPageNumber() - 1) * (long) pagination.getElementsPerPage();
+    long i = 1;
+    long collected = 0;
+    for (Pet pet : pets) {
+      if (i > skip) {
+        if (collected < pagination.getElementsPerPage()) {
+          elements.add(petObjectSerializer.refresh(pet));
+          collected++;
+        }
+      } else {
+        i++;
+      }
+    }
+    PageInfo info = new PageInfo(pagination, pets.size());
+    return new Paginated<>(info, elements);
   }
 
   @Override
-  public Pet persistNew(Pet pet) {
-    ObjectSerializer<Pet> petObjectSerializer = new ObjectSerializer<>();
-    Pet newOne = petObjectSerializer.refresh(pet);
-    pets.add(pet);
-    return newOne;
+  public void persistNew(Pet pet) {
+    Pet refreshed = petObjectSerializer.refresh(pet);
+    pets.add(refreshed);
   }
 
 }

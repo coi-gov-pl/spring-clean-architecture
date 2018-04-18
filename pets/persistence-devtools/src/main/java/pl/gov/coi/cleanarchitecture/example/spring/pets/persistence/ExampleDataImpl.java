@@ -1,8 +1,6 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
@@ -18,13 +16,8 @@ import java.time.Instant;
  */
 @Service
 @RequiredArgsConstructor
-final class ExampleDataImpl implements ExampleData {
+class ExampleDataImpl implements ExampleData {
   private final PetsGateway gateway;
-
-  @EventListener
-  void onApplicationEvent(ContextRefreshedEvent event) {
-    createExamples();
-  }
 
   @Override
   public void createExamples() {

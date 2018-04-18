@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>pets-persistence-hibernate</artifactId>
-  <name>String Clean Architecture :: Pets :: PersistenceHibernate</name>
+  <name>SCA :: Pets :: Persistence :: Hibernate</name>
 
   <dependencies>
     <dependency>
@@ -68,6 +68,12 @@
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>pl.coi.gov.examples.springcleanarchitecture</groupId>
+      <artifactId>pets-persistence-devtools</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

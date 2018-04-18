@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>pets-domain-usecase-contract</artifactId>
-  <name>Spring Clean Architecture :: Pets :: Domain :: UseCase Contract</name>
+  <name>SCA :: Pets :: Domain :: UseCase Contract</name>
 
   <dependencies>
     <dependency>

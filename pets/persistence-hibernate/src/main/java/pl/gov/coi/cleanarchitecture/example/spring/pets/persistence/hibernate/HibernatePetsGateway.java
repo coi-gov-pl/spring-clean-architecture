@@ -3,10 +3,14 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate;
 import lombok.RequiredArgsConstructor;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.PageInfo;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Paginated;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Pagination;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PetData;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper.PetMapperFacade;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,30 +22,36 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 final class HibernatePetsGateway implements PetsGateway {
 
-  private static final int DEFAULT_PAGING = 100;
   private final EntityManager entityManager;
   private final PetMapperFacade mapper;
 
   @Override
-  public Iterable<Pet> getAllActive() {
+  public Paginated<Pet> getPets(Pagination pagination) {
+    Query q = entityManager.createQuery("SELECT count(p.id) FROM PetData p");
+    long totalNumberOfElements = Long.class.cast(q.getSingleResult());
     TypedQuery<PetData> query = entityManager.createQuery(
       "SELECT p " +
         "FROM PetData p " +
-        "LEFT JOIN FETCH OwnershipData o " +
-        "LEFT JOIN FETCH PersonData pp", PetData.class
+        "LEFT JOIN FETCH p.ownership o " +
+        "LEFT JOIN FETCH o.person pp", PetData.class
     );
-    query.setMaxResults(DEFAULT_PAGING);
+    query.setMaxResults(pagination.getElementsPerPage());
+    query.setFirstResult(calculateStartPosition(pagination));
     List<PetData> results = query.getResultList();
-    return results.stream()
+    List<Pet> elements = results.stream()
       .map(mapper::map)
       .collect(Collectors.toList());
+    PageInfo info = new PageInfo(pagination, totalNumberOfElements);
+    return new Paginated<>(info, elements);
   }
 
   @Override
-  public Pet persistNew(Pet pet) {
+  public void persistNew(Pet pet) {
     PetData data = mapper.map(pet);
     entityManager.persist(data);
-    PetData persisted = entityManager.find(PetData.class, data.getId());
-    return mapper.map(persisted);
+  }
+
+  private static int calculateStartPosition(Pagination pagination) {
+    return (pagination.getPageNumber() - 1) * pagination.getElementsPerPage();
   }
 }
