@@ -2,6 +2,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -11,6 +12,7 @@ import java.time.Instant;
  * @since 2018-03-07
  */
 @Data
+@ToString(of = "from")
 @AllArgsConstructor
 public final class Ownership implements Serializable {
 

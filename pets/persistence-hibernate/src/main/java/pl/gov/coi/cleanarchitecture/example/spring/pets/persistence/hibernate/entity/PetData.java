@@ -1,9 +1,10 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.Inspect;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,18 +22,22 @@ import java.util.List;
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
  * @since 2018-01-18
  */
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class PetData extends Record {
 
   private static final long serialVersionUID = 20180307225158L;
 
+  @Inspect
   private String name;
+  @Inspect
   private Race race;
+  @Inspect
   private OwnershipData ownership;
+  @Inspect
   private List<FormerOwnershipData> formerOwners = new ArrayList<>();
 
   @Column

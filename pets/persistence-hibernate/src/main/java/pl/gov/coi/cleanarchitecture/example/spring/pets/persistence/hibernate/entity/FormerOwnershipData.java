@@ -1,8 +1,9 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.Inspect;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,11 +20,12 @@ import java.util.Date;
  */
 @Entity
 @Table
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @NoArgsConstructor
 public class FormerOwnershipData extends OwnershipData {
 
+  @Inspect
   private Date to;
 
   FormerOwnershipData(OwnershipData ownershipData) {

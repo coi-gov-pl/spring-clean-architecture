@@ -1,8 +1,9 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.Inspect;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -18,15 +19,17 @@ import java.util.List;
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
  * @since 2018-01-18
  */
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table
-@Data
+@Getter
+@Setter
 @Access(AccessType.PROPERTY)
 @NoArgsConstructor
 public class PersonData extends Record {
 
+  @Inspect
   private String name;
+  @Inspect
   private String surname;
   private List<OwnershipData> ownerships = new ArrayList<>();
 

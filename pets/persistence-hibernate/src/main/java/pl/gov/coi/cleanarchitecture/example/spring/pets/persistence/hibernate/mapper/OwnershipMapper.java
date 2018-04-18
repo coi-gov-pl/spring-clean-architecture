@@ -9,6 +9,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.en
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -32,6 +33,14 @@ public interface OwnershipMapper {
                             @Context CyclicGraphContext context) {
     return optional.map(ownership -> this.map(ownership, context))
       .orElse(null);
+  }
+
+  default List<OwnershipData> map(Iterable<Ownership> ownerships,
+                                  @Context CyclicGraphContext context) {
+    return StreamSupport
+      .stream(ownerships.spliterator(), false)
+      .map(ownership -> map(ownership, context))
+      .collect(Collectors.toList());
   }
 
   default List<Ownership> map(List<OwnershipData> ownershipDataList,

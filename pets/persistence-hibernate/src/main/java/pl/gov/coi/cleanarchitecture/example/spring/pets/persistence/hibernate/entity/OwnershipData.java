@@ -1,8 +1,9 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.Inspect;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -24,13 +25,16 @@ import java.util.Date;
 @Table
 @Entity
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class OwnershipData extends Record {
 
+  @Inspect
   private PetData pet;
+  @Inspect
   private PersonData person;
+  @Inspect
   private Date from;
 
   @Valid

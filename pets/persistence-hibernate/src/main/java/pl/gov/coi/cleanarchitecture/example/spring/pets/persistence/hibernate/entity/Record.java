@@ -1,10 +1,13 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity;
 
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.Inspect;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.ToStringResolver;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -24,11 +27,13 @@ import java.util.Date;
  * @since 2018-01-18
  */
 @Setter(AccessLevel.PRIVATE)
-@Data
+@Getter
+@EqualsAndHashCode(of = "id")
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 abstract class Record {
 
+  @Inspect
   private Long id;
   private Long version;
   private Date created;
@@ -76,5 +81,11 @@ abstract class Record {
   @Temporal(TemporalType.TIMESTAMP)
   public Date getModified() {
     return Date.from(modified.toInstant());
+  }
+
+  @Override
+  public String toString() {
+    ToStringResolver resolver = new ToStringResolver();
+    return resolver.toString(this);
   }
 }

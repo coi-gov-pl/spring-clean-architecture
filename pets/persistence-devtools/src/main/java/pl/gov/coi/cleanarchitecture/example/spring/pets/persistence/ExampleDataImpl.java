@@ -8,6 +8,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 
+import javax.persistence.EntityManager;
 import java.time.Instant;
 
 /**
@@ -18,6 +19,7 @@ import java.time.Instant;
 @RequiredArgsConstructor
 class ExampleDataImpl implements ExampleData {
   private final PetsGateway gateway;
+  private final EntityManager entityManager;
 
   @Override
   public void createExamples() {
@@ -31,12 +33,14 @@ class ExampleDataImpl implements ExampleData {
       ksuszynski,
       Instant.parse("2008-05-28T13:00:00.000Z")
     ));
-    gateway.persistNew(create(
+    Pet kitie = create(
       "Kitie",
       Race.CAT,
-      panderson,
+      llohan,
       Instant.parse("2005-04-11T11:00:00.000Z")
-    ));
+    );
+    kitie.setOwner(panderson);
+    gateway.persistNew(kitie);
     gateway.persistNew(create(
       "Flamer",
       Race.PIG
@@ -51,10 +55,12 @@ class ExampleDataImpl implements ExampleData {
       llohan,
       Instant.EPOCH
     ));
+    entityManager.flush();
+    entityManager.clear();
   }
 
   private Pet create(String name, Race race, Person owner, Instant instant) {
-    Pet pet = new Pet(name, race);
+    Pet pet = create(name, race);
     Ownership ownership = new Ownership(pet, owner, instant);
     pet.setOwnership(ownership);
     return pet;

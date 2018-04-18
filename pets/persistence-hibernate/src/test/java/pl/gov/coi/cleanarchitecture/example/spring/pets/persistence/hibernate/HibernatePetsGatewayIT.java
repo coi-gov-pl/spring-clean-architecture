@@ -1,6 +1,7 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate;
 
 
+import org.hibernate.LazyInitializationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -19,7 +20,10 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.ExampleData;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import java.util.Iterator;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -55,6 +59,19 @@ public class HibernatePetsGatewayIT {
     assertThat(pageInfo.getTotalNumberOfElements()).isEqualTo(5);
     assertThat(pageInfo.hasNextPage()).isTrue();
     assertThat(pets.getElements()).hasSize(3);
+
+    // getting second pet which should have former owners list but not fetched (lazy) by gateway
+    Iterator<Pet> iter = pets.getElements().iterator();
+    iter.next();
+    Pet second = iter.next();
+    try {
+      second.getFormerOwners().iterator();
+      failBecauseExceptionWasNotThrown(LazyInitializationException.class);
+    } catch (LazyInitializationException ex) {
+      assertThat(ex).hasMessage("Trying to use uninitialized collection for type: " +
+        "List<FormerOwnershipData>. You need to fetch this collection before using it. " +
+        "This prevents lazy loading n+1 problem.");
+    }
   }
 
   @Test
@@ -69,6 +86,7 @@ public class HibernatePetsGatewayIT {
 
     // then
     assertThat(afterCount - beforeCount).isEqualTo(1);
+    assertThat(beforeCount).isEqualTo(0);
   }
 
   private long countPets() {

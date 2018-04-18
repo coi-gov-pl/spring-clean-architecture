@@ -65,6 +65,8 @@ public final class Pet implements Serializable {
   public void setOwner(Person owner) {
     Optional<Ownership> optOwnership = getOwnership();
     optOwnership.ifPresent(theOwnership -> {
+      Person previousOwner = theOwnership.getPerson();
+      previousOwner.removeOwnership(theOwnership);
       FormerOwnership formerOwnership = new FormerOwnership(theOwnership);
       getFormerOwnersList().add(formerOwnership);
     });

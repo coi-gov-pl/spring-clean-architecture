@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,11 +52,19 @@ public final class Person implements Serializable {
     return !getOwnershipList().isEmpty();
   }
 
-  public void addOwnership(Ownership ownership) {
+  public Iterable<Ownership> getOwnerships() {
+    return Collections.unmodifiableList(getOwnershipList());
+  }
+
+  void addOwnership(Ownership ownership) {
     getOwnershipList().add(ownership);
     if (ownership.getPerson() != this) {
       ownership.setPerson(this);
     }
+  }
+
+  void removeOwnership(Ownership ownership) {
+    getOwnershipList().remove(ownership);
   }
 
   private List<Ownership> getOwnershipList() {
