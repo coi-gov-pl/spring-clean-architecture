@@ -3,6 +3,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.stub;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 
 /**
@@ -13,8 +14,17 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.Pet
 @Configuration
 class PersistenceConfiguration {
   @Bean
-  public PetsGateway provide() {
-    return new PetsGatewayStub();
+  public PetsGateway provide(StubDatabase database) {
+    return new PetsGatewayStub(database);
+  }
+
+  public PersonGateway personGateway(StubDatabase database) {
+    return new PersonGatewayStub(database);
+  }
+
+  @Bean
+  public StubDatabase database() {
+    return new SetStubDatabase();
   }
 }
 

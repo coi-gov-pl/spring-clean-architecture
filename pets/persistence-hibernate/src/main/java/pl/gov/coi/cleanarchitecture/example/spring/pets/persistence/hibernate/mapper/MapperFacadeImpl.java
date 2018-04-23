@@ -2,7 +2,9 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.m
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PersonData;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PetData;
 
 import java.util.List;
@@ -13,8 +15,9 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-final class PetMapperFacadeImpl implements PetMapperFacade {
+final class MapperFacadeImpl implements MapperFacade {
   private final PetMapper petMapper;
+  private final PersonMapper personMapper;
 
   @Override
   public Pet map(PetData data) {
@@ -24,5 +27,10 @@ final class PetMapperFacadeImpl implements PetMapperFacade {
   @Override
   public List<PetData> map(List<Pet> pets) {
     return petMapper.map(pets, new CyclicGraphContext());
+  }
+
+  @Override
+  public Person map(PersonData data) {
+    return personMapper.map(data, new CyclicGraphContext());
   }
 }

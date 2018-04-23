@@ -7,7 +7,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.PageI
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Paginated;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Pagination;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PetData;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper.PetMapperFacade;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper.MapperFacade;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 final class HibernatePetsGateway implements PetsGateway {
 
   private final EntityManager entityManager;
-  private final PetMapperFacade mapper;
+  private final MapperFacade mapper;
 
   @Override
   public Paginated<Pet> getPets(Pagination pagination) {

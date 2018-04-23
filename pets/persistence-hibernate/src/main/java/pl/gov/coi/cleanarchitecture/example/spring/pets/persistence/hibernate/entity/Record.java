@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.Inspect;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.ToStringResolver;
+import pl.wavesoftware.utils.stringify.ObjectStringifier;
+import pl.wavesoftware.utils.stringify.annotation.Inspect;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -85,7 +85,6 @@ abstract class Record {
 
   @Override
   public String toString() {
-    ToStringResolver resolver = new ToStringResolver();
-    return resolver.toString(this);
+    return new ObjectStringifier(this).toString();
   }
 }

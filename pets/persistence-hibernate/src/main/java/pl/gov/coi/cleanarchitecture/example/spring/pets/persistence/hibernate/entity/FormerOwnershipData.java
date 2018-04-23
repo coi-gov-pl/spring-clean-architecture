@@ -3,7 +3,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.e
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.Inspect;
+import pl.wavesoftware.utils.stringify.annotation.Inspect;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

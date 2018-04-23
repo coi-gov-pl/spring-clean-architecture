@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.mapper.EnumMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 
 import javax.validation.Validator;
@@ -17,9 +18,10 @@ class RegisterNewPetConfiguration {
 
   @Bean
   RegisterNewPetUseCase provideRegisterNewPetUseCase(PetsGateway petsGateway,
+                                                     PersonGateway personGateway,
                                                      RegisterNewPetRequestToPetMapper mapper,
                                                      Validator validator) {
-    return new RegisterNewPetUseCaseImpl(petsGateway, mapper, validator);
+    return new RegisterNewPetUseCaseImpl(petsGateway, personGateway, mapper, validator);
   }
 
   @Bean
