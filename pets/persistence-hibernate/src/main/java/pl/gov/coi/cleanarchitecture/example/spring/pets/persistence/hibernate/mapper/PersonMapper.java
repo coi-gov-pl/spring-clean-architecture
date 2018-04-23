@@ -1,7 +1,9 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper;
 
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PersonData;
 
@@ -16,4 +18,9 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.en
 public interface PersonMapper {
   PersonData map(Person person, @Context CyclicGraphContext context);
   Person map(PersonData data, @Context CyclicGraphContext context);
+
+  @AfterMapping
+  default void after(PersonData data, @MappingTarget Person target) {
+    target.supplierOfMetadata(() -> new MetadataImpl<>(Person.class, data));
+  }
 }

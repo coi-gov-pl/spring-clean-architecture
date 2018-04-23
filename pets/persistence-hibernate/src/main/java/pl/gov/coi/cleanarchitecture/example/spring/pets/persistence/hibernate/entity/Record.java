@@ -31,7 +31,7 @@ import java.util.Date;
 @EqualsAndHashCode(of = "id")
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-abstract class Record {
+public abstract class Record {
 
   @Inspect
   private Long id;

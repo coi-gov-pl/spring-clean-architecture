@@ -1,8 +1,10 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper;
 
 import org.hibernate.Hibernate;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.OwnershipData;
 
@@ -27,6 +29,11 @@ import java.util.stream.StreamSupport;
 public interface OwnershipMapper {
   OwnershipData map(Ownership ownership, @Context CyclicGraphContext context);
   Ownership map(OwnershipData data, @Context CyclicGraphContext context);
+
+  @AfterMapping
+  default void after(OwnershipData data, @MappingTarget Ownership target) {
+    target.supplierOfMetadata(() -> new MetadataImpl<>(Ownership.class, data));
+  }
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   default OwnershipData map(Optional<Ownership> optional,

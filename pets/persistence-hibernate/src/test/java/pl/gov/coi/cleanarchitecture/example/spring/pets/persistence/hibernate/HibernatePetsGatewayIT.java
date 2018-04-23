@@ -9,13 +9,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.PageInfo;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Paginated;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Pagination;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.ExampleData;
+import pl.wavesoftware.eid.exceptions.Eid;
+import pl.wavesoftware.eid.exceptions.EidIllegalStateException;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -36,6 +40,8 @@ public class HibernatePetsGatewayIT {
 
   @Inject
   private PetsGateway petsGateway;
+  @Inject
+  private PersonGateway personGateway;
   @Inject
   private ExampleData exampleData;
   @Inject
@@ -74,6 +80,26 @@ public class HibernatePetsGatewayIT {
   public void testPersistNew() {
     // given
     Pet pet = new Pet("Alice", Race.PIG);
+
+    // when
+    long beforeCount = countPets();
+    petsGateway.persistNew(pet);
+    long afterCount = countPets();
+
+    // then
+    assertThat(afterCount - beforeCount).isEqualTo(1);
+    assertThat(beforeCount).isEqualTo(0);
+  }
+
+  @Test
+  public void testPersistNewWithOwner() {
+    // given
+    exampleData.createExamples();
+    Pet pet = new Pet("Johnie", Race.CAT);
+    Person person = personGateway
+      .findByNameAndSurname("Lindsay", "Lohan")
+      .orElseThrow(() -> new EidIllegalStateException(new Eid("20180423:125349")));
+    pet.setOwner(person);
 
     // when
     long beforeCount = countPets();
