@@ -10,7 +10,9 @@ import java.lang.annotation.Target;
  *
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 18.04.18
+ * @deprecated Use <a href="https://github.com/wavesoftware/java-stringify-object">pl.wavesoftware.utils:stringify-object</a>
  */
+@Deprecated
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Inspect {

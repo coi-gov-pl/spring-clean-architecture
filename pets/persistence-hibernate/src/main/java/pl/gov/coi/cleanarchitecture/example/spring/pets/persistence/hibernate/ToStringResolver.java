@@ -13,7 +13,9 @@ import java.util.Map;
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 18.04.18
+ * @deprecated Use <a href="https://github.com/wavesoftware/java-stringify-object">pl.wavesoftware.utils:stringify-object</a>
  */
+@Deprecated
 public final class ToStringResolver {
   public String toString(Object object) {
     ToStringResolving resolving = new ToStringResolving(object);
