@@ -4,8 +4,8 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pers
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
- * @since 19.04.18
+ * @since 24.04.18
  */
-public interface PersonGateway {
-  OnGoingFetching<Person> findByNameAndSurname(String name, String surname);
+public enum PersonFetchProfile implements FetchProfile<Person> {
+  SOLE, WITH_OWNERSHIPS
 }

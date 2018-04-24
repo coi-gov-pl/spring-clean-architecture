@@ -5,6 +5,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Form
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.OnGoingFetching;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
 
 import java.util.Optional;
@@ -18,18 +19,19 @@ final class PersonGatewayStub implements PersonGateway {
   private final StubDatabase database;
 
   @Override
-  public Optional<Person> findByNameAndSurname(String name, String surname) {
-
-    for (Pet pet : database.getPets()) {
-      Finder finder = new Finder(pet, name, surname);
-      Optional<Person> opt = finder.findFromOwnership()
-        .map(Optional::of)
-        .orElseGet(finder::findFromFormerOwnership);
-      if (opt.isPresent()) {
-        return opt;
+  public OnGoingFetching<Person> findByNameAndSurname(String name, String surname) {
+    return profile -> {
+      for (Pet pet : database.getPets()) {
+        Finder finder = new Finder(pet, name, surname);
+        Optional<Person> opt = finder.findFromOwnership()
+          .map(Optional::of)
+          .orElseGet(finder::findFromFormerOwnership);
+        if (opt.isPresent()) {
+          return opt;
+        }
       }
-    }
-    return Optional.empty();
+      return Optional.empty();
+    };
   }
 
   @RequiredArgsConstructor

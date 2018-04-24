@@ -9,6 +9,7 @@ import org.springframework.transaction.interceptor.TransactionProxyFactoryBean;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper.MapperFacade;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.sql.QueryProvider;
 
 import javax.persistence.EntityManager;
 import java.util.Properties;
@@ -26,9 +27,10 @@ class PersistenceConfiguration {
   @Bean
   public PetsGateway provide(MapperFacade mapper,
                              EntityManager entityManager,
+                             QueryProvider queryProvider,
                              PlatformTransactionManager transactionManager) {
     return transactional(
-      () -> provideImpl(mapper, entityManager),
+      () -> provideImpl(mapper, entityManager, queryProvider),
       transactionManager
     );
   }
@@ -36,32 +38,35 @@ class PersistenceConfiguration {
   @Bean
   public PersonGateway providePersonGateway(MapperFacade mapper,
                                             EntityManager entityManager,
+                                            QueryProvider queryProvider,
                                             PlatformTransactionManager transactionManager) {
     return transactional(
-      () -> providePersonGateway(mapper, entityManager),
+      () -> providePersonGateway(mapper, entityManager, queryProvider),
       transactionManager
     );
   }
 
   private PetsGateway provideImpl(MapperFacade mapper,
-                                  EntityManager entityManager) {
-    return new HibernatePetsGateway(entityManager, mapper);
+                                  EntityManager entityManager,
+                                  QueryProvider queryProvider) {
+    return new HibernatePetsGateway(entityManager, mapper, queryProvider);
   }
 
   private PersonGateway providePersonGateway(MapperFacade mapper,
-                                             EntityManager entityManager) {
-    return new HibernatePersonGateway(entityManager, mapper);
+                                             EntityManager entityManager,
+                                             QueryProvider queryProvider) {
+    return new HibernatePersonGateway(entityManager, mapper, queryProvider);
   }
 
-  private <T> T transactional(Supplier<T> targetSuppier,
+  private <T> T transactional(Supplier<T> targetSupplier,
                               PlatformTransactionManager transactionManager) {
     TransactionProxyFactoryBean proxy = new TransactionProxyFactoryBean();
 
     // Inject transaction manager here
     proxy.setTransactionManager(transactionManager);
 
-    // Define wich object instance is to be proxied (your bean)
-    proxy.setTarget(targetSuppier.get());
+    // Define which object instance is to be proxied (your bean)
+    proxy.setTarget(targetSupplier.get());
 
     // Programmatically setup transaction attributes
     Properties transactionAttributes = new Properties();

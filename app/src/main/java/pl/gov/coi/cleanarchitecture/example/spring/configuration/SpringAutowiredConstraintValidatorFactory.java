@@ -52,10 +52,10 @@ class SpringAutowiredConstraintValidatorFactory implements ConstraintValidatorFa
   private <T extends ConstraintValidator<?, ?>> T findValidatorImplementation(Class<T> key) {
     T bean = null;
     try {
-      trace("Trying to find a validator bean of class {}", key.getSimpleName());
+      trace("Trying to fetch a validator bean of class {}", key.getSimpleName());
       bean = this.beanFactory.getBean(key);
     } catch (BeansException exc) {
-      trace("Failed to find a bean of class {}", key.getSimpleName());
+      trace("Failed to fetch a bean of class {}", key.getSimpleName());
       trace(exc);
     }
     return bean;

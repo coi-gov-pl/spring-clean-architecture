@@ -3,6 +3,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.register
 import lombok.RequiredArgsConstructor;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetRequestModel.Ownership;
@@ -41,7 +42,8 @@ class RegisterNewPetUseCaseImpl implements RegisterNewPetUseCase {
 
   private Person ownershipAsPerson(Ownership ownership) {
     Optional<Person> personOptional = personGateway
-      .findByNameAndSurname(ownership.getName(), ownership.getSurname());
+      .findByNameAndSurname(ownership.getName(), ownership.getSurname())
+      .fetch(PersonFetchProfile.WITH_OWNERSHIPS);
     return personOptional.orElse(new Person(
       ownership.getName(), ownership.getSurname()
     ));

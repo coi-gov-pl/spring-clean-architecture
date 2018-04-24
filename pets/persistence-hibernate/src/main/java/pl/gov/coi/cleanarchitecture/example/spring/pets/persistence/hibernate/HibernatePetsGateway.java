@@ -8,6 +8,8 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Pagin
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Pagination;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PetData;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper.MapperFacade;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.sql.QueryProvider;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.sql.QueryProvider.OnGoingQueryProviding;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -26,17 +28,15 @@ final class HibernatePetsGateway implements PetsGateway {
 
   private final EntityManager entityManager;
   private final MapperFacade mapper;
+  private final QueryProvider queryProvider;
 
   @Override
   public Paginated<Pet> getPets(Pagination pagination) {
-    Query q = entityManager.createQuery("SELECT count(p.id) FROM PetData p");
+    OnGoingQueryProviding queryProviding = queryProvider.forClass(HibernatePetsGateway.class);
+    Query q = entityManager.createQuery(queryProviding.get("countPets"));
     long totalNumberOfElements = Long.class.cast(q.getSingleResult());
     TypedQuery<PetData> query = entityManager.createQuery(
-      "SELECT p " +
-        "FROM PetData p " +
-        "LEFT JOIN FETCH p.ownership o " +
-        "LEFT JOIN FETCH o.person pp " +
-        "ORDER BY p.id ASC", PetData.class
+      queryProviding.get("getPets"), PetData.class
     );
     query.setMaxResults(pagination.getElementsPerPage());
     query.setFirstResult(calculateStartPosition(pagination));
