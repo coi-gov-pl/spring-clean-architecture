@@ -28,8 +28,8 @@ import java.util.stream.StreamSupport;
   }
 )
 public interface OwnershipMapper {
-  OwnershipData map(Ownership ownership, @Context CyclicGraphContext context);
-  Ownership map(OwnershipData data, @Context CyclicGraphContext context);
+  OwnershipData map(Ownership ownership, @Context MapperContext context);
+  Ownership map(OwnershipData data, @Context MapperContext context);
 
   @AfterMapping
   default void after(OwnershipData data, @MappingTarget Ownership target) {
@@ -38,13 +38,13 @@ public interface OwnershipMapper {
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   default OwnershipData map(Optional<Ownership> optional,
-                            @Context CyclicGraphContext context) {
+                            @Context MapperContext context) {
     return optional.map(ownership -> this.map(ownership, context))
       .orElse(null);
   }
 
   default Set<OwnershipData> map(Iterable<Ownership> ownerships,
-                                 @Context CyclicGraphContext context) {
+                                 @Context MapperContext context) {
     return StreamSupport
       .stream(ownerships.spliterator(), false)
       .map(ownership -> map(ownership, context))
@@ -52,7 +52,7 @@ public interface OwnershipMapper {
   }
 
   default List<Ownership> map(Set<OwnershipData> ownershipDataList,
-                              @Context CyclicGraphContext context) {
+                              @Context MapperContext context) {
     if (!Hibernate.isInitialized(ownershipDataList)) {
       return new UninitializedList<>(OwnershipData.class);
     }

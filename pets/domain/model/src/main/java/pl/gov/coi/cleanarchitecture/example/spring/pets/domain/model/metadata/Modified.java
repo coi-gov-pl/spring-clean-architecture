@@ -7,4 +7,6 @@ import java.time.Instant;
  * @since 23.04.18
  */
 public interface Modified<T> extends MetadataEntry<Instant, T> {
+  @Override
+  Instant get();
 }

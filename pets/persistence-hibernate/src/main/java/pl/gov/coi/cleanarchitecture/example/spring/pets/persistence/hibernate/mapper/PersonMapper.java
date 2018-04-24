@@ -16,8 +16,8 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.en
   uses = { OwnershipMapper.class }
 )
 public interface PersonMapper {
-  PersonData map(Person person, @Context CyclicGraphContext context);
-  Person map(PersonData data, @Context CyclicGraphContext context);
+  PersonData map(Person person, @Context MapperContext context);
+  Person map(PersonData data, @Context MapperContext context);
 
   @AfterMapping
   default void after(PersonData data, @MappingTarget Person target) {

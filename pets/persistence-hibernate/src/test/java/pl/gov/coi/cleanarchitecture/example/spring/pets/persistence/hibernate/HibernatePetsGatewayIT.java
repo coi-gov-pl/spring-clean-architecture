@@ -103,7 +103,7 @@ public class HibernatePetsGatewayIT {
     Person person = personGateway
       .findByNameAndSurname("Lindsay", "Lohan")
       .fetch(PersonFetchProfile.WITH_OWNERSHIPS)
-      .orElseThrow(() -> new EidIllegalStateException(new Eid("20180423:125349")));
+      .orElseThrow(HibernatePetsGatewayIT::loadError);
     pet.setOwner(person);
 
     // when
@@ -113,7 +113,18 @@ public class HibernatePetsGatewayIT {
 
     // then
     assertThat(afterCount - beforeCount).isEqualTo(1);
-    assertThat(beforeCount).isEqualTo(0);
+    assertThat(beforeCount).isEqualTo(5);
+
+    person = personGateway
+      .findByNameAndSurname("Lindsay", "Lohan")
+      .fetch(PersonFetchProfile.WITH_OWNERSHIPS)
+      .orElseThrow(HibernatePetsGatewayIT::loadError);
+    assertThat(person.getOwnershipCount())
+      .isEqualTo(2);
+  }
+
+  private static RuntimeException loadError() {
+    return new EidIllegalStateException(new Eid("20180424:162330"));
   }
 
   private long countPets() {

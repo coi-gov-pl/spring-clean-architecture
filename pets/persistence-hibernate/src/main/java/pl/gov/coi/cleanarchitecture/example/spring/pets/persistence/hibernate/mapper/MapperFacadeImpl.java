@@ -7,6 +7,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PersonData;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PetData;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -18,19 +19,27 @@ import java.util.Collection;
 final class MapperFacadeImpl implements MapperFacade {
   private final PetMapper petMapper;
   private final PersonMapper personMapper;
+  private final JpaMappingContext jpaMappingContext;
 
   @Override
   public Pet map(PetData data) {
-    return petMapper.map(data, new CyclicGraphContext());
+    return petMapper.map(data, newContext());
   }
 
   @Override
   public Collection<PetData> map(Collection<Pet> pets) {
-    return petMapper.map(pets, new CyclicGraphContext());
+    return petMapper.map(pets, newContext());
   }
 
   @Override
   public Person map(PersonData data) {
-    return personMapper.map(data, new CyclicGraphContext());
+    return personMapper.map(data, newContext());
+  }
+
+  private MapperContext newContext() {
+    return new MapperContext(Arrays.asList(
+      jpaMappingContext,
+      new CyclicGraphContext()
+    ));
   }
 }

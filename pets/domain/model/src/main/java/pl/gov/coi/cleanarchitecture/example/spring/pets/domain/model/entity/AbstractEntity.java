@@ -44,7 +44,7 @@ public abstract class AbstractEntity<T extends AbstractEntity> implements HasMet
     private final Class<T> cls;
 
     @Override
-    public <D extends MetadataEntry<?, T>> Optional<D> get(Class<D> dataClass) {
+    public <I, D extends MetadataEntry<I, T>> Optional<D> get(Class<D> dataClass) {
       return Optional.empty();
     }
 

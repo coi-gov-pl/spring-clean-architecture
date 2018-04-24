@@ -28,9 +28,9 @@ import java.util.stream.StreamSupport;
 )
 public interface FormerOwnershipMapper {
   FormerOwnershipData map(FormerOwnership formerOwnership,
-                          @Context CyclicGraphContext context);
+                          @Context MapperContext context);
   FormerOwnership map(FormerOwnershipData data,
-                      @Context CyclicGraphContext context);
+                      @Context MapperContext context);
 
   @AfterMapping
   default void after(FormerOwnershipData data, @MappingTarget FormerOwnership target) {
@@ -38,7 +38,7 @@ public interface FormerOwnershipMapper {
   }
 
   default Set<FormerOwnershipData> map(Iterable<FormerOwnership> formerOwnerships,
-                                       @Context CyclicGraphContext context) {
+                                       @Context MapperContext context) {
     return StreamSupport
       .stream(formerOwnerships.spliterator(), false)
       .map(formerOwnership -> map(formerOwnership, context))
@@ -46,7 +46,7 @@ public interface FormerOwnershipMapper {
   }
 
   default List<FormerOwnership> map(Set<FormerOwnershipData> formerOwnershipData,
-                                    @Context CyclicGraphContext context) {
+                                    @Context MapperContext context) {
     if (!Hibernate.isInitialized(formerOwnershipData)) {
       return new UninitializedList<>(FormerOwnershipData.class);
     }

@@ -28,8 +28,8 @@ class SpringAutowiredConstraintValidatorFactory implements ConstraintValidatorFa
     this(beanFactory, DEFAULT_LOGGER);
   }
 
-  SpringAutowiredConstraintValidatorFactory(AutowireCapableBeanFactory beanFactory,
-                                            Logger logger) {
+  private SpringAutowiredConstraintValidatorFactory(AutowireCapableBeanFactory beanFactory,
+                                                    Logger logger) {
     this.beanFactory = beanFactory;
     this.logger = logger;
   }
@@ -43,7 +43,7 @@ class SpringAutowiredConstraintValidatorFactory implements ConstraintValidatorFa
     }
 
     if (bean == null) {
-      logger.warn("Failed to get validator of class " + key.getSimpleName());
+      logger.warn("Failed to get validator of class {}", key.getSimpleName());
     }
 
     return bean;
@@ -52,10 +52,10 @@ class SpringAutowiredConstraintValidatorFactory implements ConstraintValidatorFa
   private <T extends ConstraintValidator<?, ?>> T findValidatorImplementation(Class<T> key) {
     T bean = null;
     try {
-      trace("Trying to fetch a validator bean of class {}", key.getSimpleName());
+      trace("Trying to find a validator bean of class {}", key.getSimpleName());
       bean = this.beanFactory.getBean(key);
     } catch (BeansException exc) {
-      trace("Failed to fetch a bean of class {}", key.getSimpleName());
+      trace("Failed to find a bean of class {}", key.getSimpleName());
       trace(exc);
     }
     return bean;

@@ -7,6 +7,6 @@ import java.util.Optional;
  * @since 23.04.18
  */
 public interface Metadata<T> {
-  <D extends MetadataEntry<?, T>> Optional<D> get(Class<D> dataClass);
+  <I, D extends MetadataEntry<I, T>> Optional<D> get(Class<D> dataClass);
   Class<T> type();
 }

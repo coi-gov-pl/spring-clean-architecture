@@ -21,9 +21,9 @@ import java.util.Collection;
   }
 )
 interface PetMapper {
-  PetData map(Pet pet, @Context CyclicGraphContext context);
-  Pet map(PetData data, @Context CyclicGraphContext context);
-  Collection<PetData> map(Collection<Pet> pets, @Context CyclicGraphContext context);
+  PetData map(Pet pet, @Context MapperContext context);
+  Pet map(PetData data, @Context MapperContext context);
+  Collection<PetData> map(Collection<Pet> pets, @Context MapperContext context);
 
   @AfterMapping
   default void after(PetData petData, @MappingTarget Pet pet) {
