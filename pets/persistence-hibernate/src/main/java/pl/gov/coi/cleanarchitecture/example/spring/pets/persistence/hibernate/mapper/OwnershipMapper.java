@@ -10,6 +10,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.en
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -42,15 +43,15 @@ public interface OwnershipMapper {
       .orElse(null);
   }
 
-  default List<OwnershipData> map(Iterable<Ownership> ownerships,
-                                  @Context CyclicGraphContext context) {
+  default Set<OwnershipData> map(Iterable<Ownership> ownerships,
+                                 @Context CyclicGraphContext context) {
     return StreamSupport
       .stream(ownerships.spliterator(), false)
       .map(ownership -> map(ownership, context))
-      .collect(Collectors.toList());
+      .collect(Collectors.toSet());
   }
 
-  default List<Ownership> map(List<OwnershipData> ownershipDataList,
+  default List<Ownership> map(Set<OwnershipData> ownershipDataList,
                               @Context CyclicGraphContext context) {
     if (!Hibernate.isInitialized(ownershipDataList)) {
       return new UninitializedList<>(OwnershipData.class);

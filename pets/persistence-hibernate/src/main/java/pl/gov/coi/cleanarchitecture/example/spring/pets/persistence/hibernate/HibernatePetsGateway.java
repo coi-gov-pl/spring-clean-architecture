@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,8 +50,8 @@ final class HibernatePetsGateway implements PetsGateway {
 
   @Override
   public void persistNew(Pet... pets) {
-    List<PetData> petDataList = mapper.map(Arrays.asList(pets));
-    for (PetData data : petDataList) {
+    Collection<PetData> collection = mapper.map(Arrays.asList(pets));
+    for (PetData data : collection) {
       entityManager.persist(data);
     }
   }

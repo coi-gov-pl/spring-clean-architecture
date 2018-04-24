@@ -7,7 +7,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PersonData;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PetData;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
@@ -25,7 +25,7 @@ final class MapperFacadeImpl implements MapperFacade {
   }
 
   @Override
-  public List<PetData> map(List<Pet> pets) {
+  public Collection<PetData> map(Collection<Pet> pets) {
     return petMapper.map(pets, new CyclicGraphContext());
   }
 

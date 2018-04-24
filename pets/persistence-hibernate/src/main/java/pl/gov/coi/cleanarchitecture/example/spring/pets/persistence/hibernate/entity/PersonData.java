@@ -13,8 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
@@ -32,7 +32,7 @@ public class PersonData extends Record {
   private String name;
   @Inspect
   private String surname;
-  private List<OwnershipData> ownerships = new ArrayList<>();
+  private Set<OwnershipData> ownerships = new HashSet<>();
 
   // JPA Mappings
 
@@ -49,7 +49,7 @@ public class PersonData extends Record {
   }
 
   @OneToMany(cascade = CascadeType.ALL)
-  public List<OwnershipData> getOwnerships() {
+  public Set<OwnershipData> getOwnerships() {
     return ownerships;
   }
 

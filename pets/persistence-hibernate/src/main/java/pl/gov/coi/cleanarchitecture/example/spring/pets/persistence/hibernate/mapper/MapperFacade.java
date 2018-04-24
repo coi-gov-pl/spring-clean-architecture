@@ -5,7 +5,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PersonData;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PetData;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
@@ -13,6 +13,6 @@ import java.util.List;
  */
 public interface MapperFacade {
   Pet map(PetData data);
-  List<PetData> map(List<Pet> pets);
+  Collection<PetData> map(Collection<Pet> pets);
   Person map(PersonData data);
 }

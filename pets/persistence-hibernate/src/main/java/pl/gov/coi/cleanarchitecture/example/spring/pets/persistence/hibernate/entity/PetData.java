@@ -15,8 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
@@ -38,7 +38,7 @@ public class PetData extends Record {
   @Inspect
   private OwnershipData ownership;
   @Inspect
-  private List<FormerOwnershipData> formerOwners = new ArrayList<>();
+  private Set<FormerOwnershipData> formerOwners = new HashSet<>();
 
   @Column
   public String getName() {
@@ -56,7 +56,7 @@ public class PetData extends Record {
   }
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-  public List<FormerOwnershipData> getFormerOwners() {
+  public Set<FormerOwnershipData> getFormerOwners() {
     return formerOwners;
   }
 

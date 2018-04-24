@@ -15,7 +15,7 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractEntity<T extends AbstractEntity> implements HasMetadata<T> {
   @Nullable
-  private transient Supplier<Metadata<T>> metadataSupplier;
+  private Supplier<Metadata<T>> metadataSupplier;
 
   @Override
   public Metadata<T> getMetadata() {
