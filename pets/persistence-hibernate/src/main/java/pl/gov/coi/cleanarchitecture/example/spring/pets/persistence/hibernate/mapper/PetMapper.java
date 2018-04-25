@@ -24,6 +24,7 @@ interface PetMapper {
   PetData map(Pet pet, @Context MapperContext context);
   Pet map(PetData data, @Context MapperContext context);
   Collection<PetData> map(Collection<Pet> pets, @Context MapperContext context);
+  void updateFromPet(Pet pet, @MappingTarget PetData data, @Context MapperContext context);
 
   @AfterMapping
   default void after(PetData petData, @MappingTarget Pet pet) {

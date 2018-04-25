@@ -18,6 +18,9 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.en
 public interface PersonMapper {
   PersonData map(Person person, @Context MapperContext context);
   Person map(PersonData data, @Context MapperContext context);
+  void updateFromPerson(Person person,
+                        @MappingTarget PersonData data,
+                        @Context MapperContext context);
 
   @AfterMapping
   default void after(PersonData data, @MappingTarget Person target) {

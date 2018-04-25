@@ -31,6 +31,9 @@ public interface FormerOwnershipMapper {
                           @Context MapperContext context);
   FormerOwnership map(FormerOwnershipData data,
                       @Context MapperContext context);
+  void updateFromFormerOwnership(FormerOwnership ownership,
+                                 @MappingTarget FormerOwnershipData data,
+                                 @Context MapperContext context);
 
   @AfterMapping
   default void after(FormerOwnershipData data, @MappingTarget FormerOwnership target) {

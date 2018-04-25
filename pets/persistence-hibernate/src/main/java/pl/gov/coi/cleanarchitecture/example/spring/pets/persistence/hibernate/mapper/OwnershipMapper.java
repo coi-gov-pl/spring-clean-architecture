@@ -30,6 +30,9 @@ import java.util.stream.StreamSupport;
 public interface OwnershipMapper {
   OwnershipData map(Ownership ownership, @Context MapperContext context);
   Ownership map(OwnershipData data, @Context MapperContext context);
+  void updateFromOwnership(Ownership ownership,
+                           @MappingTarget OwnershipData data,
+                           @Context MapperContext context);
 
   @AfterMapping
   default void after(OwnershipData data, @MappingTarget Ownership target) {
