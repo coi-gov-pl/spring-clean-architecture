@@ -1,9 +1,8 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -12,9 +11,8 @@ import java.time.Instant;
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
  * @since 2018-03-07
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
-@ToString(of = "from")
+@Getter
+@Setter
 @AllArgsConstructor
 public final class Ownership extends AbstractEntity<Ownership> implements Serializable {
 

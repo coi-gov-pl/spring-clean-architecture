@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.HasMetadata;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Metadata;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.MetadataEntry;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Reference;
+import pl.wavesoftware.utils.stringify.ObjectStringifier;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -34,9 +36,52 @@ public abstract class AbstractEntity<T extends AbstractEntity> implements HasMet
     return Optional.ofNullable(metadataSupplier).isPresent();
   }
 
+  @Override
+  public String toString() {
+    return new ObjectStringifier(this).toString();
+  }
+
   @SuppressWarnings("unchecked")
   private Class<T> getEntityClass() {
     return (Class<T>) this.getClass();
+  }
+
+  @Override
+  public int hashCode() {
+    return getReference()
+      .map(Object::hashCode)
+      .orElse(System.identityHashCode(this));
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (object == this) {
+      return true;
+    }
+    if (!(object instanceof AbstractEntity)) {
+      return false;
+    }
+    if (!(object.getClass().isAssignableFrom(getClass())
+      || getClass().isAssignableFrom(object.getClass()))) {
+      return false;
+    }
+    @SuppressWarnings("unchecked")
+    final AbstractEntity<T> other = (AbstractEntity<T>) object;
+    return equalsByMetadataReference(other);
+  }
+
+  private boolean equalsByMetadataReference(AbstractEntity<T> other) {
+    Optional<Object> thisIdentifier = getReference();
+    Optional<Object> otherIdentifier = other.getReference();
+    return thisIdentifier.isPresent()
+      && otherIdentifier.isPresent()
+      && thisIdentifier.get().hashCode() == otherIdentifier.get().hashCode();
+  }
+
+  private Optional<Object> getReference() {
+    return getMetadata()
+      .get(Reference.class)
+      .map(Reference::get);
   }
 
   @RequiredArgsConstructor
@@ -44,7 +89,7 @@ public abstract class AbstractEntity<T extends AbstractEntity> implements HasMet
     private final Class<T> cls;
 
     @Override
-    public <I, D extends MetadataEntry<I, T>> Optional<D> get(Class<D> dataClass) {
+    public <I, D extends MetadataEntry<I>> Optional<D> get(Class<D> metadataClass) {
       return Optional.empty();
     }
 

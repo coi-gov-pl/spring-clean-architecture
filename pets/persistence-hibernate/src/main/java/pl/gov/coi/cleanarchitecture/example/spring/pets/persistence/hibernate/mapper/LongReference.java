@@ -10,18 +10,13 @@ import java.util.function.Supplier;
  * @since 23.04.18
  */
 @RequiredArgsConstructor
-final class LongReference<T> implements Reference<Long, T> {
+final class LongReference implements Reference {
 
   private final Supplier<Long> idSupplier;
-  private final Supplier<Class<T>> classSupplier;
 
   @Override
   public Long get() {
     return idSupplier.get();
   }
 
-  @Override
-  public Class<T> type() {
-    return classSupplier.get();
-  }
 }

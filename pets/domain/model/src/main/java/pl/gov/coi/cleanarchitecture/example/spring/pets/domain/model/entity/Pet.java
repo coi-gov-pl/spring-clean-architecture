@@ -1,9 +1,9 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,8 +15,8 @@ import java.util.Optional;
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
  * @since 2018-03-17
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public final class Pet extends AbstractEntity<Pet> implements Serializable {

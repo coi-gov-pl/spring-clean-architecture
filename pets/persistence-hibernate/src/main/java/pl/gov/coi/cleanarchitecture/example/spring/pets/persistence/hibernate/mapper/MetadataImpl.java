@@ -25,9 +25,9 @@ final class MetadataImpl<T> implements Metadata<T> {
   private final Record record;
 
   @Override
-  public <I, D extends MetadataEntry<I, T>> Optional<D> get(Class<D> dataClass) {
+  public <I, D extends MetadataEntry<I>> Optional<D> get(Class<D> metadataClass) {
     MetadataEntryProvider<T, D> provider = new MetadataEntryProvider<>(type, record);
-    return provider.get(dataClass);
+    return provider.get(metadataClass);
   }
 
   @Override
@@ -37,7 +37,7 @@ final class MetadataImpl<T> implements Metadata<T> {
 
   @Getter(AccessLevel.PRIVATE)
   @RequiredArgsConstructor
-  private static final class MetadataEntryProvider<T, D extends MetadataEntry<?, T>> {
+  private static final class MetadataEntryProvider<T, D extends MetadataEntry<?>> {
     private final Class<T> type;
     private final Record record;
 
@@ -59,7 +59,7 @@ final class MetadataImpl<T> implements Metadata<T> {
     private Optional<D> processForReference(Class<D> dataClass) {
       if (dataClass.isAssignableFrom(Reference.class)) {
         @SuppressWarnings("unchecked")
-        D ref = (D) new LongReference<>(record::getId, this::getType);
+        D ref = (D) new LongReference(record::getId);
         return Optional.of(ref);
       }
       return Optional.empty();
@@ -68,7 +68,7 @@ final class MetadataImpl<T> implements Metadata<T> {
     private Optional<D> processForCreated(Class<D> dataClass) {
       if (dataClass.isAssignableFrom(Created.class)) {
         @SuppressWarnings("unchecked")
-        D ref = (D) new InstantCreated<>(this::getCreated, this::getType);
+        D ref = (D) new InstantCreated(this::getCreated);
         return Optional.of(ref);
       }
       return Optional.empty();
@@ -77,7 +77,7 @@ final class MetadataImpl<T> implements Metadata<T> {
     private Optional<D> processForModified(Class<D> dataClass) {
       if (dataClass.isAssignableFrom(Modified.class)) {
         @SuppressWarnings("unchecked")
-        D ref = (D) new InstantModified<>(this::getModified, this::getType);
+        D ref = (D) new InstantModified(this::getModified);
         return Optional.of(ref);
       }
       return Optional.empty();

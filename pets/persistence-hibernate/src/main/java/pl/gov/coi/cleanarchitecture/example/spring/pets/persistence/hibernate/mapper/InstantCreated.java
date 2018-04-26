@@ -11,17 +11,12 @@ import java.util.function.Supplier;
  * @since 24.04.18
  */
 @RequiredArgsConstructor
-final class InstantCreated<T> implements Created<T> {
+final class InstantCreated implements Created {
   private final Supplier<Instant> instantSupplier;
-  private final Supplier<Class<T>> classSupplier;
 
   @Override
   public Instant get() {
     return instantSupplier.get();
   }
 
-  @Override
-  public Class<T> type() {
-    return classSupplier.get();
-  }
 }

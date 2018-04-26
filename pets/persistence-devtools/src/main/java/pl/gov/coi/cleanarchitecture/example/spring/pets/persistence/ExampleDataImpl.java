@@ -1,6 +1,7 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
@@ -9,6 +10,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +19,17 @@ import java.util.List;
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
  * @since 2018-01-18
  */
+@Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
-class ExampleDataImpl implements ExampleData {
+public class ExampleDataImpl implements ExampleData {
   private final PetsGateway gateway;
   private final EntityManager entityManager;
 
   @Override
   public void createExamples() {
+    log.info("Creating example data into persistence layer...");
     Person ksuszynski = new Person("Krzysztof", "Suszyński");
     Person panderson = new Person("Pamela", "Anderson");
     Person llohan = new Person("Lindsay", "Lohan");

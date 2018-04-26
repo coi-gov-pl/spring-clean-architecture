@@ -25,5 +25,9 @@
       <groupId>pl.wavesoftware</groupId>
       <artifactId>eid-exceptions</artifactId>
     </dependency>
+    <dependency>
+      <groupId>pl.wavesoftware.utils</groupId>
+      <artifactId>stringify-object</artifactId>
+    </dependency>
   </dependencies>
 </project>

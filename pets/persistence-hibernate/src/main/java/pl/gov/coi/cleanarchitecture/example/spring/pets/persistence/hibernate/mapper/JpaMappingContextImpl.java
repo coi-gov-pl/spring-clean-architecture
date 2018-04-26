@@ -56,7 +56,7 @@ final class JpaMappingContextImpl implements JpaMappingContext {
       System.identityHashCode(targetType);
   }
 
-  private <T> T load(Reference<?, ?> reference, Class<T> targetType) {
+  private <T> T load(Reference reference, Class<T> targetType) {
     return entityManager.find(targetType, reference.get());
   }
 

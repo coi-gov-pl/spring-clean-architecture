@@ -6,7 +6,6 @@ import java.time.Instant;
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 23.04.18
  */
-public interface Created<T> extends MetadataEntry<Instant, T> {
-  @Override
-  Instant get();
+public interface Created extends MetadataEntry<Instant> {
+
 }
