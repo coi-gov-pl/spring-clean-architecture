@@ -18,6 +18,7 @@ class PersistenceConfiguration {
     return new PetsGatewayStub(database);
   }
 
+  @Bean
   public PersonGateway personGateway(StubDatabase database) {
     return new PersonGatewayStub(database);
   }
