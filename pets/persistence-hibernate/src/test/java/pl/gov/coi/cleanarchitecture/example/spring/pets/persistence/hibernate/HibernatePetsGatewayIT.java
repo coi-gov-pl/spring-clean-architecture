@@ -2,7 +2,6 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate;
 
 
 import org.hibernate.LazyInitializationException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -93,10 +92,8 @@ public class HibernatePetsGatewayIT {
     assertThat(beforeCount).isEqualTo(0);
   }
 
-  @Ignore("Not yet fully working")
   @Test
   public void testPersistNewWithOwner() {
-    // TODO: Implement update methods with mappers
     // given
     exampleData.createExamples();
     Pet pet = new Pet("Johnie", Race.CAT);

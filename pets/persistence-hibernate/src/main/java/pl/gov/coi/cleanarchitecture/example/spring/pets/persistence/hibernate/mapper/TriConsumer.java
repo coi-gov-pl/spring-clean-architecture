@@ -17,10 +17,10 @@ import java.util.function.Consumer;
  * @param <V> the type of the third argument to the operation
  *
  * @see Consumer
- * @since 1.8
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 25.04.18
  */
+@FunctionalInterface
 public interface TriConsumer<T, U, V> {
   /**
    * Performs this operation on the given arguments.

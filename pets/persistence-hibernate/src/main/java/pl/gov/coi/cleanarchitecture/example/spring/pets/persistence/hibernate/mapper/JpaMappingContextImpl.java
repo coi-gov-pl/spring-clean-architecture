@@ -6,7 +6,9 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Re
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -17,20 +19,41 @@ final class JpaMappingContextImpl implements JpaMappingContext {
   private final EntityManager entityManager;
   private final StoringMappingContext parentContext;
   private final Mappings mappings;
+  private final Set<Integer> mappedInstances = new HashSet<>();
 
   @Override
   public <T> Optional<T> getMappedInstance(Object source,
                                            Class<T> targetType) {
     if (targetType.isAnnotationPresent(Entity.class)) {
       Optional<Reference> reference = getReference(source);
+      if (reference.isPresent()) {
+        if (isBeingMapped(source, targetType)) {
+          return Optional.empty();
+        }
+        markAsBeingMapped(source, targetType);
+      }
       Optional<T> managed = reference.map(ref -> load(ref, targetType));
-      managed.ifPresent(m -> {
-        parentContext.storeMappedInstance(source, m);
-        updateFromSource(m, source);
-      });
+      managed.ifPresent(m -> updateFromSource(m, source));
       return managed;
     }
     return Optional.empty();
+  }
+
+  private <T> void markAsBeingMapped(Object source,
+                                     Class<T> targetType) {
+    Integer key = keyOf(source, targetType);
+    mappedInstances.add(key);
+  }
+
+  private <T> boolean isBeingMapped(Object source,
+                                    Class<T> targetType) {
+    Integer key = keyOf(source, targetType);
+    return mappedInstances.contains(key);
+  }
+
+  private <T> Integer keyOf(Object source, Class<T> targetType) {
+    return System.identityHashCode(source) +
+      System.identityHashCode(targetType);
   }
 
   private <T> T load(Reference<?, ?> reference, Class<T> targetType) {
