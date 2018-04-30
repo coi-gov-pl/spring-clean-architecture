@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.NotLoaded;
+import pl.wavesoftware.utils.stringify.configuration.DoNotInspect;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ public final class Pet extends AbstractEntity<Pet> implements Serializable {
   private String name;
   private Race race;
   private Ownership ownership;
+  @DoNotInspect(conditionally = NotLoaded.class)
   private List<FormerOwnership> formerOwners = new ArrayList<>();
 
   /**

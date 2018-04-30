@@ -3,8 +3,9 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.e
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.wavesoftware.utils.stringify.annotation.Inspect;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -22,10 +23,10 @@ import java.util.Date;
 @Table
 @Getter
 @Setter
+@Access(AccessType.PROPERTY)
 @NoArgsConstructor
 public class FormerOwnershipData extends OwnershipData {
 
-  @Inspect
   private Date to;
 
   FormerOwnershipData(OwnershipData ownershipData) {

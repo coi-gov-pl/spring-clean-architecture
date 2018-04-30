@@ -3,8 +3,9 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.e
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.wavesoftware.utils.stringify.annotation.Inspect;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,14 +30,14 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
+@Access(AccessType.PROPERTY)
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class OwnershipData extends Record {
 
-  @Inspect
+  private static final long serialVersionUID = 20180430195449L;
+
   private PetData pet;
-  @Inspect
   private PersonData person;
-  @Inspect
   private Date from;
 
   @Valid

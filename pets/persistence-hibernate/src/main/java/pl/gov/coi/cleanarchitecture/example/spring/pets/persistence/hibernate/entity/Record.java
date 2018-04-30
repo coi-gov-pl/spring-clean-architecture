@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.configuration.BeanFactoryProvider;
 import pl.wavesoftware.utils.stringify.ObjectStringifier;
-import pl.wavesoftware.utils.stringify.annotation.Inspect;
+import pl.wavesoftware.utils.stringify.configuration.DoNotInspect;
+import pl.wavesoftware.utils.stringify.configuration.Mode;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -19,6 +21,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Date;
 
@@ -31,12 +34,14 @@ import java.util.Date;
 @EqualsAndHashCode(of = "id")
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class Record {
+public abstract class Record implements Serializable {
 
-  @Inspect
   private Long id;
+  @DoNotInspect
   private Long version;
+  @DoNotInspect
   private Date created;
+  @DoNotInspect
   private Date modified;
 
   @GenericGenerator(
@@ -85,6 +90,11 @@ public abstract class Record {
 
   @Override
   public String toString() {
-    return new ObjectStringifier(this).toString();
+    ObjectStringifier stringifier = new ObjectStringifier(this);
+    stringifier.setMode(Mode.PROMISCUOUS);
+    BeanFactoryProvider
+      .getBeanFactory()
+      .ifPresent(stringifier::setBeanFactory);
+    return stringifier.toString();
   }
 }

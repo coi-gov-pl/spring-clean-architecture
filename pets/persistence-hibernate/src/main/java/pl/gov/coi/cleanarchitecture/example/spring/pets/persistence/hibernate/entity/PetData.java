@@ -4,8 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
-import pl.wavesoftware.utils.stringify.annotation.Inspect;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,18 +27,15 @@ import java.util.Set;
 @Table
 @Getter
 @Setter
+@Access(AccessType.PROPERTY)
 @NoArgsConstructor
 public class PetData extends Record {
 
   private static final long serialVersionUID = 20180307225158L;
 
-  @Inspect
   private String name;
-  @Inspect
   private Race race;
-  @Inspect
   private OwnershipData ownership;
-  @Inspect
   private Set<FormerOwnershipData> formerOwners = new HashSet<>();
 
   @Column

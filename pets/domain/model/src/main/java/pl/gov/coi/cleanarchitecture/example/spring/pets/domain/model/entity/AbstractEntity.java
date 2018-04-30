@@ -1,11 +1,14 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity;
 
 import lombok.RequiredArgsConstructor;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.configuration.BeanFactoryProvider;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.HasMetadata;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Metadata;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.MetadataEntry;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Reference;
 import pl.wavesoftware.utils.stringify.ObjectStringifier;
+import pl.wavesoftware.utils.stringify.configuration.DoNotInspect;
+import pl.wavesoftware.utils.stringify.configuration.Mode;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -17,6 +20,7 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractEntity<T extends AbstractEntity> implements HasMetadata<T> {
   @Nullable
+  @DoNotInspect
   private Supplier<Metadata<T>> metadataSupplier;
 
   @Override
@@ -38,7 +42,11 @@ public abstract class AbstractEntity<T extends AbstractEntity> implements HasMet
 
   @Override
   public String toString() {
-    return new ObjectStringifier(this).toString();
+    ObjectStringifier stringifier = new ObjectStringifier(this);
+    stringifier.setMode(Mode.PROMISCUOUS);
+    BeanFactoryProvider.getBeanFactory()
+      .ifPresent(stringifier::setBeanFactory);
+    return stringifier.toString();
   }
 
   @SuppressWarnings("unchecked")

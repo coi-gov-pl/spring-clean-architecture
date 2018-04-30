@@ -3,7 +3,6 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.e
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.wavesoftware.utils.stringify.annotation.Inspect;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -28,9 +27,9 @@ import java.util.Set;
 @NoArgsConstructor
 public class PersonData extends Record {
 
-  @Inspect
+  private static final long serialVersionUID = 20180430195435L;
+
   private String name;
-  @Inspect
   private String surname;
   private Set<OwnershipData> ownerships = new HashSet<>();
 

@@ -17,6 +17,8 @@ import java.time.Instant;
 public final class FormerOwnership extends AbstractEntity<FormerOwnership>
   implements Serializable {
 
+  private static final long serialVersionUID = 20180430194357L;
+
   private Pet pet;
   private Person person;
   private Instant from;

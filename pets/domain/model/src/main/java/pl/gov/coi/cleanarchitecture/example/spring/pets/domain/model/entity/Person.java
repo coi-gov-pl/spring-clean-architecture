@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.NotLoaded;
+import pl.wavesoftware.utils.stringify.configuration.DoNotInspect;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ public final class Person extends AbstractEntity<Person> implements Serializable
 
   private String name;
   private String surname;
+  @DoNotInspect(conditionally = NotLoaded.class)
   private List<Ownership> ownerships = new ArrayList<>();
 
   /**

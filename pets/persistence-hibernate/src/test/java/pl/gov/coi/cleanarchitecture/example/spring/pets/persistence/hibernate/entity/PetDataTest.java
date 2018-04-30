@@ -68,9 +68,9 @@ public class PetDataTest {
     assertThat(repr).isNotEmpty();
     assertThat(repr).isEqualTo(
       "<PetData name=\"Johnie\", race=PIG, ownership=<OwnershipData pet=(↻), " +
-        "person=<PersonData name=\"John\", surname=\"Goodman\">, " +
+        "person=<PersonData name=\"John\", surname=\"Goodman\", ownerships=[(↻)]>, " +
         "from=Wed Apr 18 19:02:33 CEST 2018>, formerOwners=[<FormerOwnershipData pet=(↻), " +
-        "person=<PersonData name=\"John\", surname=\"Cusack\">, " +
+        "person=<PersonData name=\"John\", surname=\"Cusack\", ownerships=[]>, " +
         "from=Thu Apr 05 19:02:33 CEST 2018, to=Wed Apr 18 19:02:33 CEST 2018>]>"
     );
   }
