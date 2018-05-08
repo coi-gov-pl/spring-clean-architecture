@@ -1,5 +1,6 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.fetchpets;
 
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.mapper.EnumMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
@@ -7,7 +8,6 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Paginated;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Pagination;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetRequestModel;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +21,10 @@ import java.util.stream.StreamSupport;
 class FetchPetsUseCaseImpl implements FetchPetsUseCase {
 
   private final PetsGateway petsGateway;
-  private final EnumMapper<RegisterNewPetRequestModel.Race, Race> raceEnumMapper;
+  private final EnumMapper<PetContract.Race, Race> raceEnumMapper;
 
   FetchPetsUseCaseImpl(PetsGateway petsGateway,
-                       EnumMapper<RegisterNewPetRequestModel.Race, Race> raceEnumMapper) {
+                       EnumMapper<PetContract.Race, Race> raceEnumMapper) {
     this.petsGateway = petsGateway;
     this.raceEnumMapper = raceEnumMapper;
   }

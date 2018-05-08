@@ -1,8 +1,7 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet;
 
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetResponseModel;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.Violation;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -14,14 +13,14 @@ import java.util.stream.StreamSupport;
  */
 final class Violations {
   private static final String EMPTY_STRING = "";
-  private Map<String, String> map = new HashMap<>();
+  private final Map<String, String> map;
 
-  Violations(Iterable<RegisterNewPetResponseModel.Violation> violations) {
+  Violations(Iterable<Violation> violations) {
     this.map = StreamSupport
       .stream(violations.spliterator(), false)
       .collect(Collectors.toMap(
         this::pathAsString,
-        RegisterNewPetResponseModel.Violation::getMessage,
+        Violation::getMessage,
         this::violationMassagesMerger
       ));
   }
@@ -47,7 +46,7 @@ final class Violations {
       .toString();
   }
 
-  private String pathAsString(RegisterNewPetResponseModel.Violation violation) {
+  private String pathAsString(Violation violation) {
     return violation.getPath().toString();
   }
 }

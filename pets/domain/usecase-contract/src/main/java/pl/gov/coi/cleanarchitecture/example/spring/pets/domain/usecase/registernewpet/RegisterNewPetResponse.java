@@ -1,5 +1,6 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet;
 
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.Violation;
 import pl.gov.coi.cleanarchitecture.usecase.Response;
 
 /**
@@ -7,6 +8,6 @@ import pl.gov.coi.cleanarchitecture.usecase.Response;
  * @since 19.12.16
  */
 public interface RegisterNewPetResponse extends Response {
-  void setViolations(Iterable<RegisterNewPetResponseModel.Violation> violations);
+  void setViolations(Iterable<Violation> violations);
   boolean isSuccessful();
 }

@@ -2,9 +2,9 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetRequestModel;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.Violation;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetResponse;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetResponseModel;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.RacePresenter;
 import pl.gov.coi.cleanarchitecture.presentation.Presenter;
 
@@ -33,19 +33,19 @@ class NewPetPresenter implements Presenter<NewPetView>, RegisterNewPetResponse {
 
   private NewPetViewModel createModel() {
     return new NewPetViewModel(
-      Arrays.stream(RegisterNewPetRequestModel.Race.values())
+      Arrays.stream(PetContract.Race.values())
         .map(this::toViewModel)
         .collect(Collectors.toList()),
       violations
     );
   }
 
-  private RaceViewModel toViewModel(RegisterNewPetRequestModel.Race race) {
+  private RaceViewModel toViewModel(PetContract.Race race) {
     return new RaceViewModel(race.name(), racePresenter.present(race));
   }
 
   @Override
-  public void setViolations(Iterable<RegisterNewPetResponseModel.Violation> violations) {
+  public void setViolations(Iterable<Violation> violations) {
     this.violations = new Violations(violations);
   }
 

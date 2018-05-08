@@ -2,7 +2,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.fetchpet
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetRequestModel;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
 
 import javax.annotation.Nullable;
 
@@ -16,7 +16,7 @@ public interface FetchPetsResponseModel {
   @Getter
   class Pet {
     private final String name;
-    private final RegisterNewPetRequestModel.Race race;
+    private final PetContract.Race race;
     @Nullable
     private final Owner owner;
 

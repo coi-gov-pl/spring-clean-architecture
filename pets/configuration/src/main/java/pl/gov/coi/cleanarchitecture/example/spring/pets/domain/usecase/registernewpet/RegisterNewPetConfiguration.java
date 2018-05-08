@@ -2,6 +2,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.register
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.mapper.EnumMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
@@ -25,14 +26,14 @@ class RegisterNewPetConfiguration {
   }
 
   @Bean
-  EnumMapper<RegisterNewPetRequestModel.Race, Race> provideEnumMapper() {
+  EnumMapper<PetContract.Race, Race> provideEnumMapper() {
     return new RaceEnumMapper();
   }
 
 
   @Bean
   RegisterNewPetRequestToPetMapper providePetMapper(
-    EnumMapper<RegisterNewPetRequestModel.Race, Race> raceMapper) {
+    EnumMapper<PetContract.Race, Race> raceMapper) {
 
     return new RegisterNewPetRequestToPetMapper(raceMapper);
   }

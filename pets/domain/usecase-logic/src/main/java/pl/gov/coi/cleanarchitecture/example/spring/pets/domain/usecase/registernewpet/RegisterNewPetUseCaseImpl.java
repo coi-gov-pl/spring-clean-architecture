@@ -6,10 +6,11 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetRequestModel.Ownership;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetResponseModel.Violation;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract.Ownership;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.Violation;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Path;
 import javax.validation.Validator;
 import java.util.Optional;
 import java.util.Set;
@@ -51,9 +52,13 @@ class RegisterNewPetUseCaseImpl implements RegisterNewPetUseCase {
 
   private static Violation toViolation(ConstraintViolation<RegisterNewPetRequest> violation) {
     return new Violation(
-      violation.getPropertyPath(),
+      stripPetFromBeginning(violation.getPropertyPath()),
       violation.getMessage()
     );
+  }
+
+  private static Object stripPetFromBeginning(Path propertyPath) {
+    return new StrippedPath(1, propertyPath);
   }
 
   private static Iterable<Violation> toResponseModel(

@@ -1,5 +1,7 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet;
 
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.mapper.EnumMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
@@ -13,22 +15,23 @@ import java.util.function.Function;
  * @since 20.12.16
  */
 final class RegisterNewPetRequestToPetMapper {
-  private final EnumMapper<RegisterNewPetRequestModel.Race, Race> mapper;
+  private final EnumMapper<PetContract.Race, Race> mapper;
 
-  RegisterNewPetRequestToPetMapper(EnumMapper<RegisterNewPetRequestModel.Race, Race> mapper) {
+  RegisterNewPetRequestToPetMapper(EnumMapper<PetContract.Race, Race> mapper) {
     this.mapper = mapper;
   }
 
   Pet asPet(RegisterNewPetRequest request,
-            Function<RegisterNewPetRequestModel.Ownership, Person> ownershipMapping) {
-    RegisterNewPetRequestModel.Race raceReq = request.getRace();
+            Function<Ownership, Person> ownershipMapping) {
+    PetContract petContract = request.getPet();
+    PetContract.Race raceReq = petContract.getRace();
     Race race = mapper.map(raceReq);
     Pet pet = new Pet(
-      request.getName(),
+      petContract.getName(),
       race
     );
     Optional
-      .ofNullable(request.getOwnership())
+      .ofNullable(petContract.getOwnership())
       .ifPresent(ownershipReq -> {
         Person person = ownershipMapping.apply(ownershipReq);
         pet.setOwner(person);

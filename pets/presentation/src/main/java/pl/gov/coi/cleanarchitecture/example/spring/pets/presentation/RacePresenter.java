@@ -1,7 +1,7 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation;
 
 import org.springframework.stereotype.Component;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetRequestModel;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -9,7 +9,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registern
  */
 @Component
 public class RacePresenter {
-  public String present(RegisterNewPetRequestModel.Race race) {
+  public String present(PetContract.Race race) {
     switch (race) {
       case CAT:
         return "Cat";
@@ -18,7 +18,7 @@ public class RacePresenter {
       case GUINEA_PIG:
         return "Guinea pig :-)";
       default:
-        return "Unknown race ;-)";
+        return "Unknown race ;-O";
     }
   }
 }

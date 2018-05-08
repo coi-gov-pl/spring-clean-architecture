@@ -3,7 +3,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetRequestModel.Race;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract.Race;
 
 import javax.annotation.Nullable;
 

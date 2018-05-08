@@ -5,14 +5,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetRequest;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetRequestModel;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetUseCase;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.RacePresenter;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-
 import java.util.Optional;
 
 import static pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet.NewPetView.NEW_PET_FORM_OBJECT;
@@ -47,9 +46,11 @@ public class NewPetController {
                        @ModelAttribute(NEW_PET_FORM_OBJECT) NewPetForm form) {
 
     RegisterNewPetRequest request = new RegisterNewPetRequest(
-      form.getPetName(),
-      form.getRaceEnum(),
-      getOwnership(form)
+      new PetContract(
+        form.getPetName(),
+        form.getRaceEnum(),
+        getOwnership(form)
+      )
     );
     NewPetPresenter presenter = NewPetPresenter.create(racePresenter);
     registerNewPetUseCase.execute(request, presenter);
@@ -67,11 +68,11 @@ public class NewPetController {
   }
 
   @Nullable
-  private RegisterNewPetRequestModel.Ownership getOwnership(NewPetForm form) {
+  private PetContract.Ownership getOwnership(NewPetForm form) {
     String name = form.getOwnerName();
     String surname = form.getOwnerSurname();
     if (isNotBlank(name) || isNotBlank(surname)) {
-      return new RegisterNewPetRequestModel.Ownership(
+      return new PetContract.Ownership(
         form.getOwnerName(),
         form.getOwnerSurname()
       );

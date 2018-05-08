@@ -1,5 +1,6 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet;
 
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.mapper.EnumMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
 import pl.wavesoftware.eid.exceptions.Eid;
@@ -9,9 +10,9 @@ import pl.wavesoftware.eid.exceptions.EidIllegalArgumentException;
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 21.12.16
  */
-class RaceEnumMapper implements EnumMapper<RegisterNewPetRequestModel.Race, Race> {
+class RaceEnumMapper implements EnumMapper<PetContract.Race, Race> {
   @Override
-  public Race map(RegisterNewPetRequestModel.Race input) {
+  public Race map(PetContract.Race input) {
     switch (input) {
       case CAT:
         return Race.CAT;
@@ -25,22 +26,22 @@ class RaceEnumMapper implements EnumMapper<RegisterNewPetRequestModel.Race, Race
   }
 
   @Override
-  public RegisterNewPetRequestModel.Race reverseMap(Race output) {
+  public PetContract.Race reverseMap(Race output) {
     switch (output) {
       case CAT:
-        return RegisterNewPetRequestModel.Race.CAT;
+        return PetContract.Race.CAT;
       case DOG:
-        return RegisterNewPetRequestModel.Race.DOG;
+        return PetContract.Race.DOG;
       case PIG:
-        return RegisterNewPetRequestModel.Race.GUINEA_PIG;
+        return PetContract.Race.GUINEA_PIG;
       default:
         throw new EidIllegalArgumentException(new Eid("20161221:191805"));
     }
   }
 
   @Override
-  public Class<RegisterNewPetRequestModel.Race> getInputEnumClass() {
-    return RegisterNewPetRequestModel.Race.class;
+  public Class<PetContract.Race> getInputEnumClass() {
+    return PetContract.Race.class;
   }
 
   @Override
