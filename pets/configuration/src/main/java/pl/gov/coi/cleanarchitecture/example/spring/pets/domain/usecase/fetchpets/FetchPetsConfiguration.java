@@ -3,6 +3,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.fetchpet
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.logic.ReferenceMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.mapper.EnumMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
@@ -15,7 +16,12 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.Pet
 class FetchPetsConfiguration {
   @Bean
   FetchPetsUseCase provideFetchPetsUseCase(PetsGateway petsGateway,
-                                           EnumMapper<PetContract.Race, Race> raceEnumMapper) {
-    return new FetchPetsUseCaseImpl(petsGateway, raceEnumMapper);
+                                           EnumMapper<PetContract.Race, Race> raceEnumMapper,
+                                           ReferenceMapper referenceMapper) {
+    return new FetchPetsUseCaseImpl(
+      petsGateway,
+      raceEnumMapper,
+      referenceMapper
+    );
   }
 }

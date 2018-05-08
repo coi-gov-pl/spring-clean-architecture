@@ -15,6 +15,7 @@ public interface FetchPetsResponseModel {
   @RequiredArgsConstructor
   @Getter
   class Pet {
+    private final Object identifier;
     private final String name;
     private final PetContract.Race race;
     @Nullable

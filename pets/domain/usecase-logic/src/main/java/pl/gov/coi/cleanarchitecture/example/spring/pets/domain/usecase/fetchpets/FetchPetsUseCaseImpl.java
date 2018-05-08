@@ -1,6 +1,7 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.fetchpets;
 
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.logic.ReferenceMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.mapper.EnumMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
@@ -22,11 +23,14 @@ class FetchPetsUseCaseImpl implements FetchPetsUseCase {
 
   private final PetsGateway petsGateway;
   private final EnumMapper<PetContract.Race, Race> raceEnumMapper;
+  private final ReferenceMapper referenceMapper;
 
   FetchPetsUseCaseImpl(PetsGateway petsGateway,
-                       EnumMapper<PetContract.Race, Race> raceEnumMapper) {
+                       EnumMapper<PetContract.Race, Race> raceEnumMapper,
+                       ReferenceMapper referenceMapper) {
     this.petsGateway = petsGateway;
     this.raceEnumMapper = raceEnumMapper;
+    this.referenceMapper = referenceMapper;
   }
 
   @Override
@@ -56,9 +60,14 @@ class FetchPetsUseCaseImpl implements FetchPetsUseCase {
       );
     }
     return new FetchPetsResponseModel.Pet(
+      identifierOf(pet),
       pet.getName(),
       raceEnumMapper.reverseMap(pet.getRace()),
       owner
     );
+  }
+
+  private Object identifierOf(Pet pet) {
+    return referenceMapper.map(pet);
   }
 }
