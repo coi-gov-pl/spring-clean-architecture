@@ -3,6 +3,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.m
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.NotLoaded;
+import pl.wavesoftware.utils.mapstruct.jpa.collection.Uninitialized;
 
 import javax.inject.Singleton;
 
@@ -18,6 +19,6 @@ public class MapperConfiguration {
   public NotLoaded provideNotLoaded() {
     return inspectionPoint -> inspectionPoint
       .getValueSupplier()
-      .get() instanceof UninitializedList;
+      .get() instanceof Uninitialized;
   }
 }

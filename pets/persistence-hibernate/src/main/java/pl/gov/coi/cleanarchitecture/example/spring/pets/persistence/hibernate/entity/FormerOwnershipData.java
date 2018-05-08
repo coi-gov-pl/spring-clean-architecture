@@ -27,6 +27,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class FormerOwnershipData extends OwnershipData {
 
+  private static final long serialVersionUID = 20180508112245L;
+
   private Date to;
 
   FormerOwnershipData(OwnershipData ownershipData) {

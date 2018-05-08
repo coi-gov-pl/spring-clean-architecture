@@ -6,9 +6,10 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pers
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PersonData;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PetData;
+import pl.wavesoftware.utils.mapstruct.jpa.CompositeContext;
+import pl.wavesoftware.utils.mapstruct.jpa.MapStructContextProvider;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
@@ -19,39 +20,21 @@ import java.util.List;
 final class MapperFacadeImpl implements MapperFacade {
   private final PetMapper petMapper;
   private final PersonMapper personMapper;
-  private final JpaMappingContextFactory jpaMappingContextFactory;
-  private final List<UpdateMappingProvider<?, ?, ?>> updateMappingProviders;
+  private final MapStructContextProvider<CompositeContext> contextProvider;
 
   @Override
   public Pet map(PetData data) {
-    return petMapper.map(data, newContext());
+    return petMapper.map(data, contextProvider.createNewContext());
   }
 
   @Override
   public Collection<PetData> map(Collection<Pet> pets) {
-    return petMapper.map(pets, newContext());
+    return petMapper.map(pets, contextProvider.createNewContext());
   }
 
   @Override
   public Person map(PersonData data) {
-    return personMapper.map(data, newContext());
-  }
-
-  private MapperContext newContext() {
-    StoringMappingContext cyclicGraphCtx = new CyclicGraphContext();
-    MapperContext ctx = new MapperContext();
-    Mappings.MappingsBuilder mappingsBuilder = Mappings.builder();
-    for (UpdateMappingProvider<?, ?, ?> mappingProvider : updateMappingProviders) {
-      mappingsBuilder.addMapping(mappingProvider.provide());
-    }
-    JpaMappingContext jpaContext = jpaMappingContextFactory.produce(
-      ctx, mappingsBuilder.build()
-    );
-
-    ctx.addContext(cyclicGraphCtx);
-    ctx.addContext(jpaContext);
-
-    return ctx;
+    return personMapper.map(data, contextProvider.createNewContext());
   }
 
 }

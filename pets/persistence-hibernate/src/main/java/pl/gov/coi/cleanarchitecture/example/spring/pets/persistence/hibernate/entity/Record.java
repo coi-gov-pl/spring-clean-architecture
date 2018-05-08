@@ -36,6 +36,8 @@ import java.util.Date;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Record implements Serializable {
 
+  private static final long serialVersionUID = 20180508112211L;
+
   private Long id;
   @DoNotInspect
   private Long version;

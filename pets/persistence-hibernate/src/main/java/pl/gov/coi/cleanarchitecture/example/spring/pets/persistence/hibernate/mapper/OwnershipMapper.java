@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.OwnershipData;
+import pl.wavesoftware.utils.mapstruct.jpa.CompositeContext;
+import pl.wavesoftware.utils.mapstruct.jpa.collection.UninitializedList;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,11 +30,11 @@ import java.util.stream.StreamSupport;
   }
 )
 public interface OwnershipMapper {
-  OwnershipData map(Ownership ownership, @Context MapperContext context);
-  Ownership map(OwnershipData data, @Context MapperContext context);
+  OwnershipData map(Ownership ownership, @Context CompositeContext context);
+  Ownership map(OwnershipData data, @Context CompositeContext context);
   void updateFromOwnership(Ownership ownership,
                            @MappingTarget OwnershipData data,
-                           @Context MapperContext context);
+                           @Context CompositeContext context);
 
   @AfterMapping
   default void after(OwnershipData data, @MappingTarget Ownership target) {
@@ -41,13 +43,13 @@ public interface OwnershipMapper {
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   default OwnershipData map(Optional<Ownership> optional,
-                            @Context MapperContext context) {
+                            @Context CompositeContext context) {
     return optional.map(ownership -> this.map(ownership, context))
       .orElse(null);
   }
 
   default Set<OwnershipData> map(Iterable<Ownership> ownerships,
-                                 @Context MapperContext context) {
+                                 @Context CompositeContext context) {
     return StreamSupport
       .stream(ownerships.spliterator(), false)
       .map(ownership -> map(ownership, context))
@@ -55,7 +57,7 @@ public interface OwnershipMapper {
   }
 
   default List<Ownership> map(Set<OwnershipData> ownershipDataList,
-                              @Context MapperContext context) {
+                              @Context CompositeContext context) {
     if (!Hibernate.isInitialized(ownershipDataList)) {
       return new UninitializedList<>(OwnershipData.class);
     }

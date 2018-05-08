@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.FormerOwnership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.FormerOwnershipData;
+import pl.wavesoftware.utils.mapstruct.jpa.CompositeContext;
+import pl.wavesoftware.utils.mapstruct.jpa.collection.UninitializedList;
 
 import java.util.List;
 import java.util.Set;
@@ -28,12 +30,12 @@ import java.util.stream.StreamSupport;
 )
 public interface FormerOwnershipMapper {
   FormerOwnershipData map(FormerOwnership formerOwnership,
-                          @Context MapperContext context);
+                          @Context CompositeContext context);
   FormerOwnership map(FormerOwnershipData data,
-                      @Context MapperContext context);
+                      @Context CompositeContext context);
   void updateFromFormerOwnership(FormerOwnership ownership,
                                  @MappingTarget FormerOwnershipData data,
-                                 @Context MapperContext context);
+                                 @Context CompositeContext context);
 
   @AfterMapping
   default void after(FormerOwnershipData data, @MappingTarget FormerOwnership target) {
@@ -41,7 +43,7 @@ public interface FormerOwnershipMapper {
   }
 
   default Set<FormerOwnershipData> map(Iterable<FormerOwnership> formerOwnerships,
-                                       @Context MapperContext context) {
+                                       @Context CompositeContext context) {
     return StreamSupport
       .stream(formerOwnerships.spliterator(), false)
       .map(formerOwnership -> map(formerOwnership, context))
@@ -49,7 +51,7 @@ public interface FormerOwnershipMapper {
   }
 
   default List<FormerOwnership> map(Set<FormerOwnershipData> formerOwnershipData,
-                                    @Context MapperContext context) {
+                                    @Context CompositeContext context) {
     if (!Hibernate.isInitialized(formerOwnershipData)) {
       return new UninitializedList<>(FormerOwnershipData.class);
     }

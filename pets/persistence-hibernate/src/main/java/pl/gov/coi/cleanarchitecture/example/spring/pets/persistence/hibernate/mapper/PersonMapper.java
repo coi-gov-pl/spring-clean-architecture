@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PersonData;
+import pl.wavesoftware.utils.mapstruct.jpa.CompositeContext;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -16,11 +17,11 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.en
   uses = { OwnershipMapper.class }
 )
 public interface PersonMapper {
-  PersonData map(Person person, @Context MapperContext context);
-  Person map(PersonData data, @Context MapperContext context);
+  PersonData map(Person person, @Context CompositeContext context);
+  Person map(PersonData data, @Context CompositeContext context);
   void updateFromPerson(Person person,
                         @MappingTarget PersonData data,
-                        @Context MapperContext context);
+                        @Context CompositeContext context);
 
   @AfterMapping
   default void after(PersonData data, @MappingTarget Person target) {

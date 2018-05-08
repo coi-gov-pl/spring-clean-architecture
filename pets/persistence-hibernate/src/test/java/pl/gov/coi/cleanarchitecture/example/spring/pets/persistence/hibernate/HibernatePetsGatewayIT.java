@@ -1,7 +1,6 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate;
 
 
-import org.hibernate.LazyInitializationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,6 +20,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Pagin
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.ExampleData;
 import pl.wavesoftware.eid.exceptions.Eid;
 import pl.wavesoftware.eid.exceptions.EidIllegalStateException;
+import pl.wavesoftware.utils.mapstruct.jpa.collection.LazyInitializationException;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
