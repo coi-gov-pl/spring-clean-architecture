@@ -1,14 +1,15 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.fetchpets;
 
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.EntityReference;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.logic.ReferenceMapper;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.logic.EntityReferenceMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.mapper.EnumMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Paginated;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Pagination;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Paginated;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Pagination;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,14 +24,14 @@ class FetchPetsUseCaseImpl implements FetchPetsUseCase {
 
   private final PetsGateway petsGateway;
   private final EnumMapper<PetContract.Race, Race> raceEnumMapper;
-  private final ReferenceMapper referenceMapper;
+  private final EntityReferenceMapper entityReferenceMapper;
 
   FetchPetsUseCaseImpl(PetsGateway petsGateway,
                        EnumMapper<PetContract.Race, Race> raceEnumMapper,
-                       ReferenceMapper referenceMapper) {
+                       EntityReferenceMapper entityReferenceMapper) {
     this.petsGateway = petsGateway;
     this.raceEnumMapper = raceEnumMapper;
-    this.referenceMapper = referenceMapper;
+    this.entityReferenceMapper = entityReferenceMapper;
   }
 
   @Override
@@ -43,11 +44,7 @@ class FetchPetsUseCaseImpl implements FetchPetsUseCase {
       .map(this::toResponseModel)
       .collect(Collectors.toList());
     response.setPets(limited);
-    response.setPageInfo(
-      pets.getPageInfo().getTotalNumberOfElements(),
-      pets.getPageInfo().getPagination().getElementsPerPage(),
-      pets.getPageInfo().getPagination().getPageNumber()
-    );
+    response.setPageInfo(pets.getPageInfo());
   }
 
   private FetchPetsResponseModel.Pet toResponseModel(Pet pet) {
@@ -67,7 +64,7 @@ class FetchPetsUseCaseImpl implements FetchPetsUseCase {
     );
   }
 
-  private Object identifierOf(Pet pet) {
-    return referenceMapper.map(pet);
+  private EntityReference identifierOf(Pet pet) {
+    return entityReferenceMapper.map(pet);
   }
 }

@@ -10,4 +10,5 @@ import java.util.Collection;
  */
 public interface StubDatabase {
   Collection<Pet> getPets();
+  void putOrUpdate(Pet pet);
 }

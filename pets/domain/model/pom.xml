@@ -29,5 +29,10 @@
       <groupId>pl.wavesoftware.utils</groupId>
       <artifactId>stringify-object</artifactId>
     </dependency>
+    <dependency>
+      <groupId>pl.coi.gov.examples.springcleanarchitecture</groupId>
+      <artifactId>pets-incubation-pagination</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>

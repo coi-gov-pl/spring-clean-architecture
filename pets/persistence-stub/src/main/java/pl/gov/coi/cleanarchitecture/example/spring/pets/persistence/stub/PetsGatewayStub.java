@@ -3,9 +3,9 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.stub;
 import lombok.RequiredArgsConstructor;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.PageInfo;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Paginated;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Pagination;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.PageInfo;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Paginated;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Pagination;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ final class PetsGatewayStub implements PetsGateway {
   public void persistNew(Pet... pets) {
     for (Pet pet : pets) {
       Pet refreshed = petObjectSerializer.refresh(pet);
-      database.getPets().add(refreshed);
+      database.putOrUpdate(refreshed);
     }
   }
 

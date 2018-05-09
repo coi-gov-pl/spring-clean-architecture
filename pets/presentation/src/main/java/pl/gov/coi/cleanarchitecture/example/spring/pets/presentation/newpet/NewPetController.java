@@ -46,11 +46,9 @@ public class NewPetController {
                        @ModelAttribute(NEW_PET_FORM_OBJECT) NewPetForm form) {
 
     RegisterNewPetRequest request = new RegisterNewPetRequest(
-      new PetContract(
-        form.getPetName(),
-        form.getRaceEnum(),
-        getOwnership(form)
-      )
+      form.getPetName(),
+      form.getRaceEnum(),
+      getOwnership(form)
     );
     NewPetPresenter presenter = NewPetPresenter.create(racePresenter);
     registerNewPetUseCase.execute(request, presenter);

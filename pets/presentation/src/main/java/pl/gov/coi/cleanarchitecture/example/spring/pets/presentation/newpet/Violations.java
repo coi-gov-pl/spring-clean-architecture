@@ -47,6 +47,9 @@ final class Violations {
   }
 
   private String pathAsString(Violation violation) {
-    return violation.getPath().toString();
+    return violation
+      .getPath()
+      .toString()
+      .replaceFirst("^pet\\.", "");
   }
 }

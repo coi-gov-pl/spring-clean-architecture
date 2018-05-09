@@ -1,8 +1,8 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway;
 
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Paginated;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Pagination;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Paginated;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Pagination;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>

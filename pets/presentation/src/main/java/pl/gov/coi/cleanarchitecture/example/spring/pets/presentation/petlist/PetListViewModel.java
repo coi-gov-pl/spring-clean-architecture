@@ -14,9 +14,8 @@ import java.util.List;
 class PetListViewModel {
   private final List<PetViewModel> list = new ArrayList<>();
 
-  PetListViewModel add(PetViewModel petViewModel) {
+  void add(PetViewModel petViewModel) {
     list.add(petViewModel);
-    return this;
   }
 
   int getCount() {
@@ -26,6 +25,7 @@ class PetListViewModel {
   @Builder
   @Getter
   static class PetViewModel {
+    private CharSequence id;
     private String race;
     private String name;
     private boolean hasOwner;

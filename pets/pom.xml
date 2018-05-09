@@ -20,5 +20,6 @@
     <module>persistence-stub</module>
     <module>persistence-devtools</module>
     <module>configuration</module>
+    <module>incubation</module>
   </modules>
 </project>

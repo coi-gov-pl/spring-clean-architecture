@@ -15,7 +15,7 @@
 
   <modules>
     <module>model</module>
+    <module>contract</module>
     <module>usecase-logic</module>
-    <module>usecase-contract</module>
   </modules>
 </project>

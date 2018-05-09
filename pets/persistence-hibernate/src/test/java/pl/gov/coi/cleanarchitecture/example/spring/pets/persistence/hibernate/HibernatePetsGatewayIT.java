@@ -14,9 +14,9 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.PageInfo;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Paginated;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Pagination;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.PageInfo;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Paginated;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Pagination;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.ExampleData;
 import pl.wavesoftware.eid.exceptions.Eid;
 import pl.wavesoftware.eid.exceptions.EidIllegalStateException;

@@ -81,7 +81,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr th:each="pet : ${pets}">
+            <tr th:each="pet : ${pets}" data-reference="" th:data-reference="${pet.id}">
               <td class="mdl-data-table__cell--non-numeric"
                   th:text="${pet.name}">Xaar</td>
               <td th:text="${pet.race}">cat</td>
