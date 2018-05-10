@@ -28,7 +28,9 @@ final class PetsGatewayStub implements PetsGateway {
     for (Pet pet : database.getPets()) {
       if (i > skip) {
         if (collected < pagination.getElementsPerPage()) {
-          elements.add(petObjectSerializer.refresh(pet));
+          Pet refreshed = petObjectSerializer.refresh(pet);
+          refreshed.supplierOfMetadata(pet::getMetadata);
+          elements.add(refreshed);
           collected++;
         }
       } else {

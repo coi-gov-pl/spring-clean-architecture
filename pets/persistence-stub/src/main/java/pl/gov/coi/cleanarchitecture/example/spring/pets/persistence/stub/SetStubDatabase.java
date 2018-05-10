@@ -68,15 +68,29 @@ final class SetStubDatabase implements StubDatabase {
   }
 
   private Supplier<Metadata<Pet>> provideSupplier() {
-    Metadata<Pet> metadata = new StubMetadata<>(Pet.class, nextId());
-    return () -> metadata;
+    return new MetadataSupplier<>(Pet.class, nextId());
   }
 
   private synchronized long nextId() {
     return sequence++;
   }
 
+  private static final class MetadataSupplier<T> implements Supplier<Metadata<T>> {
+
+    private final Metadata<T> meta;
+
+    private MetadataSupplier(Class<T> type, long id) {
+      this.meta = new StubMetadata<>(type, id);
+    }
+
+    @Override
+    public Metadata<T> get() {
+      return meta;
+    }
+  }
+
   private static final class StubMetadata<T> implements Metadata<T> {
+
     private final Class<T> type;
     private final long id;
     private final Instant created;
