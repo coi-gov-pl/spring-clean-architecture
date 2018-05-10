@@ -3,9 +3,12 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.mapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.mapper.EntityReferenceMapper.Constants;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.random.RandomString;
 
 import javax.inject.Named;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -16,14 +19,14 @@ import java.util.concurrent.ThreadLocalRandom;
 @Configuration
 class PresentationMapperConfiguration {
   @Bean
-  @Named("reference-mapper-try-unlimited")
+  @Named(Constants.TRY_UNLIMITED)
   @ConditionalOnMissingBean
   boolean provideReferenceMapperTryUnlimited() {
     return true;
   }
 
   @Bean
-  @Named("reference-mapper-key")
+  @Named(Constants.KEY)
   @ConditionalOnMissingBean
   CharSequence provideReferenceMapperKey(Random random) {
     RandomString rnd = new RandomString(512, random);
@@ -34,6 +37,21 @@ class PresentationMapperConfiguration {
   @ConditionalOnMissingBean
   Random provideRandom() {
     return ThreadLocalRandom.current();
+  }
+
+  @Bean
+  @Named(Constants.CLASS_PREFIX)
+  @ConditionalOnMissingBean
+  String provideReferenceMapperClassPrefix() {
+    Package thisPackage = getClass().getPackage();
+    Path path = Paths.get(
+      thisPackage.getName().replace(".", "/")
+    );
+    path = path.getParent()
+      .getParent()
+      .normalize();
+    return path.toString()
+      .replace("/", ".") + ".";
   }
 
 }

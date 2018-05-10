@@ -16,13 +16,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Named;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
@@ -43,8 +37,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Slf4j
 final class AesEntityReferenceMapper implements EntityReferenceMapper {
 
-  private static final String REPR_SPLITTER = "";
-  public static final String EMPTY_STRING = "";
+  private static final String REPR_SPLITTER = "";
+  private static final String EMPTY_STRING = "";
 
   /**
    * Operation modes
@@ -54,13 +48,16 @@ final class AesEntityReferenceMapper implements EntityReferenceMapper {
   }
 
   private final CharSequence key;
+  private final String classPrefix;
   private final ClassLocator classLocator;
+  private final BytesCompressor bytesCompressor;
+  private final Serializer serializer;
 
   private Mode mode = Mode.UNLIMITED;
-  private transient Cipher cipherInst;
-  private transient Map<Mode, SecretKeySpec> keySpec = new EnumMap<>(Mode.class);
-  private transient Cipher encryptCipher;
-  private transient Cipher decryptCipher;
+  private Cipher cipherInst;
+  private Map<Mode, SecretKeySpec> keySpec = new EnumMap<>(Mode.class);
+  private Cipher encryptCipher;
+  private Cipher decryptCipher;
 
   /**
    * Default constructor. You can decide to use only {@link Mode#LIMITED} mode if needed.
@@ -70,11 +67,17 @@ final class AesEntityReferenceMapper implements EntityReferenceMapper {
    * @param tryUnlimited should try to use <code>UNLIMITED</code> mode?
    * @param classLocator a class that can find a class by name
    */
-  AesEntityReferenceMapper(@Named("reference-mapper-key") CharSequence key,
-                           @Named("reference-mapper-try-unlimited") boolean tryUnlimited,
-                           ClassLocator classLocator) {
+  AesEntityReferenceMapper(@Named(Constants.KEY) CharSequence key,
+                           @Named(Constants.TRY_UNLIMITED) boolean tryUnlimited,
+                           @Named(Constants.CLASS_PREFIX) String classPrefix,
+                           ClassLocator classLocator,
+                           BytesCompressor bytesCompressor,
+                           Serializer serializer) {
     this.key = key;
+    this.classPrefix = classPrefix;
     this.classLocator = classLocator;
+    this.bytesCompressor = bytesCompressor;
+    this.serializer = serializer;
     if (!tryUnlimited) {
       mode = Mode.LIMITED;
     }
@@ -106,13 +109,18 @@ final class AesEntityReferenceMapper implements EntityReferenceMapper {
     }
     String className = extractClassNameRepr(type);
     try {
-      byte[] input = repr(id, className).getBytes(UTF_8);
+      String repr = repr(id, className);
+      byte[] input = bytesCompressor.compress(repr.getBytes(UTF_8));
       Cipher cipher = getEncrypt();
       byte[] output;
       output = cipher.doFinal(input);
       return encode(output);
-    } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException |
-      BadPaddingException | IllegalArgumentException ex) {
+    } catch (NoSuchAlgorithmException |
+      NoSuchPaddingException |
+      IllegalBlockSizeException |
+      BadPaddingException |
+      IllegalArgumentException |
+      IOException ex) {
       throw new EidIllegalArgumentException("20140131:003856", ex);
     }
   }
@@ -120,14 +128,15 @@ final class AesEntityReferenceMapper implements EntityReferenceMapper {
   private EntityReference unpack(CharSequence repr) {
     try {
       Cipher cipher = getDecrypt();
-      byte[] input = decode(repr);
-      String output = new String(cipher.doFinal(input));
+      byte[] input = bytesCompressor.inflate(decode(repr));
+      String output = new String(cipher.doFinal(input), UTF_8);
       int idx = output.indexOf(REPR_SPLITTER);
       String serializedId = output.substring(0, idx);
       String type = output.substring(idx + REPR_SPLITTER.length());
+      String fqcn = getFqcnForType(type);
       return new EntityReferenceImpl(
-        classLocator.locateClassByName(type),
-        unserialize(serializedId)
+        classLocator.locateClassByName(fqcn),
+        serializer.unserialize(serializedId)
       );
     } catch (GeneralSecurityException |
       ClassNotFoundException |
@@ -139,7 +148,7 @@ final class AesEntityReferenceMapper implements EntityReferenceMapper {
 
   private String repr(Serializable id,
                       String className) {
-    return serialize(id) + REPR_SPLITTER + className;
+    return serializer.serialize(id) + REPR_SPLITTER + className;
   }
 
   private CharSequence encode(byte[] bytes) {
@@ -162,34 +171,16 @@ final class AesEntityReferenceMapper implements EntityReferenceMapper {
 
   private String extractClassNameRepr(Serializable type) {
     if (type instanceof Class) {
-      return Class.class.cast(type).getName();
+      String fqcn = Class.class.cast(type).getName();
+      return fqcn.replace(classPrefix, "");
     }
     throw new EidIllegalStateException(
       new Eid("20180509:143750"), "Unsupported type: %s", type
     );
   }
 
-  private String serialize(Serializable serializable) {
-    try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-         ObjectOutput out = new ObjectOutputStream(bos)) {
-      out.writeObject(serializable);
-      out.flush();
-      return Base64.getUrlEncoder()
-        .withoutPadding()
-        .encodeToString(bos.toByteArray());
-    } catch (IOException e) {
-      throw new EidIllegalStateException("20180509:143244", e);
-    }
-  }
-
-  private Serializable unserialize(String serialized) throws IOException, ClassNotFoundException {
-    byte[] bytes = Base64
-      .getUrlDecoder()
-      .decode(serialized);
-    try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-         ObjectInput in = new ObjectInputStream(bis)) {
-      return (Serializable) in.readObject();
-    }
+  private String getFqcnForType(String type) {
+    return classPrefix + type;
   }
 
   private void initiate() {

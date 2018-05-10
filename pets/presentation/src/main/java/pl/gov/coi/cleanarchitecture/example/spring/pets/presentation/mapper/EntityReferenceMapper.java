@@ -11,4 +11,11 @@ import java.util.Optional;
 public interface EntityReferenceMapper {
   CharSequence map(EntityReference reference);
   Optional<EntityReference> map(CharSequence repr);
+
+  enum Constants {
+    ;
+    public static final String KEY = "reference-mapper-key";
+    public static final String TRY_UNLIMITED = "reference-mapper-try-unlimited";
+    public static final String CLASS_PREFIX = "reference-mapper-entity-package";
+  }
 }
