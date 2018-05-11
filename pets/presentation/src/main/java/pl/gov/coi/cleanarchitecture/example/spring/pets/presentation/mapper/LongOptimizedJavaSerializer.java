@@ -19,7 +19,7 @@ import java.util.Optional;
  * @since 2018-05-10
  */
 @Service
-final class JavaSerializer implements Serializer {
+final class LongOptimizedJavaSerializer implements Serializer {
 
   private static final int RADIX = 10;
 
