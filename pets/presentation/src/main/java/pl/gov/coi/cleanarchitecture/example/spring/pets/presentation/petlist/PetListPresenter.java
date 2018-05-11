@@ -6,7 +6,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.fetchpets
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.fetchpets.FetchPetsResponseModel.Owner;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.fetchpets.FetchPetsResponseModel.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.PageInfo;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.RacePresenter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.presenter.RacePresenter;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.mapper.EntityReferenceMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.petlist.PetListViewModel.PetViewModel;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.petlist.PetListViewModel.PetViewModel.PetViewModelBuilder;

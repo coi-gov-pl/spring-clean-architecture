@@ -1,4 +1,4 @@
-package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet;
+package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.editpet;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,11 +8,12 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.validation.
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
- * @since 19.12.16
+ * @since 11.05.18
  */
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @Getter
-class NewPetViewModel {
+final class EditPetViewModel {
+  private final EditPetForm pet;
   private final Iterable<RaceViewModel> raceViewModel;
   private final Violations violations;
 }

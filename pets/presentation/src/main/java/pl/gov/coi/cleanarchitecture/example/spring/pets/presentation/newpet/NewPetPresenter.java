@@ -3,9 +3,11 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.Violation;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.response.Violation;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetResponse;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.RacePresenter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.presenter.RacePresenter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.model.RaceViewModel;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.validation.Violations;
 import pl.gov.coi.cleanarchitecture.presentation.Presenter;
 
 import java.util.Arrays;

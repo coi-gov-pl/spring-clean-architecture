@@ -1,5 +1,6 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -8,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetRequest;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetUseCase;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.RacePresenter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.form.PetForm;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.presenter.RacePresenter;
 
 import javax.annotation.Nullable;
-import javax.inject.Inject;
 import java.util.Optional;
 
 import static pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet.NewPetView.NEW_PET_FORM_OBJECT;
@@ -22,19 +23,13 @@ import static pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newp
  */
 @Controller
 @RequestMapping("/pets")
+@RequiredArgsConstructor
 public class NewPetController {
   private final RegisterNewPetUseCase registerNewPetUseCase;
   private final RacePresenter racePresenter;
 
-  @Inject
-  public NewPetController(RegisterNewPetUseCase registerNewPetUseCase,
-                          RacePresenter racePresenter) {
-    this.registerNewPetUseCase = registerNewPetUseCase;
-    this.racePresenter = racePresenter;
-  }
-
   @RequestMapping(value = "/new", method = RequestMethod.GET)
-  public String form(Model model, @ModelAttribute(NEW_PET_FORM_OBJECT) NewPetForm form) {
+  public String form(Model model, @ModelAttribute(NEW_PET_FORM_OBJECT) PetForm form) {
     return formHanding(
       model,
       NewPetPresenter.create(racePresenter)
@@ -43,7 +38,7 @@ public class NewPetController {
 
   @RequestMapping(value = "/new", method = RequestMethod.POST)
   public String newOne(Model model,
-                       @ModelAttribute(NEW_PET_FORM_OBJECT) NewPetForm form) {
+                       @ModelAttribute(NEW_PET_FORM_OBJECT) PetForm form) {
 
     RegisterNewPetRequest request = new RegisterNewPetRequest(
       form.getPetName(),
@@ -66,7 +61,7 @@ public class NewPetController {
   }
 
   @Nullable
-  private PetContract.Ownership getOwnership(NewPetForm form) {
+  private PetContract.Ownership getOwnership(PetForm form) {
     String name = form.getOwnerName();
     String surname = form.getOwnerSurname();
     if (isNotBlank(name) || isNotBlank(surname)) {

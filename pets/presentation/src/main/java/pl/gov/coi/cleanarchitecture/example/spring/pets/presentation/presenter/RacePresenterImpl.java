@@ -1,14 +1,15 @@
-package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation;
+package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.presenter;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 21.12.16
  */
-@Component
-public class RacePresenter {
+@Service
+public final class RacePresenterImpl implements RacePresenter {
+  @Override
   public String present(PetContract.Race race) {
     switch (race) {
       case CAT:

@@ -3,6 +3,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate;
 import lombok.RequiredArgsConstructor;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Reference;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.PageInfo;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Paginated;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Pagination;
@@ -17,6 +18,7 @@ import javax.persistence.TypedQuery;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +31,12 @@ final class HibernatePetsGateway implements PetsGateway {
   private final EntityManager entityManager;
   private final MapperFacade mapper;
   private final QueryProvider queryProvider;
+
+  @Override
+  public Optional<Pet> findByReference(Reference reference) {
+    // TODO: implement this
+    throw new UnsupportedOperationException("not yet implemented");
+  }
 
   @Override
   public Paginated<Pet> getPets(Pagination pagination) {

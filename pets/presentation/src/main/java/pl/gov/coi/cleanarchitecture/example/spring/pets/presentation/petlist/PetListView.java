@@ -1,7 +1,7 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.petlist;
 
 import org.springframework.ui.Model;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.SpringView;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.view.SpringView;
 
 import static pl.wavesoftware.eid.utils.EidPreconditions.checkNotNull;
 

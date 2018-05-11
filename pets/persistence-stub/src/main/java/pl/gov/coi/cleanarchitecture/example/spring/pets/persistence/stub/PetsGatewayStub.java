@@ -3,12 +3,14 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.stub;
 import lombok.RequiredArgsConstructor;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Reference;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.PageInfo;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Paginated;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Pagination;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -18,6 +20,19 @@ import java.util.List;
 final class PetsGatewayStub implements PetsGateway {
   private final StubDatabase database;
   private final ObjectSerializer<Pet> petObjectSerializer = new ObjectSerializer<>();
+
+  @Override
+  public Optional<Pet> findByReference(Reference reference) {
+    for (Pet pet : database.getPets()) {
+      Optional<Reference> thisRef = pet.getMetadata()
+        .get(Reference.class);
+
+      if (thisRef.isPresent() && thisRef.get().get().equals(reference.get())) {
+        return Optional.of(pet);
+      }
+    }
+    return Optional.empty();
+  }
 
   @Override
   public Paginated<Pet> getPets(Pagination pagination) {

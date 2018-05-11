@@ -1,6 +1,6 @@
-package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet;
+package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.validation;
 
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.Violation;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.response.Violation;
 
 import java.util.Map;
 import java.util.StringJoiner;
@@ -11,11 +11,11 @@ import java.util.stream.StreamSupport;
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 21.12.16
  */
-final class Violations {
+public final class Violations {
   private static final String EMPTY_STRING = "";
   private final Map<String, String> map;
 
-  Violations(Iterable<Violation> violations) {
+  public Violations(Iterable<Violation> violations) {
     this.map = StreamSupport
       .stream(violations.spliterator(), false)
       .collect(Collectors.toMap(
@@ -25,7 +25,7 @@ final class Violations {
       ));
   }
 
-  boolean isSuccessful() {
+  public boolean isSuccessful() {
     return map.isEmpty();
   }
 

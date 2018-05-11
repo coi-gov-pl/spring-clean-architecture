@@ -2,7 +2,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.register
 
 import lombok.RequiredArgsConstructor;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract.Ownership;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.Violation;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.response.Violation;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonFetchProfile;

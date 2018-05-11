@@ -19,14 +19,20 @@
   <link rel="stylesheet"
         href="../../public/css/main.css"
         th:href="@{/css/main.css}" />
+  <link rel="stylesheet"
+        href="../../public/css/list.css"
+        th:href="@{/css/list.css}" />
 
   <script src="//cdn.jsdelivr.net/modernizr/2.8.3/modernizr.min.js"
           th:src="@{/webjars/modernizr/2.8.3/modernizr.min.js}"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
   <script
-    defer="defer"
     src="https://code.getmdl.io/1.2.1/material.min.js"
     th:src="@{/webjars/material-design-lite/1.2.1/dist/material.min.js}"
+  ></script>
+  <script
+    src="../../public/js/list.js"
+    th:src="@{/js/list.js}"
   ></script>
   <link rel="stylesheet"
         href="https://code.getmdl.io/1.2.1/material.blue-pink.min.css"
@@ -58,21 +64,47 @@
 
     <article>
       <header>
-        <h1>Listing all active pets</h1>
+        <h1>Pets</h1>
       </header>
       <section>
         <form th:action="@{/pets/new}">
           <button
             onclick=""
-            style="float: right; margin-top: -10px;"
-            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect mdl-button--colored">
+            id="pet-list-add"
+            class="mdl-button mdl-js-button mdl-button--fab mdl-button--fab mdl-js-ripple-effect mdl-button--colored fab-rcorner">
             <i class="material-icons">add</i>
+          </button>
+        </form>
+        <form th:action="@{/pets/delete}">
+          <input
+            type="hidden"
+            name="references"
+            value="">
+          <button
+            id="pet-list-delete"
+            disabled
+            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab fab-rcorner-mini">
+            <i class="material-icons">delete</i>
+          </button>
+        </form>
+        <form th:action="@{/pets/edit}">
+          <input
+            type="hidden"
+            name="reference"
+            value="">
+          <button
+            id="pet-list-edit"
+            disabled
+            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab fab-rcorner-mini">
+            <i class="material-icons">edit</i>
           </button>
         </form>
         <h6>count: <span th:text="${petCount}">13</span></h6>
       </section>
       <section>
-        <table style="width: 100%" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+        <table id="pet-list"
+               class="mdl-data-table mdl-js-data-table mdl-data-table--selectable
+               mdl-shadow--2dp table-fullsize">
           <thead>
             <tr>
               <th class="mdl-data-table__cell--non-numeric">Pet name</th>
@@ -81,19 +113,19 @@
             </tr>
           </thead>
           <tbody>
-            <tr th:each="pet : ${pets}" data-reference="" th:data-reference="${pet.id}">
+            <tr th:each="pet : ${pets}" data-reference="Qa1dF453" th:data-reference="${pet.id}">
               <td class="mdl-data-table__cell--non-numeric"
                   th:text="${pet.name}">Xaar</td>
               <td th:text="${pet.race}">cat</td>
               <td th:text="${pet.owner}">-</td>
             </tr>
-            <tr th:if="${false}">
-              <td class="mdl-data-table__cell--non-numeric">Plywood (Birch)</td>
+            <tr th:if="${false}" data-reference="Al8Shh21">
+              <td class="mdl-data-table__cell--non-numeric">Plywood</td>
               <td>50</td>
               <td>$1.25</td>
             </tr>
-            <tr th:if="${false}">
-              <td class="mdl-data-table__cell--non-numeric">Laminate (Gold on Blue)</td>
+            <tr th:if="${false}" data-reference="09Oku766">
+              <td class="mdl-data-table__cell--non-numeric">Laminate</td>
               <td>10</td>
               <td>$2.35</td>
             </tr>
@@ -115,6 +147,16 @@
 
   </footer>
 </div>
+
+<script type="application/javascript">
+window.addEventListener('load', () => {
+  new app.PetList({
+    listId: 'pet-list',
+    editId: 'pet-list-edit',
+    deleteId: 'pet-list-delete'
+  }).register();
+});
+</script>
 
 </body>
 </html>

@@ -1,4 +1,4 @@
-package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract;
+package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -3,7 +3,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.SpringView;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.view.SpringView;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>

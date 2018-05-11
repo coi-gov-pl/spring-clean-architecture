@@ -1,4 +1,4 @@
-package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet;
+package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Getter
-class RaceViewModel {
+public final class RaceViewModel {
   private final String id;
   private final String name;
 }

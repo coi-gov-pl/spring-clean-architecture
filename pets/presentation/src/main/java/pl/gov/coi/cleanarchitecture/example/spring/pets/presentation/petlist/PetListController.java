@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.fetchpets.FetchPetsRequest;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.fetchpets.FetchPetsUseCase;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.RacePresenter;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.mapper.EntityReferenceMapper;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.presenter.RacePresenter;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -24,6 +24,7 @@ import java.util.Optional;
 public class PetListController {
 
   private static final int DEFAULT_LIMIT = 10;
+
   private final FetchPetsUseCase fetchPetsUseCase;
   private final RacePresenter racePresenter;
   private final EntityReferenceMapper entityReferenceMapper;

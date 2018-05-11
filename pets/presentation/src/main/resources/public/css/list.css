@@ -1,0 +1,13 @@
+.mdl-button--fab.fab-rcorner {
+  float: right;
+  margin: 5px;
+  margin-top: -30px;
+}
+.mdl-button--fab.fab-rcorner-mini {
+  float: right;
+  margin: 5px;
+  margin-top: -22px;
+}
+.mdl-data-table.table-fullsize {
+  width: 100%;
+}

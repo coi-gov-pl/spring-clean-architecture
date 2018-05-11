@@ -1,4 +1,4 @@
-package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation;
+package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.view;
 
 import org.springframework.ui.Model;
 import pl.gov.coi.cleanarchitecture.presentation.View;
@@ -10,4 +10,5 @@ import pl.gov.coi.cleanarchitecture.presentation.View;
 public interface SpringView<D> extends View<D> {
   String getTemplatePath();
   SpringView<D> bind(Model model);
+  SpringView<D> setViewModel(D viewModel);
 }

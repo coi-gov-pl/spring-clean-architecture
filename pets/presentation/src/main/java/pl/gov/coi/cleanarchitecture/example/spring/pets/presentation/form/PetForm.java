@@ -1,7 +1,8 @@
-package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet;
+package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.form;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract.Race;
 import pl.wavesoftware.eid.exceptions.Eid;
@@ -13,14 +14,15 @@ import pl.wavesoftware.eid.exceptions.EidIllegalArgumentException;
  */
 @Setter
 @Getter
-@RequiredArgsConstructor
-final class NewPetForm {
+@Builder
+@AllArgsConstructor
+public final class PetForm {
   private String petName;
   private String race;
   private String ownerName;
   private String ownerSurname;
 
-  Race getRaceEnum() {
+  public Race getRaceEnum() {
     for (Race raceEnum : Race.values()) {
       if (raceEnum.name().equalsIgnoreCase(this.race)) {
         return raceEnum;
