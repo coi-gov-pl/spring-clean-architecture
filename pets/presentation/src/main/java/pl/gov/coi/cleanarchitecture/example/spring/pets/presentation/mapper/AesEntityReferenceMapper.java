@@ -37,6 +37,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Slf4j
 final class AesEntityReferenceMapper implements EntityReferenceMapper {
 
+  // Use nerdfonts.com to see this sign :-P
   private static final String REPR_SPLITTER = "";
   private static final String EMPTY_STRING = "";
 
@@ -48,10 +49,9 @@ final class AesEntityReferenceMapper implements EntityReferenceMapper {
   }
 
   private final CharSequence key;
-  private final String classPrefix;
   private final ClassLocator classLocator;
-  private final BytesCompressor bytesCompressor;
   private final Serializer serializer;
+  private final ClassNameEncoder classNameEncoder;
 
   private Mode mode = Mode.UNLIMITED;
   private Cipher cipherInst;
@@ -69,15 +69,13 @@ final class AesEntityReferenceMapper implements EntityReferenceMapper {
    */
   AesEntityReferenceMapper(@Named(Constants.KEY) CharSequence key,
                            @Named(Constants.TRY_UNLIMITED) boolean tryUnlimited,
-                           @Named(Constants.CLASS_PREFIX) String classPrefix,
                            ClassLocator classLocator,
-                           BytesCompressor bytesCompressor,
-                           Serializer serializer) {
+                           Serializer serializer,
+                           ClassNameEncoder classNameEncoder) {
     this.key = key;
-    this.classPrefix = classPrefix;
     this.classLocator = classLocator;
-    this.bytesCompressor = bytesCompressor;
     this.serializer = serializer;
+    this.classNameEncoder = classNameEncoder;
     if (!tryUnlimited) {
       mode = Mode.LIMITED;
     }
@@ -107,10 +105,10 @@ final class AesEntityReferenceMapper implements EntityReferenceMapper {
     if (id == null) {
       return EMPTY_STRING;
     }
-    String className = extractClassNameRepr(type);
+    String classNameRepr = getClassNameRepr(type);
     try {
-      String repr = repr(id, className);
-      byte[] input = bytesCompressor.compress(repr.getBytes(UTF_8));
+      String repr = repr(id, classNameRepr);
+      byte[] input = repr.getBytes(UTF_8);
       Cipher cipher = getEncrypt();
       byte[] output;
       output = cipher.doFinal(input);
@@ -119,8 +117,7 @@ final class AesEntityReferenceMapper implements EntityReferenceMapper {
       NoSuchPaddingException |
       IllegalBlockSizeException |
       BadPaddingException |
-      IllegalArgumentException |
-      IOException ex) {
+      IllegalArgumentException ex) {
       throw new EidIllegalArgumentException("20140131:003856", ex);
     }
   }
@@ -128,7 +125,7 @@ final class AesEntityReferenceMapper implements EntityReferenceMapper {
   private EntityReference unpack(CharSequence repr) {
     try {
       Cipher cipher = getDecrypt();
-      byte[] input = bytesCompressor.inflate(decode(repr));
+      byte[] input = decode(repr);
       String output = new String(cipher.doFinal(input), UTF_8);
       int idx = output.indexOf(REPR_SPLITTER);
       String serializedId = output.substring(0, idx);
@@ -147,8 +144,8 @@ final class AesEntityReferenceMapper implements EntityReferenceMapper {
   }
 
   private String repr(Serializable id,
-                      String className) {
-    return serializer.serialize(id) + REPR_SPLITTER + className;
+                      String classNameRepr) {
+    return serializer.serialize(id) + REPR_SPLITTER + classNameRepr;
   }
 
   private CharSequence encode(byte[] bytes) {
@@ -169,18 +166,19 @@ final class AesEntityReferenceMapper implements EntityReferenceMapper {
     }
   }
 
-  private String extractClassNameRepr(Serializable type) {
+  private String getClassNameRepr(Serializable type) {
     if (type instanceof Class) {
-      String fqcn = Class.class.cast(type).getName();
-      return fqcn.replace(classPrefix, "");
+      return classNameEncoder.getReprForClassName(
+        Class.class.cast(type).getName()
+      );
     }
     throw new EidIllegalStateException(
-      new Eid("20180509:143750"), "Unsupported type: %s", type
+      new Eid("20180509:143750"), "Unsupported type: %s", type.getClass()
     );
   }
 
   private String getFqcnForType(String type) {
-    return classPrefix + type;
+    return classNameEncoder.getClassNameFromRepr(type);
   }
 
   private void initiate() {

@@ -7,8 +7,6 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.mapper.Enti
 import pl.gov.coi.cleanarchitecture.example.spring.pets.random.RandomString;
 
 import javax.inject.Named;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -37,21 +35,6 @@ class PresentationMapperConfiguration {
   @ConditionalOnMissingBean
   Random provideRandom() {
     return ThreadLocalRandom.current();
-  }
-
-  @Bean
-  @Named(Constants.CLASS_PREFIX)
-  @ConditionalOnMissingBean
-  String provideReferenceMapperClassPrefix() {
-    Package thisPackage = getClass().getPackage();
-    Path path = Paths.get(
-      thisPackage.getName().replace(".", "/")
-    );
-    path = path.getParent()
-      .getParent()
-      .normalize();
-    return path.toString()
-      .replace("/", ".") + ".";
   }
 
 }

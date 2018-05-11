@@ -12,6 +12,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Base64;
+import java.util.Optional;
 
 /**
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
@@ -19,10 +20,13 @@ import java.util.Base64;
  */
 @Service
 final class JavaSerializer implements Serializer {
+
+  private static final int RADIX = 10;
+
   @Override
   public String serialize(Serializable serializable) {
     if (serializable instanceof Long) {
-      return Long.toString((Long) serializable);
+      return Long.toString((Long) serializable, RADIX);
     }
     try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
          ObjectOutput out = new ObjectOutputStream(bos)) {
@@ -38,9 +42,10 @@ final class JavaSerializer implements Serializer {
 
   @Override
   public Serializable unserialize(String serialized) throws IOException, ClassNotFoundException {
-    try {
-      return Long.valueOf(serialized);
-    } catch (NumberFormatException ex) {
+    Optional<Long> aLong = getLongFrom(serialized);
+    if (aLong.isPresent()) {
+      return aLong.get();
+    } else {
       byte[] bytes = Base64
         .getUrlDecoder()
         .decode(serialized);
@@ -48,6 +53,20 @@ final class JavaSerializer implements Serializer {
            ObjectInput in = new ObjectInputStream(bis)) {
         return (Serializable) in.readObject();
       }
+    }
+  }
+
+  private Optional<Long> getLongFrom(String serialized) {
+    Long value;
+    try {
+      value = Long.parseLong(serialized, RADIX);
+      String asString = Long.toString(value, RADIX);
+      if (!asString.equals(serialized)) {
+        return Optional.empty();
+      }
+      return Optional.of(value);
+    } catch (NumberFormatException ex) {
+      return Optional.empty();
     }
   }
 }
