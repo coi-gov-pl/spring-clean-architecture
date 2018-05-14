@@ -1,4 +1,4 @@
-package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet;
+package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.mapper;
 
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.mapper.EnumMapper;

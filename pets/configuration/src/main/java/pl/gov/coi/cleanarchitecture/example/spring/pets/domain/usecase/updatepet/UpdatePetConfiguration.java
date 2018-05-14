@@ -2,6 +2,11 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.updatepe
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.mapper.PetContractMapper;
+
+import javax.validation.Validator;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -10,7 +15,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 class UpdatePetConfiguration {
   @Bean
-  UpdatePetUseCase provideUpdatePetUseCase() {
-    return new UpdatePetUseCaseImpl();
+  UpdatePetUseCase provideUpdatePetUseCase(PetContractMapper petContractMapper,
+                                           PetsGateway petsGateway,
+                                           PersonGateway personGateway,
+                                           Validator validator) {
+    return new UpdatePetUseCaseImpl(
+      petContractMapper,
+      petsGateway,
+      personGateway,
+      validator
+    );
   }
 }

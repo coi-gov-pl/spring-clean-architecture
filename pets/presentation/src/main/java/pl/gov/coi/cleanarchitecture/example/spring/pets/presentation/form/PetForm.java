@@ -3,6 +3,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.form;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract.Race;
 
@@ -15,6 +16,7 @@ import java.util.Optional;
 @Setter
 @Getter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public final class PetForm {
   private String petName;

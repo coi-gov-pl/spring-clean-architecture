@@ -1,7 +1,8 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.editpet;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.form.PetForm;
 
@@ -11,8 +12,9 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.form.PetFor
  */
 @Setter
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 final class EditPetForm {
-  private final String reference;
-  private final PetForm data;
+  private String reference;
+  private PetForm data;
 }
