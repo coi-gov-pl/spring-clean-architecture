@@ -1,6 +1,4 @@
-package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.validation.validator;
-
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.validation.constraint.Capitalized;
+package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.validation;
 
 import javax.validation.ConstraintValidatorContext;
 import java.util.regex.Pattern;
@@ -13,11 +11,6 @@ class CapitalizedValidatorImpl implements CapitalizedValidator {
   private static final String EMPTY_STRING = "";
   private static final Pattern CAPITALIZED_REGEX
     = Pattern.compile("^[A-Z][a-z0-9]*[^A-Za-z0-9]*$");
-
-  @Override
-  public void initialize(Capitalized constraintAnnotation) {
-    // do nothing here
-  }
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {

@@ -21,26 +21,26 @@
         th:href="@{/css/main.css}" />
   <script src="//cdn.jsdelivr.net/modernizr/2.8.3/modernizr.min.js"
           th:src="@{/webjars/modernizr/2.8.3/modernizr.min.js}"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons" />
   <script
     defer="defer"
-    src="https://code.getmdl.io/1.2.1/material.min.js"
-    th:src="@{/webjars/material-design-lite/1.2.1/dist/material.min.js}"
+    src="//code.getmdl.io/1.3.0/material.min.js"
+    th:src="@{/webjars/material-design-lite/1.3.0/dist/material.min.js}"
   ></script>
   <link rel="stylesheet"
-        href="https://code.getmdl.io/1.2.1/material.blue-pink.min.css"
-        th:href="@{/webjars/material-design-lite/1.2.1/dist/material.blue-pink.min.css}"
+        href="//code.getmdl.io/1.3.0/material.blue-pink.min.css"
+        th:href="@{/webjars/material-design-lite/1.3.0/dist/material.blue-pink.min.css}"
   />
   <link
     rel="stylesheet"
-    href="//cdn.rawgit.com/MEYVN-digital/mdl-selectfield/master/mdl-selectfield.min.css"
-    th:href="@{/webjars/mdl-select-component/0.0.6/mdl-selectfield.min.css}" />
+    href="//cdn.jsdelivr.net/npm/getmdl-select@2.0.1/getmdl-select.min.css"
+    th:href="@{/webjars/getmdl-select/2.0.1/getmdl-select.min.css}" />
   <script
     defer="defer"
-    src="//cdn.rawgit.com/MEYVN-digital/mdl-selectfield/master/mdl-selectfield.min.js"
-    th:src="@{/webjars/mdl-select-component/0.0.6/mdl-selectfield.min.js}"></script>
+    src="//cdn.jsdelivr.net/npm/getmdl-select@2.0.1/getmdl-select.min.js"
+    th:src="@{/webjars/getmdl-select/2.0.1/getmdl-select.min.js}"></script>
   <style>
-  @import url('https://fonts.googleapis.com/css?family=Open+Sans');
+  @import url('//fonts.googleapis.com/css?family=Open+Sans');
   body, h1, h2, h3, h4, h5, h6 {
     font-family: 'Open Sans', sans-serif;
   }
@@ -81,22 +81,24 @@
               <span class="mdl-textfield__error"
                     th:text="${violations.get('name')}">An error!</span>
             </div>
-            <div class="mdl-selectfield mdl-js-selectfield"
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select"
                  th:classappend="${violations.ifKeyPresent('race','is-invalid')}">
-              <select id="race"
-                th:field="*{race}"
-                class="mdl-selectfield__select">
-                <option value=""></option>
-                <option value="option_x_value"
-                        th:each="race : ${races}"
-                        th:attr="value = ${race.id}"
-                        th:text="${race.name}"
-                >option x</option>
-                <option th:if="${false}" value="option0_value">option 0</option>
-                <option th:if="${false}" value="option1_value">option 1</option>
-              </select>
-              <label class="mdl-selectfield__label" for="race">Pet race</label>
-              <span class="mdl-selectfield__error"
+              <input id="race" class="mdl-textfield__input" value="" readonly />
+              <input value="" th:field="*{race}" type="hidden" name="race" />
+              <label class="mdl-textfield__label" for="race">Pet race</label>
+              <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu" for="race">
+                <li class="mdl-menu__item"
+                    data-val="BLR"
+                    th:each="racedef : ${races}"
+                    th:attr="data-val = ${racedef.id},
+                    data-selected = ${racedef.isSelected(newPet.race)}"
+                    th:text="${racedef.name}">Cat</li>
+                <li th:if="${false}" class="mdl-menu__item" data-val="BRA">Dog</li>
+                <li th:if="${false}" class="mdl-menu__item" data-val="FRA">Pigie</li>
+                <li th:if="${false}" class="mdl-menu__item" data-val="DEU">Fish</li>
+                <li th:if="${false}" class="mdl-menu__item" data-val="RUS">Rabbit</li>
+              </ul>
+              <span class="mdl-textfield__error"
                     th:text="${violations.get('race')}">An error!</span>
             </div>
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"

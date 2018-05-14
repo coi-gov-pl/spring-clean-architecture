@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract.Race;
-import pl.wavesoftware.eid.exceptions.Eid;
-import pl.wavesoftware.eid.exceptions.EidIllegalArgumentException;
+
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -22,16 +22,12 @@ public final class PetForm {
   private String ownerName;
   private String ownerSurname;
 
-  public Race getRaceEnum() {
+  public Optional<Race> getRaceEnum() {
     for (Race raceEnum : Race.values()) {
       if (raceEnum.name().equalsIgnoreCase(this.race)) {
-        return raceEnum;
+        return Optional.of(raceEnum);
       }
     }
-    throw new EidIllegalArgumentException(
-      new Eid("20180509:110843"),
-      "Invalid race value: %s",
-      this.race
-    );
+    return Optional.empty();
   }
 }

@@ -4,6 +4,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.response
 
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -15,11 +16,12 @@ public final class Violations {
   private static final String EMPTY_STRING = "";
   private final Map<String, String> map;
 
-  public Violations(Iterable<Violation> violations) {
+  public Violations(Iterable<Violation> violations,
+                    Function<Violation, String> violationToPath) {
     this.map = StreamSupport
       .stream(violations.spliterator(), false)
       .collect(Collectors.toMap(
-        this::pathAsString,
+        violationToPath,
         Violation::getMessage,
         this::violationMassagesMerger
       ));
@@ -46,10 +48,4 @@ public final class Violations {
       .toString();
   }
 
-  private String pathAsString(Violation violation) {
-    return violation
-      .getPath()
-      .toString()
-      .replaceFirst("^pet\\.", "");
-  }
 }

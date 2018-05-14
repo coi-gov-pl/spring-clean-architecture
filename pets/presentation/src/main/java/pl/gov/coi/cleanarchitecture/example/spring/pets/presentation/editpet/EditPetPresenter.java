@@ -5,16 +5,13 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContr
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.response.Violation;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.updatepet.UpdatePetResponse;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.form.PetForm;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.model.RaceViewModel;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.presenter.RacePresenter;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.validation.Violations;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.view.SpringView;
 import pl.gov.coi.cleanarchitecture.presentation.Presenter;
 
-import javax.annotation.Nullable;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -28,12 +25,11 @@ final class EditPetPresenter implements Presenter<SpringView<EditPetViewModel>>,
   private final PetContract pet;
   private final RacePresenter racePresenter;
 
-  @Nullable
-  private Violations violations;
+  private Violations violations = createViolations(new ArrayList<>());
 
   @Override
   public void setViolations(Iterable<Violation> violations) {
-    this.violations = new Violations(violations);
+    this.violations = createViolations(violations);
   }
 
   @Override
@@ -52,20 +48,14 @@ final class EditPetPresenter implements Presenter<SpringView<EditPetViewModel>>,
   private EditPetViewModel createViewModel() {
     return new EditPetViewModel(
       createForm(pet),
-      presentRaces(),
+      racePresenter.presentAllRaces(),
       violations
     );
   }
 
-  private Iterable<RaceViewModel> presentRaces() {
-    return Arrays.stream(PetContract.Race.values())
-      .map(this::toViewModel)
-      .collect(Collectors.toList());
-  }
-
   private EditPetForm createForm(PetContract pet) {
     PetForm.PetFormBuilder builder = PetForm.builder()
-      .race(racePresenter.present(pet.getRace()))
+      .race(pet.getRace().name())
       .petName(pet.getName());
     Optional.ofNullable(pet.getOwnership())
       .ifPresent(ownership -> {
@@ -78,7 +68,11 @@ final class EditPetPresenter implements Presenter<SpringView<EditPetViewModel>>,
     );
   }
 
-  private RaceViewModel toViewModel(PetContract.Race race) {
-    return new RaceViewModel(race.name(), racePresenter.present(race));
+  private Violations createViolations(Iterable<Violation> violations) {
+
+    return new Violations(violations, violation -> violation
+      .getPath()
+      .toString()
+      .replaceFirst("^data\\.", ""));
   }
 }

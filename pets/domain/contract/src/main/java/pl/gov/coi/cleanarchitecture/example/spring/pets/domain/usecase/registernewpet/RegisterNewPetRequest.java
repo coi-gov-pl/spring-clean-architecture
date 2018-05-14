@@ -1,6 +1,6 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet;
 
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -17,10 +17,9 @@ import javax.validation.constraints.NotNull;
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 19.12.16
  */
-@RequiredArgsConstructor
 @Getter
-@Builder
 @ToString
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class RegisterNewPetRequest implements Request {
   @NotNull
   @Valid
@@ -33,4 +32,5 @@ public class RegisterNewPetRequest implements Request {
       name, race, ownership
     ));
   }
+
 }

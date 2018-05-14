@@ -1,15 +1,13 @@
-package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.validation.validator;
+package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.validation;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.validation.constraint.Capitalized;
 
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
-
 import java.lang.annotation.Annotation;
 
 import static org.assertj.core.api.Assertions.assertThat;

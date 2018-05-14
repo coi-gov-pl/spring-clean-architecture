@@ -1,10 +1,8 @@
-package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.validation.constraint;
-
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.validation.validator.CapitalizedValidator;
+package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -21,12 +19,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Target({ FIELD, METHOD, PARAMETER, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = CapitalizedValidator.class)
+@Constraint(validatedBy = SpecifiedValidator.class)
 @Documented
-@NotBlank
-public @interface Capitalized {
-  String message() default "{pl.gov.coi.cleanarchitecture.example.spring." +
-    "pets.domain.validation.constraint.Capitalized.message}";
+@NotNull
+public @interface Specified {
+  String message() default "{pl.gov.coi.cleanarchitecture.example.spring.pets.domain." +
+    "validation.Specified.message}";
   Class<?>[] groups() default { };
   Class<? extends Payload>[] payload() default { };
 }

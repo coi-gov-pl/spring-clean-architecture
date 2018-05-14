@@ -29,7 +29,8 @@ public class NewPetController {
   private final RacePresenter racePresenter;
 
   @RequestMapping(value = "/new", method = RequestMethod.GET)
-  public String form(Model model, @ModelAttribute(NEW_PET_FORM_OBJECT) PetForm form) {
+  public String form(Model model,
+                     @ModelAttribute(NEW_PET_FORM_OBJECT) PetForm form) {
     return formHanding(
       model,
       NewPetPresenter.create(racePresenter)
@@ -42,7 +43,9 @@ public class NewPetController {
 
     RegisterNewPetRequest request = new RegisterNewPetRequest(
       form.getPetName(),
-      form.getRaceEnum(),
+      form
+        .getRaceEnum()
+        .orElse(PetContract.Race.UNSPECIFIED),
       getOwnership(form)
     );
     NewPetPresenter presenter = NewPetPresenter.create(racePresenter);
