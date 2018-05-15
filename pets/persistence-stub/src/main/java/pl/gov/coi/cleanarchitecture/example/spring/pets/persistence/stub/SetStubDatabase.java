@@ -8,13 +8,14 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Me
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Modified;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Reference;
 
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+
+import static pl.wavesoftware.eid.utils.EidPreconditions.checkState;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -41,7 +42,10 @@ final class SetStubDatabase implements StubDatabase {
   }
 
   private void update(Pet managed, Pet toBeReplaced) {
-    getPets().remove(managed);
+    checkState(
+      getPets().remove(managed),
+      "20180515:161804"
+    );
     StubMetadata<Pet> meta = (StubMetadata<Pet>) managed.getMetadata();
     StubMetadata<Pet> updated = meta.update();
     toBeReplaced.supplierOfMetadata(() -> updated);
@@ -50,16 +54,14 @@ final class SetStubDatabase implements StubDatabase {
 
   private Optional<Pet> find(HasMetadata<Pet> hasMetadata) {
     Metadata<Pet> meta = hasMetadata.getMetadata();
-    Optional<Object> ref = meta
-      .get(Reference.class)
-      .map(Reference::get);
+    Optional<Reference> ref = meta
+      .get(Reference.class);
     if (ref.isPresent()) {
       for (Pet managed : pets) {
-        Optional<Serializable> managedId = managed
+        Optional<Reference> managedRef = managed
           .getMetadata()
-          .get(Reference.class)
-          .map(Reference::get);
-        if (managedId.isPresent() && managedId.get().equals(ref.get())) {
+          .get(Reference.class);
+        if (managedRef.isPresent() && ref.get().isEqualTo(managedRef.get())) {
           return Optional.of(managed);
         }
       }

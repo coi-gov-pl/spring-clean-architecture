@@ -33,6 +33,7 @@ class PetListPresenter implements Presenter<PetListView>, FetchPetsResponse {
   @Override
   public PetListView createView() {
     PetListView view = new PetListView();
+    pets.setNumberOfElements(pageInfo.getTotalNumberOfElements());
     view.setViewModel(pets);
     return view;
   }

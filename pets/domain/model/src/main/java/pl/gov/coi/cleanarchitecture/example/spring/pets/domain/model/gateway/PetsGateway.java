@@ -15,4 +15,5 @@ public interface PetsGateway {
   Optional<Pet> findByReference(Reference reference);
   Paginated<Pet> getPets(Pagination pagination);
   void persistNew(Pet... pet);
+  void update(Reference reference, Pet pet);
 }

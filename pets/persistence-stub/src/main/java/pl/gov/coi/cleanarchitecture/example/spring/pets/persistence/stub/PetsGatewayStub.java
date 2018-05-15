@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static pl.wavesoftware.eid.utils.EidPreconditions.checkArgument;
+
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 19.12.16
@@ -28,7 +30,9 @@ final class PetsGatewayStub implements PetsGateway {
         .get(Reference.class);
 
       if (thisRef.isPresent() && thisRef.get().get().equals(reference.get())) {
-        return Optional.of(pet);
+        return Optional.of(
+          refresh(pet)
+        );
       }
     }
     return Optional.empty();
@@ -43,9 +47,7 @@ final class PetsGatewayStub implements PetsGateway {
     for (Pet pet : database.getPets()) {
       if (i > skip) {
         if (collected < pagination.getElementsPerPage()) {
-          Pet refreshed = petObjectSerializer.refresh(pet);
-          refreshed.supplierOfMetadata(pet::getMetadata);
-          elements.add(refreshed);
+          elements.add(refresh(pet));
           collected++;
         }
       } else {
@@ -62,6 +64,20 @@ final class PetsGatewayStub implements PetsGateway {
       Pet refreshed = petObjectSerializer.refresh(pet);
       database.putOrUpdate(refreshed);
     }
+  }
+
+  @Override
+  public void update(Reference reference, Pet pet) {
+    pet.getMetadata()
+      .get(Reference.class)
+      .ifPresent(r -> checkArgument(r.isEqualTo(reference), "20180515:093317"));
+    database.putOrUpdate(pet);
+  }
+
+  private Pet refresh(Pet pet) {
+    Pet refreshed = petObjectSerializer.refresh(pet);
+    refreshed.supplierOfMetadata(pet::getMetadata);
+    return refreshed;
   }
 
 }

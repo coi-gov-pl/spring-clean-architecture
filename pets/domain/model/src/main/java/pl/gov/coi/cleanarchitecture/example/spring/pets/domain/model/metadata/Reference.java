@@ -7,5 +7,7 @@ import java.io.Serializable;
  * @since 23.04.18
  */
 public interface Reference extends MetadataEntry<Serializable> {
-
+  default boolean isEqualTo(Reference other) {
+    return get().equals(other.get());
+  }
 }

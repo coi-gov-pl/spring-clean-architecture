@@ -39,6 +39,12 @@ final class HibernatePetsGateway implements PetsGateway {
   }
 
   @Override
+  public void update(Reference reference, Pet pet) {
+    // TODO: implement this
+    throw new UnsupportedOperationException("not yet implemented");
+  }
+
+  @Override
   public Paginated<Pet> getPets(Pagination pagination) {
     OnGoingQueryProviding queryProviding = queryProvider.forClass(HibernatePetsGateway.class);
     Query q = entityManager.createQuery(queryProviding.get("countPets"));

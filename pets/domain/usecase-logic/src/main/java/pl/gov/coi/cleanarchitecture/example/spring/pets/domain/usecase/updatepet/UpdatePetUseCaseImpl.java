@@ -1,16 +1,23 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.updatepet;
 
 import lombok.RequiredArgsConstructor;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.EntityReference;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.response.Violation;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Reference;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.mapper.PetContractMapper;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -28,16 +35,44 @@ final class UpdatePetUseCaseImpl implements UpdatePetUseCase {
     return response -> {
       Set<ConstraintViolation<UpdatePetRequest>> violations =
         validator.validate(request);
-      // TODO: implement this
       if (violations.isEmpty()) {
-        throw new UnsupportedOperationException("not yet implemented");
+        EntityReference entityRef = request.getReference();
+        Reference ref = entityRef::getReference;
+        Pet pet = petContractMapper.map(
+          request.getPet(),
+          this::loadPersonByOwnership,
+          new PetContractMapper.ReferencedPetLoader(
+            ref, this::loadPetByReference
+          )
+        );
+        petsGateway.update(ref, pet);
+      } else {
+        response.setViolations(mapViolations(violations));
       }
-      throw new UnsupportedOperationException("not yet implemented");
     };
   }
 
-  private Person loadPerson(PetContract.Ownership ownership) {
-    return null;
+  private Optional<Pet> loadPetByReference(Reference reference) {
+    return petsGateway.findByReference(reference);
+  }
+
+  private Optional<Person> loadPersonByOwnership(PetContract.Ownership ownership) {
+    return personGateway
+      .findByNameAndSurname(ownership.getName(), ownership.getSurname())
+      .fetch(PersonFetchProfile.WITH_OWNERSHIPS);
+  }
+
+  private Iterable<Violation> mapViolations(Set<ConstraintViolation<UpdatePetRequest>> violations) {
+    return violations.stream()
+      .map(this::toResponseModel)
+      .collect(Collectors.toList());
+  }
+
+  private Violation toResponseModel(ConstraintViolation<UpdatePetRequest> violation) {
+    return new Violation(
+      violation.getPropertyPath(),
+      violation.getMessage()
+    );
   }
 
   @Override

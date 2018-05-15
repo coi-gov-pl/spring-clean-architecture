@@ -94,9 +94,7 @@ public abstract class Record implements Serializable {
   public String toString() {
     ObjectStringifier stringifier = new ObjectStringifier(this);
     stringifier.setMode(Mode.PROMISCUOUS);
-    BeanFactoryProvider
-      .getBeanFactory()
-      .ifPresent(stringifier::setBeanFactory);
+    stringifier.setBeanFactory(BeanFactoryProvider.getBeanFactory());
     return stringifier.toString();
   }
 }

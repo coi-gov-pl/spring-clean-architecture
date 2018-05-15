@@ -1,10 +1,11 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.mapper;
 
+import lombok.RequiredArgsConstructor;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Reference;
 
-import java.util.function.Function;
+import java.util.Optional;
 
 /**
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
@@ -12,6 +13,18 @@ import java.util.function.Function;
  */
 public interface PetContractMapper {
   Pet map(PetContract contract,
-          Function<PetContract.Ownership, Person> personLoader);
-  PetContract map(Pet pet);
+          PersonLoader personLoader,
+          ReferencedPetLoader petLoader);
+  Pet map(PetContract contract,
+          PersonLoader personLoader);
+
+  @RequiredArgsConstructor
+  final class ReferencedPetLoader {
+    private final Reference reference;
+    private final PetLoader loader;
+
+    Optional<Pet> load() {
+      return loader.loadByReference(reference);
+    }
+  }
 }

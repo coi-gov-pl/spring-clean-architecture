@@ -41,13 +41,10 @@ class RegisterNewPetUseCaseImpl implements RegisterNewPetUseCase {
     }
   }
 
-  private Person ownershipAsPerson(Ownership ownership) {
-    Optional<Person> personOptional = personGateway
+  private Optional<Person> ownershipAsPerson(Ownership ownership) {
+    return personGateway
       .findByNameAndSurname(ownership.getName(), ownership.getSurname())
       .fetch(PersonFetchProfile.WITH_OWNERSHIPS);
-    return personOptional.orElse(new Person(
-      ownership.getName(), ownership.getSurname()
-    ));
   }
 
   private static Violation toViolation(ConstraintViolation<RegisterNewPetRequest> violation) {
