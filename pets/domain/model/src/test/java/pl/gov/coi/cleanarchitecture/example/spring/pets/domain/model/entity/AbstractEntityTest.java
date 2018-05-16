@@ -38,6 +38,7 @@ public class AbstractEntityTest {
 
     // then
     assertThat(entities).hasSize(2);
+    assertThat(entities).contains(zaq, qwe);
 
     // when
     entities.add(qwe);
@@ -46,9 +47,11 @@ public class AbstractEntityTest {
     assertThat(entities).hasSize(2);
 
     // when
-    qwe = new ExampleEntity("jordi");
-    qwe.supplierOfMetadata(() -> createMetadata(0L));
-    entities.remove(qwe);
+    ExampleEntity jordi = new ExampleEntity("jordi");
+    jordi.supplierOfMetadata(qwe::getMetadata);
+    assertThat(entities).contains(zaq, qwe);
+    assertThat(entities).contains(jordi);
+    entities.remove(jordi);
 
     // then
     assertThat(entities).hasSize(1);

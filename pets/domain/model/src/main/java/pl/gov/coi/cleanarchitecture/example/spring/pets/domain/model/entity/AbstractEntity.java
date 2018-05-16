@@ -14,6 +14,8 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static pl.wavesoftware.eid.utils.EidPreconditions.checkState;
+
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
  * @since 23.04.18
@@ -32,6 +34,16 @@ public abstract class AbstractEntity<T extends AbstractEntity> implements HasMet
 
   @Override
   public void supplierOfMetadata(Supplier<Metadata<T>> metadataSupplier) {
+    if (this.metadataSupplier != null) {
+      @SuppressWarnings("unchecked")
+      AbstractEntity<T> helperEntity = (AbstractEntity<T>) new AbstractEntity<AbstractEntity>() {};
+      helperEntity.supplierOfMetadata(metadataSupplier);
+      checkState(
+        hashCode() == helperEntity.hashCode(),
+        "20180516:103250",
+        "Can't set metadata that returns other hashCode, then previously set metadata"
+      );
+    }
     this.metadataSupplier = metadataSupplier;
   }
 
@@ -55,13 +67,17 @@ public abstract class AbstractEntity<T extends AbstractEntity> implements HasMet
 
   @Override
   public int hashCode() {
-    return getReference()
-      .map(Object::hashCode)
+    return getMetadata()
+      .get(Reference.class)
+      .map(reference -> reference.get().hashCode())
       .orElse(System.identityHashCode(this));
   }
 
   @Override
   public boolean equals(Object object) {
+    if (object == null) {
+      return false;
+    }
     if (object == this) {
       return true;
     }
@@ -78,17 +94,11 @@ public abstract class AbstractEntity<T extends AbstractEntity> implements HasMet
   }
 
   private boolean equalsByMetadataReference(AbstractEntity<T> other) {
-    Optional<Object> thisIdentifier = getReference();
-    Optional<Object> otherIdentifier = other.getReference();
-    return thisIdentifier.isPresent()
-      && otherIdentifier.isPresent()
-      && thisIdentifier.get().hashCode() == otherIdentifier.get().hashCode();
-  }
-
-  private Optional<Object> getReference() {
-    return getMetadata()
-      .get(Reference.class)
-      .map(Reference::get);
+    Optional<Reference> thisRef = getMetadata().get(Reference.class);
+    Optional<Reference> otherRef = other.getMetadata().get(Reference.class);
+    return thisRef.isPresent()
+      && otherRef.isPresent()
+      && thisRef.get().isEqualTo(otherRef.get());
   }
 
   @RequiredArgsConstructor

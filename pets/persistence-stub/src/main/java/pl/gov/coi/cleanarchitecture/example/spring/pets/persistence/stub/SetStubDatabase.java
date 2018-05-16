@@ -9,10 +9,10 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Mo
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Reference;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.Comparator;
 import java.util.Optional;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.Supplier;
 
 import static pl.wavesoftware.eid.utils.EidPreconditions.checkState;
@@ -22,12 +22,19 @@ import static pl.wavesoftware.eid.utils.EidPreconditions.checkState;
  * @since 23.04.18
  */
 final class SetStubDatabase implements StubDatabase {
-  private final Set<Pet> pets = new LinkedHashSet<>();
+  private final SortedSet<Pet> pets = new TreeSet<>(
+    new MetadataComparator()
+  );
   private long sequence = 1L;
 
   @Override
-  public Collection<Pet> getPets() {
+  public Iterable<Pet> getPets() {
     return pets;
+  }
+
+  @Override
+  public long getNumberOfPets() {
+    return pets.size();
   }
 
   @Override
@@ -36,20 +43,20 @@ final class SetStubDatabase implements StubDatabase {
     if (managed.isPresent()) {
       update(managed.get(), pet);
     } else {
-      getPets().add(pet);
       pet.supplierOfMetadata(provideSupplier());
+      pets.add(pet);
     }
   }
 
   private void update(Pet managed, Pet toBeReplaced) {
     checkState(
-      getPets().remove(managed),
+      pets.remove(managed),
       "20180515:161804"
     );
     StubMetadata<Pet> meta = (StubMetadata<Pet>) managed.getMetadata();
     StubMetadata<Pet> updated = meta.update();
     toBeReplaced.supplierOfMetadata(() -> updated);
-    getPets().add(toBeReplaced);
+    pets.add(toBeReplaced);
   }
 
   private Optional<Pet> find(HasMetadata<Pet> hasMetadata) {
@@ -140,6 +147,20 @@ final class SetStubDatabase implements StubDatabase {
     @Override
     public Class<T> type() {
       return type;
+    }
+  }
+
+  private class MetadataComparator implements Comparator<HasMetadata<?>> {
+    @Override
+    public int compare(HasMetadata<?> left, HasMetadata<?> right) {
+      Optional<Reference> leftRef = left.getMetadata().get(Reference.class);
+      Optional<Reference> rightRef = right.getMetadata().get(Reference.class);
+      if (leftRef.isPresent() && rightRef.isPresent()) {
+        Long leftId = Long.class.cast(leftRef.get().get());
+        Long rightId = Long.class.cast(rightRef.get().get());
+        return (int) (leftId - rightId);
+      }
+      return 0;
     }
   }
 }

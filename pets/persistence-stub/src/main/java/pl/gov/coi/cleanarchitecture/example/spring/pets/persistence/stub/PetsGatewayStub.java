@@ -54,7 +54,7 @@ final class PetsGatewayStub implements PetsGateway {
         i++;
       }
     }
-    PageInfo info = new PageInfo(pagination, database.getPets().size());
+    PageInfo info = new PageInfo(pagination, database.getNumberOfPets());
     return new Paginated<>(info, elements);
   }
 
