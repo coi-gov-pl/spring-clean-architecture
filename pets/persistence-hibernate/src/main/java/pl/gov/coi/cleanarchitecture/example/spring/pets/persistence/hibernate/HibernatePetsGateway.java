@@ -11,13 +11,21 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.en
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper.MapperFacade;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.sql.QueryProvider;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.sql.QueryProvider.OnGoingQueryProviding;
+import pl.wavesoftware.eid.exceptions.Eid;
+import pl.wavesoftware.eid.exceptions.EidIndexOutOfBoundsException;
 
+import javax.annotation.Nullable;
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,14 +42,17 @@ final class HibernatePetsGateway implements PetsGateway {
 
   @Override
   public Optional<Pet> findByReference(Reference reference) {
-    // TODO: implement this
-    throw new UnsupportedOperationException("not yet implemented");
+    return findDataByReference(reference)
+      .map(mapper::map);
   }
 
   @Override
   public void update(Reference reference, Pet pet) {
-    // TODO: implement this
-    throw new UnsupportedOperationException("not yet implemented");
+    EntityGraph<?> graph = entityManager.getEntityGraph("pet-with-ownerships");
+    PetData petData = findDataByReference(reference, graph)
+      .orElseThrow(() -> new EidIndexOutOfBoundsException(new Eid("20180516:161818")));
+    mapper.update(petData).with(pet);
+    entityManager.persist(petData);
   }
 
   @Override
@@ -68,6 +79,24 @@ final class HibernatePetsGateway implements PetsGateway {
     for (PetData data : collection) {
       entityManager.persist(data);
     }
+  }
+
+  private Optional<PetData> findDataByReference(Reference reference) {
+    return findDataByReference(reference, null);
+  }
+
+  private Optional<PetData> findDataByReference(Reference reference,
+                                                @Nullable EntityGraph<?> entityGraph) {
+    Serializable identifier = reference.get();
+    Map<String, Object> properties = Optional
+      .ofNullable(entityGraph)
+      .map(g -> Collections.singletonMap("javax.persistence.fetchgraph", (Object) g))
+      .orElse(new HashMap<>());
+    PetData petData = entityManager.find(
+      PetData.class, identifier,
+      properties
+    );
+    return Optional.ofNullable(petData);
   }
 
   private static int calculateStartPosition(Pagination pagination) {

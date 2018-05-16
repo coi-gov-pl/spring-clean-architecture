@@ -13,6 +13,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -29,6 +32,23 @@ import java.util.Set;
 @Setter
 @Access(AccessType.PROPERTY)
 @NoArgsConstructor
+@NamedEntityGraph(
+  name = "pet-with-ownerships",
+  attributeNodes = {
+    @NamedAttributeNode(value = "ownership", subgraph = "ownership.person"),
+    @NamedAttributeNode(value = "formerOwners", subgraph = "formerOwners.person")
+  },
+  subgraphs = {
+    @NamedSubgraph(
+      name = "ownership.person",
+      attributeNodes = @NamedAttributeNode("person")
+    ),
+    @NamedSubgraph(
+      name = "formerOwners.person",
+      attributeNodes = @NamedAttributeNode("person")
+    )
+  }
+)
 public class PetData extends Record {
 
   private static final long serialVersionUID = 20180307225158L;
