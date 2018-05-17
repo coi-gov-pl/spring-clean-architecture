@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class ExampleDataImpl implements ExampleData {
   private final EntityManager entityManager;
 
   @Override
-  public void createExamples() {
+  public List<Pet> createExamples() {
     log.info("Creating example data into persistence layer...");
     Person ksuszynski = new Person("Krzysztof", "Suszyński");
     Person panderson = new Person("Pamela", "Anderson");
@@ -67,10 +68,24 @@ public class ExampleDataImpl implements ExampleData {
       Instant.EPOCH
     ));
 
-    gateway.persistNew(pets.toArray(new Pet[0]));
+    Iterable<Pet> managed = gateway.persistNew(pets.toArray(new Pet[0]));
 
     entityManager.flush();
     entityManager.clear();
+
+    return Collections.unmodifiableList(
+      toList(managed)
+    );
+  }
+
+  private static <T> List<T> toList(Iterable<T> iterable) {
+    if (iterable instanceof List) {
+      return (List<T>) iterable;
+    } else {
+      List<T> list = new ArrayList<>();
+      iterable.forEach(list::add);
+      return list;
+    }
   }
 
   private Pet create(String name, Race race, Person owner, Instant instant) {

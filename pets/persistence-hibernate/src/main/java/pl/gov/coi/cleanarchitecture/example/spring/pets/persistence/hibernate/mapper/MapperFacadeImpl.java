@@ -45,4 +45,9 @@ final class MapperFacadeImpl implements MapperFacade {
       );
   }
 
+  @Override
+  public Collection<Pet> reverseMap(Collection<PetData> collection) {
+    return petMapper.reverseMap(collection, contextProvider.createNewContext());
+  }
+
 }

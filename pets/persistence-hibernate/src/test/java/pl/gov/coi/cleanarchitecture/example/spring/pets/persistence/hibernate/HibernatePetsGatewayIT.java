@@ -1,6 +1,8 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate;
 
 
+import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -13,17 +15,22 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Reference;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.PageInfo;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Paginated;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Pagination;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.ExampleData;
 import pl.wavesoftware.eid.exceptions.Eid;
 import pl.wavesoftware.eid.exceptions.EidIllegalStateException;
+import pl.wavesoftware.eid.exceptions.EidIndexOutOfBoundsException;
 import pl.wavesoftware.utils.mapstruct.jpa.collection.LazyInitializationException;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
@@ -47,6 +54,13 @@ public class HibernatePetsGatewayIT {
   private ExampleData exampleData;
   @Inject
   private EntityManager entityManager;
+  @Inject
+  private QueryInterceptor queryInterceptor;
+
+  @After
+  public void after() {
+    queryInterceptor.clear();
+  }
 
   @Test
   public void testGetPets() {
@@ -118,6 +132,30 @@ public class HibernatePetsGatewayIT {
       .orElseThrow(HibernatePetsGatewayIT::loadError);
     assertThat(person.getOwnershipCount())
       .isEqualTo(2);
+  }
+
+  @Test
+  @Ignore("Not yet full working")
+  public void testFindByReferenceFetchingSoleProfile() {
+    // given
+    List<Pet> examples = exampleData.createExamples();
+    Reference reference = examples.get(1)
+      .getMetadata()
+      .get(Reference.class)
+      .orElseThrow(() -> new EidIndexOutOfBoundsException(new Eid("20180517:184411")));
+    queryInterceptor.clear();
+
+    // when
+    Optional<Pet> pet = petsGateway.findByReference(reference)
+      .fetch(PetFetchProfile.SOLE);
+
+    // then
+    assertThat(pet).isPresent();
+    pet.ifPresent(p -> {
+      assertThat(p.getName()).isEqualTo("Kitie");
+      assertThat(p.getFormerOwners().toString()).isEqualTo("UninitializedList<FormerOwnershipData>");
+    });
+    assertThat(queryInterceptor.getExecutedQueries()).hasSize(1); // FIXME: 4 queries are executed
   }
 
   private static RuntimeException loadError() {

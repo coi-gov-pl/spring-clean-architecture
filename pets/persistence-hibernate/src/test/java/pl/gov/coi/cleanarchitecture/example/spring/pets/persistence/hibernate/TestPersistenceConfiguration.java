@@ -17,9 +17,11 @@ import pl.wavesoftware.utils.stringify.configuration.BeanFactory;
  */
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan("pl.gov.coi.cleanarchitecture.example.spring.pets")
+@ComponentScan(TestPersistenceConfiguration.COMPONENT_SCAN)
 @Import(PersistenceConfiguration.class)
 class TestPersistenceConfiguration {
+
+  static final String COMPONENT_SCAN = "pl.gov.coi.cleanarchitecture.example.spring.pets";
 
   @Bean
   ExampleDataPredicate provideDefault() {
@@ -34,4 +36,6 @@ class TestPersistenceConfiguration {
     beanFactorySetter.setBeanFactory(beanFactory);
     return beanFactory;
   }
+
+
 }

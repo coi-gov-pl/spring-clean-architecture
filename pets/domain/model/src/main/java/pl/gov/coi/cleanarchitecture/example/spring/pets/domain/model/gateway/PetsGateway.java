@@ -12,6 +12,6 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Pa
 public interface PetsGateway {
   OnGoingFetching<Pet> findByReference(Reference reference);
   Paginated<Pet> getPets(Pagination pagination);
-  void persistNew(Pet... pet);
+  Iterable<Pet> persistNew(Pet... pet);
   void update(Reference reference, Pet pet);
 }

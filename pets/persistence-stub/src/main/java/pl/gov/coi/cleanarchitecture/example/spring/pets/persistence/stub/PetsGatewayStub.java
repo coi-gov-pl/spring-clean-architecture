@@ -15,6 +15,9 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Pa
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static pl.wavesoftware.eid.utils.EidPreconditions.checkArgument;
 
@@ -68,11 +71,17 @@ final class PetsGatewayStub implements PetsGateway {
   }
 
   @Override
-  public void persistNew(Pet... pets) {
+  public Iterable<Pet> persistNew(Pet... pets) {
     for (Pet pet : pets) {
       Pet refreshed = objectSerializer.refresh(pet);
       database.putOrUpdate(refreshed);
     }
+    Stream<Pet> stream = StreamSupport.stream(
+      database.getPets().spliterator(), false
+    );
+    return stream
+      .map(objectSerializer::refresh)
+      .collect(Collectors.toList());
   }
 
   @Override

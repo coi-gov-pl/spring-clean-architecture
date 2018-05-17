@@ -83,11 +83,12 @@ final class HibernatePetsGateway implements PetsGateway {
   }
 
   @Override
-  public void persistNew(Pet... pets) {
+  public Iterable<Pet> persistNew(Pet... pets) {
     Collection<PetData> collection = mapper.map(Arrays.asList(pets));
     for (PetData data : collection) {
       entityManager.persist(data);
     }
+    return mapper.reverseMap(collection);
   }
 
   private Optional<PetData> findDataByReference(Reference reference,
