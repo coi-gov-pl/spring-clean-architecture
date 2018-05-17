@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -51,7 +52,6 @@ final class HibernatePetsGateway implements PetsGateway {
       return findDataByReference(reference, graph)
         .map(mapper::map);
     };
-
   }
 
   @Override
@@ -108,13 +108,14 @@ final class HibernatePetsGateway implements PetsGateway {
   @Nullable
   private EntityGraph<PetData> getGraphByProfile(FetchProfile<Pet> fetchProfile) {
     EntityGraphFactory factory = new EntityGraphFactory(entityManager);
-    if (fetchProfile == PetFetchProfile.WITH_OWNERSHIPS) {
-      return factory.getPetWithOwnershipsEntityGraph();
-    }
-    if (fetchProfile == PetFetchProfile.WITH_OWNER) {
-      return factory.getPetWithOwnerEntityGraph();
-    }
-    return null;
+    Supplier<EntityGraph<PetData>> defaultValue = () -> null;
+    Map<FetchProfile<Pet>, Supplier<EntityGraph<PetData>>> graphs = new HashMap<>();
+    graphs.put(PetFetchProfile.WITH_OWNERSHIPS, factory::getPetWithOwnershipsEntityGraph);
+    graphs.put(PetFetchProfile.WITH_OWNER, factory::getPetWithOwnerEntityGraph);
+    graphs.put(PetFetchProfile.SOLE, factory::getPetWithOwnerEntityGraph);
+    return graphs
+      .getOrDefault(fetchProfile, defaultValue)
+      .get();
   }
 
   private static int calculateStartPosition(Pagination pagination) {

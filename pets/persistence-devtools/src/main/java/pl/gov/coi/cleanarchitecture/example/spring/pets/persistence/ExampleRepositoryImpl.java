@@ -13,8 +13,10 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
@@ -24,12 +26,12 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ExampleDataImpl implements ExampleData {
+public class ExampleRepositoryImpl implements ExampleRepository {
   private final PetsGateway gateway;
   private final EntityManager entityManager;
 
   @Override
-  public List<Pet> createExamples() {
+  public Examples createExamples() {
     log.info("Creating example data into persistence layer...");
     Person ksuszynski = new Person("Krzysztof", "Suszyński");
     Person panderson = new Person("Pamela", "Anderson");
@@ -73,19 +75,7 @@ public class ExampleDataImpl implements ExampleData {
     entityManager.flush();
     entityManager.clear();
 
-    return Collections.unmodifiableList(
-      toList(managed)
-    );
-  }
-
-  private static <T> List<T> toList(Iterable<T> iterable) {
-    if (iterable instanceof List) {
-      return (List<T>) iterable;
-    } else {
-      List<T> list = new ArrayList<>();
-      iterable.forEach(list::add);
-      return list;
-    }
+    return new ExamplesImpl(managed);
   }
 
   private Pet create(String name, Race race, Person owner, Instant instant) {
@@ -98,5 +88,40 @@ public class ExampleDataImpl implements ExampleData {
 
   private Pet create(String name, Race race) {
     return new Pet(name, race);
+  }
+
+  private static final class ExamplesImpl implements Examples {
+    private final Map<PetExample, Pet> records = new HashMap<>();
+
+    ExamplesImpl(Iterable<Pet> managed) {
+      for (Pet pet : managed) {
+        labelOf(pet)
+          .ifPresent(petExample ->
+            records.put(petExample, pet)
+          );
+      }
+    }
+
+    private Optional<PetExample> labelOf(Pet pet) {
+      switch (pet.getName()) {
+        case "Frodo":
+          return Optional.of(PetExample.FRODO);
+        case "Kitie":
+          return Optional.of(PetExample.KITIE);
+        case "Tom":
+          return Optional.of(PetExample.TOM);
+        case "Flamer":
+          return Optional.of(PetExample.FLAMER);
+        case "Hillburn":
+          return Optional.of(PetExample.HILLBURN);
+        default:
+          return Optional.empty();
+      }
+    }
+
+    @Override
+    public Pet getPet(PetExample petExample) {
+      return records.get(petExample);
+    }
   }
 }

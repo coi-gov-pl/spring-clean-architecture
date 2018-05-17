@@ -1,8 +1,6 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate;
 
 
-import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,15 +19,15 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Re
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.PageInfo;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Paginated;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Pagination;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.ExampleData;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.ExampleRepository;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.Examples;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.Examples.PetExample;
 import pl.wavesoftware.eid.exceptions.Eid;
 import pl.wavesoftware.eid.exceptions.EidIllegalStateException;
-import pl.wavesoftware.eid.exceptions.EidIndexOutOfBoundsException;
 import pl.wavesoftware.utils.mapstruct.jpa.collection.LazyInitializationException;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,22 +49,17 @@ public class HibernatePetsGatewayIT {
   @Inject
   private PersonGateway personGateway;
   @Inject
-  private ExampleData exampleData;
+  private ExampleRepository exampleRepository;
   @Inject
   private EntityManager entityManager;
   @Inject
   private QueryInterceptor queryInterceptor;
 
-  @After
-  public void after() {
-    queryInterceptor.clear();
-  }
-
   @Test
   public void testGetPets() {
     // given
     Pagination pagination = new Pagination(3);
-    exampleData.createExamples();
+    exampleRepository.createExamples();
 
     // when
     Paginated<Pet> pets = petsGateway.getPets(pagination);
@@ -109,7 +102,7 @@ public class HibernatePetsGatewayIT {
   @Test
   public void testPersistNewWithOwner() {
     // given
-    exampleData.createExamples();
+    exampleRepository.createExamples();
     Pet pet = new Pet("Johnie", Race.CAT);
     Person person = personGateway
       .findByNameAndSurname("Lindsay", "Lohan")
@@ -135,14 +128,14 @@ public class HibernatePetsGatewayIT {
   }
 
   @Test
-  @Ignore("Not yet full working")
   public void testFindByReferenceFetchingSoleProfile() {
     // given
-    List<Pet> examples = exampleData.createExamples();
-    Reference reference = examples.get(1)
+    Examples examples = exampleRepository.createExamples();
+    Reference reference = examples
+      .getPet(PetExample.KITIE)
       .getMetadata()
       .get(Reference.class)
-      .orElseThrow(() -> new EidIndexOutOfBoundsException(new Eid("20180517:184411")));
+      .orElseThrow(HibernatePetsGatewayIT::loadError);
     queryInterceptor.clear();
 
     // when
@@ -153,9 +146,12 @@ public class HibernatePetsGatewayIT {
     assertThat(pet).isPresent();
     pet.ifPresent(p -> {
       assertThat(p.getName()).isEqualTo("Kitie");
-      assertThat(p.getFormerOwners().toString()).isEqualTo("UninitializedList<FormerOwnershipData>");
+      assertThat(p.getFormerOwners().toString())
+        .isEqualTo("UninitializedList<FormerOwnershipData>");
     });
-    assertThat(queryInterceptor.getExecutedQueries()).hasSize(1); // FIXME: 4 queries are executed
+    // TODO: Can it be loaded in single query
+    assertThat(queryInterceptor.getExecutedQueries())
+      .hasSize(2);
   }
 
   private static RuntimeException loadError() {

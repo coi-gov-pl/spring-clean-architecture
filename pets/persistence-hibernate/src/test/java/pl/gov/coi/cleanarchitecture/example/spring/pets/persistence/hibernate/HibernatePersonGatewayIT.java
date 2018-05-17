@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.ExampleData;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.ExampleRepository;
 import pl.wavesoftware.eid.exceptions.Eid;
 import pl.wavesoftware.eid.exceptions.EidIllegalStateException;
 
@@ -33,12 +33,12 @@ public class HibernatePersonGatewayIT {
   @Inject
   private PersonGateway personGateway;
   @Inject
-  private ExampleData exampleData;
+  private ExampleRepository exampleRepository;
 
   @Test
   public void testFindByNameAndSurname() {
     // given
-    exampleData.createExamples();
+    exampleRepository.createExamples();
 
     // when
     Optional<Person> optionalPerson = personGateway
