@@ -1,7 +1,11 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.stub;
 
 import lombok.RequiredArgsConstructor;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.FetchProfile;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.OnGoingFetching;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Reference;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.PageInfo;
@@ -21,21 +25,24 @@ import static pl.wavesoftware.eid.utils.EidPreconditions.checkArgument;
 @RequiredArgsConstructor
 final class PetsGatewayStub implements PetsGateway {
   private final StubDatabase database;
-  private final ObjectSerializer<Pet> petObjectSerializer = new ObjectSerializer<>();
+  private final ObjectSerializer<Pet> objectSerializer = new ObjectSerializer<>();
+  private final LazyObjectFactory lazyObjectFactory = new LazyObjectFactory();
 
   @Override
-  public Optional<Pet> findByReference(Reference reference) {
-    for (Pet pet : database.getPets()) {
-      Optional<Reference> thisRef = pet.getMetadata()
-        .get(Reference.class);
+  public OnGoingFetching<Pet> findByReference(Reference reference) {
+    return profile -> {
+      for (Pet pet : database.getPets()) {
+        Optional<Reference> thisRef = pet.getMetadata()
+          .get(Reference.class);
 
-      if (thisRef.isPresent() && thisRef.get().get().equals(reference.get())) {
-        return Optional.of(
-          refresh(pet)
-        );
+        if (thisRef.isPresent() && thisRef.get().get().equals(reference.get())) {
+          return Optional.of(
+            filterByProfile(profile, objectSerializer.refresh(pet))
+          );
+        }
       }
-    }
-    return Optional.empty();
+      return Optional.empty();
+    };
   }
 
   @Override
@@ -47,7 +54,9 @@ final class PetsGatewayStub implements PetsGateway {
     for (Pet pet : database.getPets()) {
       if (i > skip) {
         if (collected < pagination.getElementsPerPage()) {
-          elements.add(refresh(pet));
+          elements.add(
+            objectSerializer.refresh(pet)
+          );
           collected++;
         }
       } else {
@@ -61,7 +70,7 @@ final class PetsGatewayStub implements PetsGateway {
   @Override
   public void persistNew(Pet... pets) {
     for (Pet pet : pets) {
-      Pet refreshed = petObjectSerializer.refresh(pet);
+      Pet refreshed = objectSerializer.refresh(pet);
       database.putOrUpdate(refreshed);
     }
   }
@@ -71,13 +80,27 @@ final class PetsGatewayStub implements PetsGateway {
     pet.getMetadata()
       .get(Reference.class)
       .ifPresent(r -> checkArgument(r.isEqualTo(reference), "20180515:093317"));
-    database.putOrUpdate(pet);
+    Pet refreshed = objectSerializer.refresh(pet);
+    database.putOrUpdate(
+      refreshed
+    );
   }
 
-  private Pet refresh(Pet pet) {
-    Pet refreshed = petObjectSerializer.refresh(pet);
-    refreshed.supplierOfMetadata(pet::getMetadata);
-    return refreshed;
+  private Pet filterByProfile(FetchProfile<Pet> profile, Pet pet) {
+    if (profile == PetFetchProfile.SOLE) {
+      // simulate lazy load
+      pet.setFormerOwners(newLazy(List.class, "20180517:113039"));
+      pet.setOwnership(newLazy(Ownership.class, "20180517:113043"));
+    }
+    if (profile == PetFetchProfile.WITH_OWNER) {
+      // simulate partial lazy load
+      pet.setFormerOwners(newLazy(List.class, "20180517:122241"));
+    }
+    return pet;
+  }
+
+  private <I, T extends I> T newLazy(Class<I> cls, String eid) {
+    return lazyObjectFactory.newLazy(cls, eid);
   }
 
 }

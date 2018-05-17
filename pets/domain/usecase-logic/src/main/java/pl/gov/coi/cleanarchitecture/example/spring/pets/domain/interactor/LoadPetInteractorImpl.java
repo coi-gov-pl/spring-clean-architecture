@@ -6,6 +6,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContr
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.mapper.EnumMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 import pl.wavesoftware.eid.exceptions.Eid;
 import pl.wavesoftware.eid.exceptions.EidIllegalStateException;
@@ -29,7 +30,9 @@ final class LoadPetInteractorImpl implements LoadPetInteractor {
       );
     }
 
-    Optional<Pet> pet = petsGateway.findByReference(reference::getReference);
+    Optional<Pet> pet = petsGateway
+      .findByReference(reference::getReference)
+      .fetch(PetFetchProfile.WITH_OWNER);
     return pet.map(this::petAsContract);
   }
 

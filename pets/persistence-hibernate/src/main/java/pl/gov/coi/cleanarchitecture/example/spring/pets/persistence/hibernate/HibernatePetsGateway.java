@@ -2,6 +2,9 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate;
 
 import lombok.RequiredArgsConstructor;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.FetchProfile;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.OnGoingFetching;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Reference;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.PageInfo;
@@ -41,14 +44,20 @@ final class HibernatePetsGateway implements PetsGateway {
   private final QueryProvider queryProvider;
 
   @Override
-  public Optional<Pet> findByReference(Reference reference) {
-    return findDataByReference(reference)
-      .map(mapper::map);
+  public OnGoingFetching<Pet> findByReference(Reference reference) {
+    return profile -> {
+      @Nullable
+      EntityGraph<PetData> graph = getGraphByProfile(profile);
+      return findDataByReference(reference, graph)
+        .map(mapper::map);
+    };
+
   }
 
   @Override
   public void update(Reference reference, Pet pet) {
-    EntityGraph<?> graph = entityManager.getEntityGraph("pet-with-ownerships");
+    EntityGraphFactory factory = new EntityGraphFactory(entityManager);
+    EntityGraph<PetData> graph = factory.getPetWithOwnershipsEntityGraph();
     PetData petData = findDataByReference(reference, graph)
       .orElseThrow(() -> new EidIndexOutOfBoundsException(new Eid("20180516:161818")));
     mapper.update(petData).with(pet);
@@ -81,12 +90,8 @@ final class HibernatePetsGateway implements PetsGateway {
     }
   }
 
-  private Optional<PetData> findDataByReference(Reference reference) {
-    return findDataByReference(reference, null);
-  }
-
   private Optional<PetData> findDataByReference(Reference reference,
-                                                @Nullable EntityGraph<?> entityGraph) {
+                                                @Nullable EntityGraph<PetData> entityGraph) {
     Serializable identifier = reference.get();
     Map<String, Object> properties = Optional
       .ofNullable(entityGraph)
@@ -97,6 +102,18 @@ final class HibernatePetsGateway implements PetsGateway {
       properties
     );
     return Optional.ofNullable(petData);
+  }
+
+  @Nullable
+  private EntityGraph<PetData> getGraphByProfile(FetchProfile<Pet> fetchProfile) {
+    EntityGraphFactory factory = new EntityGraphFactory(entityManager);
+    if (fetchProfile == PetFetchProfile.WITH_OWNERSHIPS) {
+      return factory.getPetWithOwnershipsEntityGraph();
+    }
+    if (fetchProfile == PetFetchProfile.WITH_OWNER) {
+      return factory.getPetWithOwnerEntityGraph();
+    }
+    return null;
   }
 
   private static int calculateStartPosition(Pagination pagination) {

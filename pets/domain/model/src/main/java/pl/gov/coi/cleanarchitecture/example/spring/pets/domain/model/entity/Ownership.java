@@ -14,7 +14,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @AllArgsConstructor
-public final class Ownership extends AbstractEntity<Ownership> implements Serializable {
+public class Ownership extends AbstractEntity<Ownership> implements Serializable {
 
   private static final long serialVersionUID = 20180412143844L;
 

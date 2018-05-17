@@ -8,6 +8,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pers
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Reference;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.mapper.PetContractMapper;
@@ -53,7 +54,9 @@ final class UpdatePetUseCaseImpl implements UpdatePetUseCase {
   }
 
   private Optional<Pet> loadPetByReference(Reference reference) {
-    return petsGateway.findByReference(reference);
+    return petsGateway
+      .findByReference(reference)
+      .fetch(PetFetchProfile.WITH_OWNERSHIPS);
   }
 
   private Optional<Person> loadPersonByOwnership(PetContract.Ownership ownership) {
