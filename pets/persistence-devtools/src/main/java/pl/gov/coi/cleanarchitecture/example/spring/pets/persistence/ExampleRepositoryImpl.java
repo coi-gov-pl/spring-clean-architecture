@@ -12,11 +12,15 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.Pet
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.time.Instant;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+
+import static pl.wavesoftware.eid.utils.EidPreconditions.checkNotNull;
 
 /**
  * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
@@ -91,14 +95,42 @@ public class ExampleRepositoryImpl implements ExampleRepository {
   }
 
   private static final class ExamplesImpl implements Examples {
-    private final Map<PetExample, Pet> records = new HashMap<>();
+    private final Map<PetExample, Pet> petRecords = new EnumMap<>(PetExample.class);
+    private final Map<PersonExample, Person> personRecords = new EnumMap<>(PersonExample.class);
 
     ExamplesImpl(Iterable<Pet> managed) {
       for (Pet pet : managed) {
         labelOf(pet)
           .ifPresent(petExample ->
-            records.put(petExample, pet)
+            petRecords.put(petExample, pet)
           );
+        ownerOf(pet)
+          .ifPresent(entry -> {
+            PersonExample example = entry.getKey();
+            if (!personRecords.containsKey(example)) {
+              personRecords.put(example, entry.getValue());
+            }
+          });
+      }
+    }
+
+    private Optional<Entry<PersonExample, Person>> ownerOf(Pet pet) {
+      return pet.getOwnership()
+        .map(Ownership::getPerson)
+        .flatMap(this::labelOf);
+    }
+
+    private Optional<Entry<PersonExample, Person>> labelOf(Person person) {
+      String fname = person.getName() + " " + person.getSurname();
+      switch (fname) {
+        case "Krzysztof Suszyński":
+          return entry(PersonExample.K_SUSZYNSKI, person);
+        case "Pamela Anderson":
+          return entry(PersonExample.P_ANDERSON, person);
+        case "Lindsay Lohan":
+          return entry(PersonExample.L_LOHAN, person);
+        default:
+          return Optional.empty();
       }
     }
 
@@ -119,9 +151,19 @@ public class ExampleRepositoryImpl implements ExampleRepository {
       }
     }
 
+    private static Optional<Entry<PersonExample, Person>> entry(PersonExample example,
+                                                                Person person) {
+      return Optional.of(new SimpleEntry<>(example, person));
+    }
+
     @Override
     public Pet getPet(PetExample petExample) {
-      return records.get(petExample);
+      return checkNotNull(petRecords.get(petExample), "20180518:131506");
+    }
+
+    @Override
+    public Person getPerson(PersonExample personExample) {
+      return checkNotNull(personRecords.get(personExample), "20180518:131448");
     }
   }
 }

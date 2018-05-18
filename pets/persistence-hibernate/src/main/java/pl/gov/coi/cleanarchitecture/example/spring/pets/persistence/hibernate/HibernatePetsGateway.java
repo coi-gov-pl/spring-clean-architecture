@@ -11,6 +11,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Pa
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Paginated;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Pagination;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PetData;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.entity.PetData_;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper.MapperFacade;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.sql.QueryProvider;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.sql.QueryProvider.OnGoingQueryProviding;
@@ -22,10 +23,12 @@ import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +47,9 @@ final class HibernatePetsGateway implements PetsGateway {
   private final MapperFacade mapper;
   private final QueryProvider queryProvider;
 
+  private final Map<FetchProfile<Pet>, Supplier<EntityGraph<PetData>>> graphs
+    = createEntityGraphs();
+
   @Override
   public OnGoingFetching<Pet> findByReference(Reference reference) {
     return profile -> {
@@ -56,8 +62,7 @@ final class HibernatePetsGateway implements PetsGateway {
 
   @Override
   public void update(Reference reference, Pet pet) {
-    EntityGraphFactory factory = new EntityGraphFactory(entityManager);
-    EntityGraph<PetData> graph = factory.getPetWithOwnershipsEntityGraph();
+    EntityGraph<PetData> graph = getGraphByProfile(PetFetchProfile.WITH_OWNERSHIPS);
     PetData petData = findDataByReference(reference, graph)
       .orElseThrow(() -> new EidIndexOutOfBoundsException(new Eid("20180516:161818")));
     mapper.update(petData).with(pet);
@@ -94,25 +99,26 @@ final class HibernatePetsGateway implements PetsGateway {
   private Optional<PetData> findDataByReference(Reference reference,
                                                 @Nullable EntityGraph<PetData> entityGraph) {
     Serializable identifier = reference.get();
-    Map<String, Object> properties = Optional
-      .ofNullable(entityGraph)
-      .map(g -> Collections.singletonMap("javax.persistence.fetchgraph", (Object) g))
-      .orElse(new HashMap<>());
-    PetData petData = entityManager.find(
-      PetData.class, identifier,
-      properties
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+    CriteriaQuery<PetData> cq = cb.createQuery(PetData.class);
+    Root<PetData> pet = cq.from(PetData.class);
+    cq.where(
+      cb.equal(
+        pet.get(PetData_.id),
+        cb.parameter(Long.class, "id")
+      )
     );
+    PetData petData = entityManager
+      .createQuery(cq)
+      .setParameter("id", identifier)
+      .setHint("javax.persistence.loadgraph", entityGraph)
+      .getSingleResult();
     return Optional.ofNullable(petData);
   }
 
   @Nullable
   private EntityGraph<PetData> getGraphByProfile(FetchProfile<Pet> fetchProfile) {
-    EntityGraphFactory factory = new EntityGraphFactory(entityManager);
     Supplier<EntityGraph<PetData>> defaultValue = () -> null;
-    Map<FetchProfile<Pet>, Supplier<EntityGraph<PetData>>> graphs = new HashMap<>();
-    graphs.put(PetFetchProfile.WITH_OWNERSHIPS, factory::getPetWithOwnershipsEntityGraph);
-    graphs.put(PetFetchProfile.WITH_OWNER, factory::getPetWithOwnerEntityGraph);
-    graphs.put(PetFetchProfile.SOLE, factory::getPetWithOwnerEntityGraph);
     return graphs
       .getOrDefault(fetchProfile, defaultValue)
       .get();
@@ -121,4 +127,14 @@ final class HibernatePetsGateway implements PetsGateway {
   private static int calculateStartPosition(Pagination pagination) {
     return (pagination.getPageNumber() - 1) * pagination.getElementsPerPage();
   }
+
+  private Map<FetchProfile<Pet>, Supplier<EntityGraph<PetData>>> createEntityGraphs() {
+    EntityGraphFactory factory = new EntityGraphFactory(() -> entityManager);
+    Map<FetchProfile<Pet>, Supplier<EntityGraph<PetData>>> creatingGraphs = new HashMap<>();
+    creatingGraphs.put(PetFetchProfile.WITH_OWNERSHIPS, factory::getPetWithOwnershipsEntityGraph);
+    creatingGraphs.put(PetFetchProfile.WITH_OWNER, factory::getPetWithOwnerEntityGraph);
+    creatingGraphs.put(PetFetchProfile.SOLE, factory::getPetWithOwnerEntityGraph);
+    return creatingGraphs;
+  }
+
 }

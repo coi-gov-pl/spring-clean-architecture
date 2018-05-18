@@ -21,6 +21,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Pa
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Pagination;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.ExampleRepository;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.Examples;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.Examples.PersonExample;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.Examples.PetExample;
 import pl.wavesoftware.eid.exceptions.Eid;
 import pl.wavesoftware.eid.exceptions.EidIllegalStateException;
@@ -149,9 +150,58 @@ public class HibernatePetsGatewayIT {
       assertThat(p.getFormerOwners().toString())
         .isEqualTo("UninitializedList<FormerOwnershipData>");
     });
-    // TODO: Can it be loaded in single query
+    // TODO: Can it be loaded in single query?
     assertThat(queryInterceptor.getExecutedQueries())
       .hasSize(2);
+  }
+
+  @Test
+  public void testFindByReferenceFetchingWithOwnershipsProfile() {
+    // given
+    Examples examples = exampleRepository.createExamples();
+    Reference reference = examples
+      .getPet(PetExample.KITIE)
+      .getMetadata()
+      .get(Reference.class)
+      .orElseThrow(HibernatePetsGatewayIT::loadError);
+    queryInterceptor.clear();
+
+    // when
+    Optional<Pet> pet = petsGateway.findByReference(reference)
+      .fetch(PetFetchProfile.WITH_OWNERSHIPS);
+
+    // then
+    assertThat(pet).isPresent();
+    pet.ifPresent(p -> {
+      assertThat(p.getName()).isEqualTo("Kitie");
+      assertThat(p.getFormerOwners().toString())
+        .contains("<FormerOwnership person=<Person name=\"Lindsay\", surname=\"Lohan\"");
+    });
+    // TODO: Can it be loaded in single query?
+    assertThat(queryInterceptor.getExecutedQueries())
+      .hasSize(2);
+  }
+
+  @Test
+  public void testUpdatePetByChangingOwner() {
+    // given
+    Examples examples = exampleRepository.createExamples();
+    Pet kitie = examples.getPet(PetExample.KITIE);
+    Person llohan = examples.getPerson(PersonExample.L_LOHAN);
+    Reference reference = kitie
+      .getMetadata()
+      .get(Reference.class)
+      .orElseThrow(HibernatePetsGatewayIT::loadError);
+    queryInterceptor.clear();
+
+    // when
+    kitie.setOwner(llohan);
+    petsGateway.update(reference, kitie);
+
+    // then
+    // TODO: Can it be changed in 2 queries?
+    assertThat(queryInterceptor.getExecutedQueries())
+      .hasSize(9);
   }
 
   private static RuntimeException loadError() {

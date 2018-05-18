@@ -42,7 +42,11 @@ public class OwnershipData extends Record {
 
   @Valid
   @NotNull
-  @OneToOne(cascade = CascadeType.ALL, mappedBy = "ownership")
+  @OneToOne(
+    cascade = CascadeType.ALL,
+    fetch = FetchType.LAZY,
+    mappedBy = "ownership"
+  )
   public PetData getPet() {
     return pet;
   }
