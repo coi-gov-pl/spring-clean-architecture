@@ -6,11 +6,15 @@ import lombok.Setter;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Date;
@@ -20,15 +24,17 @@ import java.util.Date;
  * @since 2018-01-18
  */
 @Entity
-@Table
+@NoArgsConstructor
 @Getter
 @Setter
 @Access(AccessType.PROPERTY)
-@NoArgsConstructor
-public class FormerOwnershipData extends OwnershipData {
+public class FormerOwnershipData extends Record {
 
   private static final long serialVersionUID = 20180508112245L;
 
+  private PetData pet;
+  private PersonData person;
+  private Date from;
   private Date to;
 
   FormerOwnershipData(OwnershipData ownershipData) {
@@ -36,6 +42,31 @@ public class FormerOwnershipData extends OwnershipData {
     setPerson(ownershipData.getPerson());
     setPet(ownershipData.getPet());
     setFrom(getFrom());
+  }
+
+  @Valid
+  @NotNull
+  @OneToOne(
+    cascade = CascadeType.ALL,
+    fetch = FetchType.LAZY,
+    mappedBy = "ownership"
+  )
+  public PetData getPet() {
+    return pet;
+  }
+
+  @Valid
+  @NotNull
+  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  public PersonData getPerson() {
+    return person;
+  }
+
+  @NotNull
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "date_from")
+  public Date getFrom() {
+    return from;
   }
 
   @NotNull

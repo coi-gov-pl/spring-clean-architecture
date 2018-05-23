@@ -125,7 +125,7 @@ public class HibernatePetsGatewayIT {
       .fetch(PersonFetchProfile.WITH_OWNERSHIPS)
       .orElseThrow(HibernatePetsGatewayIT::loadError);
     assertThat(person.getOwnershipCount())
-      .isEqualTo(2);
+      .isEqualTo(3);
   }
 
   @Test

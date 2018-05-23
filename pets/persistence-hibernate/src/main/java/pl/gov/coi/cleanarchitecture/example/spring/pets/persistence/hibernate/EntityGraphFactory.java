@@ -48,16 +48,6 @@ final class EntityGraphFactory {
       FormerOwnershipData_.person.getName(),
       FormerOwnershipData_.pet.getName()
     );
-    /*
-    Subgraph<PersonData> personSubGraph2 = formerOwnerGraph.addSubgraph(FormerOwnershipData_.person);
-    personSubGraph2.addAttributeNodes(attrs(
-      PersonData_.ownerships
-    ));
-    Subgraph<PetData> petSubGraph2 = formerOwnerGraph.addSubgraph(OwnershipData_.pet);
-    petSubGraph2.addAttributeNodes(attrs(
-      PetData_.ownership, PetData_.formerOwners
-    ));
-    */
     return petGraph;
   }
 

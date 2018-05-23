@@ -33,6 +33,7 @@ public class PetListController {
   public String pets(Model model,
                      @Nullable
                      @RequestParam(value = "limit", required = false) Integer httpLimit) {
+
     FetchPetsRequest request = new FetchPetsRequest(
       Optional
         .ofNullable(httpLimit)

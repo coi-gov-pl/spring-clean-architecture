@@ -11,6 +11,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pers
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.ExampleRepository;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.Examples;
 import pl.wavesoftware.eid.exceptions.Eid;
 import pl.wavesoftware.eid.exceptions.EidIllegalStateException;
 
@@ -51,6 +52,27 @@ public class HibernatePersonGatewayIT {
     assertThat(person)
       .extracting(Person::getName)
       .allMatch(o -> o.equals("Pamela"));
+  }
+
+  @Test
+  public void testFindByNameAndSurnameWithOwnerships() {
+    // given
+    Examples examples = exampleRepository.createExamples();
+    Person llohan = examples.getPerson(Examples.PersonExample.L_LOHAN);
+
+    // when
+    Optional<Person> optionalPerson = personGateway
+      .findByNameAndSurname(llohan.getName(), llohan.getSurname())
+      .fetch(PersonFetchProfile.WITH_OWNERSHIPS);
+
+    // then
+    assertThat(optionalPerson).isPresent();
+    Person person = optionalPerson.orElseThrow(HibernatePersonGatewayIT::loadError);
+    assertThat(person)
+      .extracting(Person::getName)
+      .allMatch(o -> o.equals("Lindsay"));
+    assertThat(person.getOwnershipCount())
+      .isEqualTo(2);
   }
 
   private static RuntimeException loadError() {

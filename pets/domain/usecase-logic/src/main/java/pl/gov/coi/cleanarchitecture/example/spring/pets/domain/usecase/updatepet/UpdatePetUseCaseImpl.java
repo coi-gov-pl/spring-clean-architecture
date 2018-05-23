@@ -12,6 +12,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.Pet
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Reference;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.mapper.PetContractMapper;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.mapper.PetContractMapper.ReferencedPetLoader;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
@@ -42,7 +43,7 @@ final class UpdatePetUseCaseImpl implements UpdatePetUseCase {
         Pet pet = petContractMapper.map(
           request.getPet(),
           this::loadPersonByOwnership,
-          new PetContractMapper.ReferencedPetLoader(
+          new ReferencedPetLoader(
             ref, this::loadPetByReference
           )
         );
