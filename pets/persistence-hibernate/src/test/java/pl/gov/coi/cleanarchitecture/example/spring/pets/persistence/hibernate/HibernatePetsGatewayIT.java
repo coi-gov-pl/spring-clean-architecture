@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.FormerOwnership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
@@ -15,6 +16,7 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.Per
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.HasMetadata;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.Reference;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.PageInfo;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.Paginated;
@@ -174,8 +176,16 @@ public class HibernatePetsGatewayIT {
     assertThat(pet).isPresent();
     pet.ifPresent(p -> {
       assertThat(p.getName()).isEqualTo("Kitie");
+      assertThat(p.getFormerOwners()).hasSize(1);
       assertThat(p.getFormerOwners().toString())
         .contains("<FormerOwnership person=<Person name=\"Lindsay\", surname=\"Lohan\"");
+      FormerOwnership fo = p.getFormerOwners().iterator().next();
+      assertThat(fo.getFrom()).isNotNull();
+      assertThat(fo.getTo()).isNotNull();
+      Person person = fo.getPerson();
+      assertThat(person).isNotNull();
+      assertThat(person.getOwnershipCount()).isEqualTo(2);
+      // assertThat(fo.getPet()).isEqualTo(p); // FIXME: should be equal
     });
     // TODO: Can it be loaded in single query?
     assertThat(queryInterceptor.getExecutedQueries())
@@ -186,12 +196,9 @@ public class HibernatePetsGatewayIT {
   public void testUpdatePetByChangingOwner() {
     // given
     Examples examples = exampleRepository.createExamples();
-    Pet kitie = examples.getPet(PetExample.KITIE);
-    Person llohan = examples.getPerson(PersonExample.L_LOHAN);
-    Reference reference = kitie
-      .getMetadata()
-      .get(Reference.class)
-      .orElseThrow(HibernatePetsGatewayIT::loadError);
+    Pet kitie = getPetFromGateway(examples, PetExample.KITIE);
+    Person llohan = getPersonFromGateway(examples, PersonExample.L_LOHAN);
+    Reference reference = getReferenceFrom(kitie);
     queryInterceptor.clear();
 
     // when
@@ -199,9 +206,25 @@ public class HibernatePetsGatewayIT {
     petsGateway.update(reference, kitie);
 
     // then
-    // TODO: Can it be changed in 2 queries?
     assertThat(queryInterceptor.getExecutedQueries())
-      .hasSize(9);
+      .hasSize(3);
+  }
+
+  @Test
+  public void testUpdatePetByChangingRace() {
+    // given
+    Examples examples = exampleRepository.createExamples();
+    Pet kitie = getPetFromGateway(examples, PetExample.KITIE);
+    Reference reference = getReferenceFrom(kitie);
+    queryInterceptor.clear();
+
+    // when
+    kitie.setRace(Race.PIG);
+    petsGateway.update(reference, kitie);
+
+    // then
+    assertThat(queryInterceptor.getExecutedQueries())
+      .hasSize(1);
   }
 
   private static RuntimeException loadError() {
@@ -212,5 +235,29 @@ public class HibernatePetsGatewayIT {
     return (long) entityManager
       .createQuery("SELECT count(p.id) FROM PetData p")
       .getSingleResult();
+  }
+
+  private Pet getPetFromGateway(Examples examples,
+                                PetExample petExample) {
+    Pet pet = examples.getPet(petExample);
+    Reference reference = getReferenceFrom(pet);
+    return petsGateway.findByReference(reference)
+      .fetch(PetFetchProfile.WITH_OWNERSHIPS)
+      .orElseThrow(HibernatePetsGatewayIT::loadError);
+  }
+
+  private Person getPersonFromGateway(Examples examples,
+                                      PersonExample example) {
+    Person person = examples.getPerson(example);
+    return personGateway.findByNameAndSurname(person.getName(), person.getSurname())
+      .fetch(PersonFetchProfile.WITH_OWNERSHIPS)
+      .orElseThrow(HibernatePetsGatewayIT::loadError);
+  }
+
+  private static Reference getReferenceFrom(HasMetadata<?> hasMetadata) {
+    return hasMetadata
+      .getMetadata()
+      .get(Reference.class)
+      .orElseThrow(HibernatePetsGatewayIT::loadError);
   }
 }
