@@ -2,6 +2,7 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.petlist;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,20 +13,18 @@ import java.util.List;
  */
 @Getter
 class PetListViewModel {
+  @Setter
+  private long numberOfElements = 0L;
   private final List<PetViewModel> list = new ArrayList<>();
 
-  PetListViewModel add(PetViewModel petViewModel) {
+  void add(PetViewModel petViewModel) {
     list.add(petViewModel);
-    return this;
-  }
-
-  int getCount() {
-    return list.size();
   }
 
   @Builder
   @Getter
   static class PetViewModel {
+    private CharSequence id;
     private String race;
     private String name;
     private boolean hasOwner;

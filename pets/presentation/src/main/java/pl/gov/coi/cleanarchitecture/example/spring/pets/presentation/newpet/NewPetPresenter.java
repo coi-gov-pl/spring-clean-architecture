@@ -2,16 +2,14 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetRequestModel;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.response.Violation;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetResponse;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetResponseModel;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.RacePresenter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.presenter.RacePresenter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.validation.Violations;
 import pl.gov.coi.cleanarchitecture.presentation.Presenter;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
@@ -22,8 +20,8 @@ import java.util.stream.Collectors;
   access = AccessLevel.PACKAGE
 )
 class NewPetPresenter implements Presenter<NewPetView>, RegisterNewPetResponse {
-  private Violations violations = new Violations(Collections.emptyList());
   private final RacePresenter racePresenter;
+  private Violations violations = createViolations(Collections.emptyList());
 
   @Override
   public NewPetView createView() {
@@ -33,20 +31,14 @@ class NewPetPresenter implements Presenter<NewPetView>, RegisterNewPetResponse {
 
   private NewPetViewModel createModel() {
     return new NewPetViewModel(
-      Arrays.stream(RegisterNewPetRequestModel.Race.values())
-        .map(this::toViewModel)
-        .collect(Collectors.toList()),
+      racePresenter.presentAllRaces(),
       violations
     );
   }
 
-  private RaceViewModel toViewModel(RegisterNewPetRequestModel.Race race) {
-    return new RaceViewModel(race.name(), racePresenter.present(race));
-  }
-
   @Override
-  public void setViolations(Iterable<RegisterNewPetResponseModel.Violation> violations) {
-    this.violations = new Violations(violations);
+  public void setViolations(Iterable<Violation> violations) {
+    this.violations = createViolations(violations);
   }
 
   @Override
@@ -54,6 +46,14 @@ class NewPetPresenter implements Presenter<NewPetView>, RegisterNewPetResponse {
     return Optional.ofNullable(violations)
       .map(Violations::isSuccessful)
       .orElse(true);
+  }
+
+  private Violations createViolations(Iterable<Violation> violations) {
+
+    return new Violations(violations, violation -> violation
+      .getPath()
+      .toString()
+      .replaceFirst("^pet\\.", ""));
   }
 
 }

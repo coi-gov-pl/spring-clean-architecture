@@ -27,6 +27,7 @@ interface PetMapper {
   @Mapping(target = "owner", ignore = true)
   Pet map(PetData data, @Context CompositeContext context);
   Collection<PetData> map(Collection<Pet> pets, @Context CompositeContext context);
+  Collection<Pet> reverseMap(Collection<PetData> data, @Context CompositeContext context);
   void updateFromPet(Pet pet, @MappingTarget PetData data, @Context CompositeContext context);
 
   @AfterMapping

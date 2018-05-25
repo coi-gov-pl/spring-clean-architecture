@@ -19,7 +19,7 @@ import static org.awaitility.Awaitility.await;
 @Slf4j
 public class AppMainIT {
 
-  private static final int TIMEOUT_IN_SEC = 60;
+  private static final int TIMEOUT_IN_SEC = 600;
 
   @Test
   public void testMain() throws IOException {

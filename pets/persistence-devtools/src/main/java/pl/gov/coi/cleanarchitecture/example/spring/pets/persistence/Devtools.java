@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 final class Devtools {
 
-  private final ExampleData examples;
+  private final ExampleRepository exampleRepository;
   private final ExampleDataPredicate exampleDataPredicate;
 
   @EventListener(ContextRefreshedEvent.class)
   public void contextRefreshedEventHandler() {
     if (exampleDataPredicate.shouldCreateExamples()) {
-      examples.createExamples();
+      exampleRepository.createExamples();
     }
   }
 

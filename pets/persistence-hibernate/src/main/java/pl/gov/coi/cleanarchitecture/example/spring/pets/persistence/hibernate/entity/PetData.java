@@ -48,12 +48,15 @@ public class PetData extends Record {
     return race;
   }
 
-  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+  @OneToOne(
+    cascade = CascadeType.ALL,
+    fetch = FetchType.LAZY
+  )
   public OwnershipData getOwnership() {
     return ownership;
   }
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "pet")
   public Set<FormerOwnershipData> getFormerOwners() {
     return formerOwners;
   }

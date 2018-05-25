@@ -3,6 +3,8 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.newpet;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.model.RaceViewModel;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.validation.Violations;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>

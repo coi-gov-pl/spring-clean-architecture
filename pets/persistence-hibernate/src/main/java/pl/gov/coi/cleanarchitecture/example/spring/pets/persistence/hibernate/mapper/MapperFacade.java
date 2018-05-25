@@ -15,4 +15,10 @@ public interface MapperFacade {
   Pet map(PetData data);
   Collection<PetData> map(Collection<Pet> pets);
   Person map(PersonData data);
+  UpdatingPetData update(PetData petData);
+  Collection<Pet> reverseMap(Collection<PetData> collection);
+
+  interface UpdatingPetData {
+    void with(Pet pet);
+  }
 }

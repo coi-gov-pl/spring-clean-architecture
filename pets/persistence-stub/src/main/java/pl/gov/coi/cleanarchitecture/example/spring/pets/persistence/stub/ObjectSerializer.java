@@ -1,5 +1,6 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.stub;
 
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.HasMetadata;
 import pl.wavesoftware.eid.exceptions.EidIllegalStateException;
 
 import java.io.ByteArrayInputStream;
@@ -16,7 +17,17 @@ import java.io.ObjectOutputStream;
  */
 final class ObjectSerializer<T> {
   T refresh(T instance) {
-    return unserialize(serialize(instance));
+    T refreshed = unserialize(serialize(instance));
+    if (refreshed instanceof HasMetadata) {
+      @SuppressWarnings("unchecked")
+      HasMetadata<T> hasMeta = (HasMetadata<T>) refreshed;
+      @SuppressWarnings("unchecked")
+      HasMetadata<T> inputAsMeta = (HasMetadata<T>) instance;
+      if (!hasMeta.isMetadataSet() && inputAsMeta.isMetadataSet()) {
+        hasMeta.supplierOfMetadata(inputAsMeta::getMetadata);
+      }
+    }
+    return refreshed;
   }
 
   private byte[] serialize(T target) {

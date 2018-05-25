@@ -37,4 +37,17 @@ final class MapperFacadeImpl implements MapperFacade {
     return personMapper.map(data, contextProvider.createNewContext());
   }
 
+  @Override
+  public UpdatingPetData update(PetData petData) {
+    return pet ->
+      petMapper.updateFromPet(
+        pet, petData, contextProvider.createNewContext()
+      );
+  }
+
+  @Override
+  public Collection<Pet> reverseMap(Collection<PetData> collection) {
+    return petMapper.reverseMap(collection, contextProvider.createNewContext());
+  }
+
 }

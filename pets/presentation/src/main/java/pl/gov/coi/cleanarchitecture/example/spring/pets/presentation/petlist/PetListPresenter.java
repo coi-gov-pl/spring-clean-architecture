@@ -1,10 +1,13 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.petlist;
 
 import lombok.RequiredArgsConstructor;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.EntityReference;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.fetchpets.FetchPetsResponse;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.fetchpets.FetchPetsResponseModel.Owner;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.fetchpets.FetchPetsResponseModel.Pet;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.RacePresenter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.incubation.pagination.PageInfo;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.presenter.RacePresenter;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.mapper.EntityReferenceMapper;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.petlist.PetListViewModel.PetViewModel;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.petlist.PetListViewModel.PetViewModel.PetViewModelBuilder;
 import pl.gov.coi.cleanarchitecture.presentation.Presenter;
@@ -20,15 +23,17 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor
 class PetListPresenter implements Presenter<PetListView>, FetchPetsResponse {
   private static final String EMPTY_OWNER = "-";
-  private PetListViewModel pets;
-  private long totalNumberOfElements;
-  private int elementsPerPage;
-  private int pageNumber;
+
   private final RacePresenter racePresenter;
+  private final EntityReferenceMapper entityReferenceMapper;
+
+  private PetListViewModel pets;
+  private PageInfo pageInfo;
 
   @Override
   public PetListView createView() {
     PetListView view = new PetListView();
+    pets.setNumberOfElements(pageInfo.getTotalNumberOfElements());
     view.setViewModel(pets);
     return view;
   }
@@ -39,12 +44,8 @@ class PetListPresenter implements Presenter<PetListView>, FetchPetsResponse {
   }
 
   @Override
-  public void setPageInfo(long totalNumberOfElements,
-                          int elementsPerPage,
-                          int pageNumber) {
-    this.totalNumberOfElements = totalNumberOfElements;
-    this.elementsPerPage = elementsPerPage;
-    this.pageNumber = pageNumber;
+  public void setPageInfo(PageInfo pageInfo) {
+    this.pageInfo = pageInfo;
   }
 
   private PetListViewModel createViewModel(Iterable<Pet> pets) {
@@ -62,8 +63,14 @@ class PetListPresenter implements Presenter<PetListView>, FetchPetsResponse {
       .name(pet.getName())
       .race(racePresenter.present(pet.getRace()))
       .hasOwner(optionalOwner.isPresent())
-      .owner(getOwner(owner));
+      .owner(getOwner(owner))
+      .id(safeIdentifierOf(pet));
     viewModel.add(builder.build());
+  }
+
+  private CharSequence safeIdentifierOf(Pet pet) {
+    EntityReference ref = pet.getReference();
+    return entityReferenceMapper.map(ref);
   }
 
   private String getOwner(@Nullable Owner owner) {

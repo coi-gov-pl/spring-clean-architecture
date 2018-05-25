@@ -1,0 +1,160 @@
+<!doctype html>
+<!--suppress HtmlUnknownAttribute-->
+<!--suppress HtmlUnknownTag -->
+<html lang="" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>Pets</title>
+  <meta name="description" content="" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon"
+        href="../../public/img/dog.ico"
+        th:href="@{/img/dog.ico}"
+  />
+
+  <link rel="stylesheet"
+        href="../../public/css/normalize.min.css"
+        th:href="@{/css/normalize.min.css}" />
+  <link rel="stylesheet"
+        href="../../public/css/main.css"
+        th:href="@{/css/main.css}" />
+  <script src="//cdn.jsdelivr.net/modernizr/2.8.3/modernizr.min.js"
+          th:src="@{/webjars/modernizr/2.8.3/modernizr.min.js}"></script>
+  <link rel="stylesheet"
+        href="//fonts.googleapis.com/icon?family=Material+Icons"
+        th:href="@{/webjars/material-design-icons/3.0.1/iconfont/material-icons.css}"
+  />
+  <script
+    defer="defer"
+    src="//code.getmdl.io/1.3.0/material.min.js"
+    th:src="@{/webjars/material-design-lite/1.3.0/dist/material.min.js}"
+  ></script>
+  <link rel="stylesheet"
+        href="//code.getmdl.io/1.3.0/material.blue-pink.min.css"
+        th:href="@{/webjars/material-design-lite/1.3.0/dist/material.blue-pink.min.css}"
+  />
+  <link
+    rel="stylesheet"
+    href="//cdn.jsdelivr.net/npm/getmdl-select@2.0.1/getmdl-select.min.css"
+    th:href="@{/webjars/getmdl-select/2.0.1/getmdl-select.min.css}" />
+  <script
+    defer="defer"
+    src="//cdn.jsdelivr.net/npm/getmdl-select@2.0.1/getmdl-select.min.js"
+    th:src="@{/webjars/getmdl-select/2.0.1/getmdl-select.min.js}"></script>
+  <style>
+  @import url('//fonts.googleapis.com/css?family=Open+Sans');
+  body, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Open Sans', sans-serif;
+  }
+  </style>
+</head>
+<body>
+
+<div class="main-container">
+  <div class="header-container">
+    <header class="wrapper clearfix">
+      <h1 class="title"><img
+        src="../../public/img/dog.svg"
+        th:src="@{/img/dog.svg}"
+        height="48"
+        style="margin-bottom: 4px"
+      /> Pets</h1>
+    </header>
+  </div>
+  <div class="main wrapper clearfix">
+
+    <article>
+      <header>
+        <h1>Editing <th:block th:text="${editPet.data.petName}">Petsy</th:block>!</h1>
+        <a href="#new" th:href="@{./}">&laquo; go back</a>
+      </header>
+      <section>
+        <form th:action="@{/pets/edit}" th:object="${editPet.data}" method="post">
+          <input type="hidden" th:field="${editPet.reference}" />
+          <fieldset>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+                 th:classappend="${violations.ifKeyPresent('name','is-invalid')}"
+            >
+              <input class="mdl-textfield__input"
+                     type="text"
+                     id="petName"
+                     value="Petsy"
+                     th:field="*{petName}"
+              />
+              <label class="mdl-textfield__label" for="petName">Pet name</label>
+              <span class="mdl-textfield__error"
+                    th:text="${violations.get('name')}">An error!</span>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select"
+                 th:classappend="${violations.ifKeyPresent('race','is-invalid')}">
+              <input id="race" class="mdl-textfield__input" value="" readonly />
+              <input value="" th:field="*{race}" type="hidden" name="race" />
+              <label class="mdl-textfield__label" for="race">Pet race</label>
+              <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu" for="race">
+                <li class="mdl-menu__item"
+                    data-val="BLR"
+                    th:each="racedef : ${races}"
+                    th:attr="data-val = ${racedef.id},
+                    data-selected = ${racedef.isSelected(editPet.data.race)}"
+                    th:text="${racedef.name}">Cat</li>
+                <li th:if="${false}" class="mdl-menu__item" data-val="BRA">Dog</li>
+                <li th:if="${false}" class="mdl-menu__item" data-val="FRA">Pigie</li>
+                <li th:if="${false}" class="mdl-menu__item" data-val="DEU">Fish</li>
+                <li th:if="${false}" class="mdl-menu__item" data-val="RUS">Rabbit</li>
+              </ul>
+              <span class="mdl-textfield__error"
+                    th:text="${violations.get('race')}">An error!</span>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+                 th:classappend="${violations.ifKeyPresent('ownership.name','is-invalid')}"
+            >
+              <input class="mdl-textfield__input"
+                     type="text"
+                     id="ownerName"
+                     th:field="*{ownerName}"
+              />
+              <label class="mdl-textfield__label" for="ownerName">Owner name</label>
+              <span class="mdl-textfield__error"
+                    th:text="${violations.get('ownership.name')}">An error!</span>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+                 th:classappend="${violations.ifKeyPresent('ownership.surname','is-invalid')}">
+              <input class="mdl-textfield__input"
+                     type="text"
+                     id="ownerSurname"
+                     th:field="*{ownerSurname}"
+              />
+              <label class="mdl-textfield__label" for="ownerSurname">Owner surname</label>
+              <span class="mdl-textfield__error"
+                    th:text="${violations.get('ownership.surname')}">An error!</span>
+            </div>
+          </fieldset>
+          <hr />
+          <fieldset>
+            <!-- Accent-colored raised button -->
+            <button type="submit"
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+              Edit pet!
+            </button>
+          </fieldset>
+        </form>
+      </section>
+    </article>
+
+    <aside>
+      <h3>Summary</h3>
+      <p>This example is showing a use of basic <code>UpdatePetUseCase</code>. It is written as a clean architecture example. Credits to Robert C. Martin "Uncle Bob".</p>
+    </aside>
+
+  </div> <!-- #main -->
+</div> <!-- #main-container -->
+
+<div class="footer-container">
+  <footer class="wrapper">
+
+  </footer>
+</div>
+
+</body>
+</html>

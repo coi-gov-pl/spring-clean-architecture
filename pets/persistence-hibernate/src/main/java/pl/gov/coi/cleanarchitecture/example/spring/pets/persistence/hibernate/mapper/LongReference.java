@@ -18,5 +18,4 @@ final class LongReference implements Reference {
   public Long get() {
     return idSupplier.get();
   }
-
 }

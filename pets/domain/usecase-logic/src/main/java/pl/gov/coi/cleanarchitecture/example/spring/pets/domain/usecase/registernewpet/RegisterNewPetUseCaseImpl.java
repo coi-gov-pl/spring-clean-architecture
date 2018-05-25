@@ -1,13 +1,14 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet;
 
 import lombok.RequiredArgsConstructor;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.PetContract.Ownership;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.contract.response.Violation;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonFetchProfile;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetRequestModel.Ownership;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetResponseModel.Violation;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.mapper.PetContractMapper;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
@@ -24,7 +25,7 @@ import java.util.stream.StreamSupport;
 class RegisterNewPetUseCaseImpl implements RegisterNewPetUseCase {
   private final PetsGateway petsGateway;
   private final PersonGateway personGateway;
-  private final RegisterNewPetRequestToPetMapper mapper;
+  private final PetContractMapper mapper;
   private final Validator validator;
 
   @Override
@@ -33,20 +34,17 @@ class RegisterNewPetUseCaseImpl implements RegisterNewPetUseCase {
     Set<ConstraintViolation<RegisterNewPetRequest>> violations = validator
       .validate(request);
     if (violations.isEmpty()) {
-      Pet pet = mapper.asPet(request, this::ownershipAsPerson);
+      Pet pet = mapper.map(request.getPet(), this::ownershipAsPerson);
       petsGateway.persistNew(pet);
     } else {
       response.setViolations(toResponseModel(violations));
     }
   }
 
-  private Person ownershipAsPerson(Ownership ownership) {
-    Optional<Person> personOptional = personGateway
+  private Optional<Person> ownershipAsPerson(Ownership ownership) {
+    return personGateway
       .findByNameAndSurname(ownership.getName(), ownership.getSurname())
       .fetch(PersonFetchProfile.WITH_OWNERSHIPS);
-    return personOptional.orElse(new Person(
-      ownership.getName(), ownership.getSurname()
-    ));
   }
 
   private static Violation toViolation(ConstraintViolation<RegisterNewPetRequest> violation) {

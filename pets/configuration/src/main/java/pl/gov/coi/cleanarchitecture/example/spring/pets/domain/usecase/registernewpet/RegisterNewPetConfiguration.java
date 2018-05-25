@@ -2,10 +2,11 @@ package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.register
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.mapper.EnumMapper;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PersonGateway;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.mapper.PetContractMapper;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.transactional.TransactionalBeanProvider;
 
 import javax.validation.Validator;
 
@@ -14,26 +15,18 @@ import javax.validation.Validator;
  * @since 2017-01-06
  */
 @Configuration
+@EnableTransactionManagement
 class RegisterNewPetConfiguration {
 
   @Bean
-  RegisterNewPetUseCase provideRegisterNewPetUseCase(PetsGateway petsGateway,
-                                                     PersonGateway personGateway,
-                                                     RegisterNewPetRequestToPetMapper mapper,
-                                                     Validator validator) {
-    return new RegisterNewPetUseCaseImpl(petsGateway, personGateway, mapper, validator);
+  RegisterNewPetUseCase provideUseCase(PetsGateway petsGateway,
+                                       PersonGateway personGateway,
+                                       PetContractMapper mapper,
+                                       Validator validator,
+                                       TransactionalBeanProvider transactionalBeanProvider) {
+    return transactionalBeanProvider.transactional(
+      () -> new RegisterNewPetUseCaseImpl(petsGateway, personGateway, mapper, validator)
+    );
   }
 
-  @Bean
-  EnumMapper<RegisterNewPetRequestModel.Race, Race> provideEnumMapper() {
-    return new RaceEnumMapper();
-  }
-
-
-  @Bean
-  RegisterNewPetRequestToPetMapper providePetMapper(
-    EnumMapper<RegisterNewPetRequestModel.Race, Race> raceMapper) {
-
-    return new RegisterNewPetRequestToPetMapper(raceMapper);
-  }
 }

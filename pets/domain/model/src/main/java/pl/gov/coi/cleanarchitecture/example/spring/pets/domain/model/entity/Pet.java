@@ -68,6 +68,9 @@ public final class Pet extends AbstractEntity<Pet> implements Serializable {
   }
 
   public void setOwner(Person owner) {
+    if (isActualOwner(owner)) {
+      return;
+    }
     Optional<Ownership> optOwnership = getOwnership();
     optOwnership.ifPresent(theOwnership -> {
       Person previousOwner = theOwnership.getPerson();
@@ -80,6 +83,19 @@ public final class Pet extends AbstractEntity<Pet> implements Serializable {
     newOwnership.setPerson(owner);
     owner.addOwnership(newOwnership);
     ownership = newOwnership;
+  }
+
+  private boolean isActualOwner(Person person) {
+    return getOwnership()
+      .map(Ownership::getPerson)
+      .map(other -> isSamePerson(person, other))
+      .orElse(false);
+  }
+
+  private boolean isSamePerson(Person person,
+                               Person other) {
+    return person.getName().equals(other.getName())
+      && person.getSurname().equals(other.getSurname());
   }
 
   private List<FormerOwnership> getFormerOwnersList() {

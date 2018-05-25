@@ -1,7 +1,7 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.petlist;
 
 import org.springframework.ui.Model;
-import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.SpringView;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.presentation.view.SpringView;
 
 import static pl.wavesoftware.eid.utils.EidPreconditions.checkNotNull;
 
@@ -22,7 +22,7 @@ class PetListView implements SpringView<PetListViewModel> {
   public PetListView bind(Model model) {
     checkNotNull(petListViewModel, "20161220:114623");
     model.addAttribute("pets", petListViewModel.getList());
-    model.addAttribute("petCount", petListViewModel.getCount());
+    model.addAttribute("petCount", petListViewModel.getNumberOfElements());
     return this;
   }
 

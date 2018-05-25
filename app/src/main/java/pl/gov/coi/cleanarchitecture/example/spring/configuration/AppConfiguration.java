@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import javax.inject.Inject;
+import javax.validation.ConstraintValidatorFactory;
 import javax.validation.Validator;
 
 /**
@@ -14,15 +14,8 @@ import javax.validation.Validator;
 @Configuration
 public class AppConfiguration {
 
-  private final SpringAutowiredConstraintValidatorFactory constraintValidatorFactory;
-
-  @Inject
-  public AppConfiguration(SpringAutowiredConstraintValidatorFactory constraintValidatorFactory) {
-    this.constraintValidatorFactory = constraintValidatorFactory;
-  }
-
   @Bean
-  public Validator localValidatorFactoryBean() {
+  public Validator localValidatorFactoryBean(ConstraintValidatorFactory constraintValidatorFactory) {
     LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
     factoryBean.setConstraintValidatorFactory(constraintValidatorFactory);
     return factoryBean;
