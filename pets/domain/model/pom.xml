@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>pets-domain-model</artifactId>
-  <name>Spring Clean Architecture :: Pets :: Domain :: Model</name>
+  <name>SCA :: Pets :: Domain :: Model</name>
 
   <dependencies>
     <dependency>
@@ -20,6 +20,14 @@
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>pl.wavesoftware</groupId>
+      <artifactId>eid-exceptions</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>pl.wavesoftware.utils</groupId>
+      <artifactId>stringify-object</artifactId>
     </dependency>
   </dependencies>
 </project>

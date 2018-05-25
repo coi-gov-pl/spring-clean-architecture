@@ -1,5 +1,7 @@
-package pl.gov.coi.cleanarchitecture.example.spring.pets.persistance;
+package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Ownership;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Person;
@@ -7,24 +9,32 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
 
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
- * @since 19.12.16
+ * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
+ * @since 2018-01-18
  */
+@Slf4j
 @Service
-class PetsGatewayImpl implements PetsGateway {
-  private final Set<Pet> pets;
+@Transactional
+@RequiredArgsConstructor
+public class ExampleDataImpl implements ExampleData {
+  private final PetsGateway gateway;
+  private final EntityManager entityManager;
 
-  PetsGatewayImpl() {
-    this.pets = new HashSet<>();
-
+  @Override
+  public void createExamples() {
+    log.info("Creating example data into persistence layer...");
     Person ksuszynski = new Person("Krzysztof", "Suszyński");
     Person panderson = new Person("Pamela", "Anderson");
     Person llohan = new Person("Lindsay", "Lohan");
+
+    List<Pet> pets = new ArrayList<>();
 
     pets.add(create(
       "Frodo",
@@ -32,19 +42,23 @@ class PetsGatewayImpl implements PetsGateway {
       ksuszynski,
       Instant.parse("2008-05-28T13:00:00.000Z")
     ));
-    pets.add(create(
+    Pet kitie = create(
       "Kitie",
       Race.CAT,
-      panderson,
+      llohan,
       Instant.parse("2005-04-11T11:00:00.000Z")
-    ));
+    );
+    kitie.setOwner(panderson);
+    pets.add(kitie);
     pets.add(create(
       "Flamer",
-      Race.CAT
+      Race.PIG
     ));
     pets.add(create(
       "Tom",
-      Race.CAT
+      Race.CAT,
+      llohan,
+      Instant.parse("2011-02-11T13:56:01.000Z")
     ));
     pets.add(create(
       "Hillburn",
@@ -52,25 +66,18 @@ class PetsGatewayImpl implements PetsGateway {
       llohan,
       Instant.EPOCH
     ));
-  }
 
-  @Override
-  public Iterable<Pet> getAllActive() {
-    return pets;
-  }
+    gateway.persistNew(pets.toArray(new Pet[0]));
 
-  @Override
-  public Pet persistNew(Pet pet) {
-    ObjectSerializer<Pet> petObjectSerializer = new ObjectSerializer<>();
-    Pet newOne = petObjectSerializer.refresh(pet);
-    pets.add(pet);
-    return newOne;
+    entityManager.flush();
+    entityManager.clear();
   }
 
   private Pet create(String name, Race race, Person owner, Instant instant) {
-    Pet pet = new Pet(name, race);
+    Pet pet = create(name, race);
     Ownership ownership = new Ownership(pet, owner, instant);
     pet.setOwnership(ownership);
+    owner.addOwnership(ownership);
     return pet;
   }
 

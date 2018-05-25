@@ -11,12 +11,14 @@
 
   <artifactId>pets-pom</artifactId>
   <packaging>pom</packaging>
-  <name>Spring Clean Architecture :: Pets :: POM</name>
+  <name>SCA :: Pets</name>
 
   <modules>
     <module>presentation</module>
     <module>domain</module>
+    <module>persistence-hibernate</module>
     <module>persistence-stub</module>
+    <module>persistence-devtools</module>
     <module>configuration</module>
   </modules>
 </project>

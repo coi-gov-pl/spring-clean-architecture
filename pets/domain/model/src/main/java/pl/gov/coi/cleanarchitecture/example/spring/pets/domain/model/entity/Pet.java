@@ -1,52 +1,92 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.metadata.NotLoaded;
+import pl.wavesoftware.utils.stringify.configuration.DoNotInspect;
 
-import javax.annotation.Nullable;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.Optional;
 
 /**
- * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
- * @since 16.12.16
+ * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
+ * @since 2018-03-17
  */
-@ToString
-@Builder
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
-public class Pet implements Entity {
-  @Getter
-  private final String name;
-  @Getter
-  private final Race race;
-  @Getter
-  @Setter
-  @Nullable
+public final class Pet extends AbstractEntity<Pet> implements Serializable {
+
+  private static final long serialVersionUID = 20180308212350L;
+
+  private String name;
+  private Race race;
   private Ownership ownership;
+  @DoNotInspect(conditionally = NotLoaded.class)
   private List<FormerOwnership> formerOwners = new ArrayList<>();
 
+  /**
+   * Default constructor
+   *
+   * @param name a name
+   * @param race a race
+   */
+  public Pet(String name, Race race) {
+    this.name = name;
+    this.race = race;
+  }
+
   public Iterable<FormerOwnership> getFormerOwners() {
+    return Collections.unmodifiableList(getFormerOwnersList());
+  }
+
+  /**
+   * Returns true if pet have any former owners
+   *
+   * @return true if pet have any former owners
+   */
+  public boolean hasFormerOwners() {
+    return !getFormerOwnersList().isEmpty();
+  }
+
+  /**
+   * Get number of former owners
+   * @return number of former owners
+   */
+  public int getFormerOwnerCount() {
+    return getFormerOwnersList().size();
+  }
+
+  public Optional<Ownership> getOwnership() {
+    return Optional.ofNullable(ownership);
+  }
+
+  public void setOwner(Person owner) {
+    Optional<Ownership> optOwnership = getOwnership();
+    optOwnership.ifPresent(theOwnership -> {
+      Person previousOwner = theOwnership.getPerson();
+      previousOwner.removeOwnership(theOwnership);
+      FormerOwnership formerOwnership = new FormerOwnership(theOwnership);
+      getFormerOwnersList().add(formerOwnership);
+    });
+    Ownership newOwnership = new Ownership();
+    newOwnership.setPet(this);
+    newOwnership.setPerson(owner);
+    owner.addOwnership(newOwnership);
+    ownership = newOwnership;
+  }
+
+  private List<FormerOwnership> getFormerOwnersList() {
+    if (formerOwners == null) {
+      formerOwners = new ArrayList<>();
+    }
     return formerOwners;
   }
 
-  public boolean hasFormerOwners() {
-    return !formerOwners.isEmpty();
-  }
-
-  public int getFormerOwnerCount() {
-    return formerOwners.size();
-  }
-
-  public void setFormerOwners(Iterable<FormerOwnership> formerOwners) {
-    this.formerOwners = StreamSupport
-      .stream(formerOwners.spliterator(), false)
-      .collect(Collectors.toList());
-  }
 }

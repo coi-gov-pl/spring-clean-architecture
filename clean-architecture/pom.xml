@@ -10,6 +10,6 @@
   </parent>
 
   <artifactId>clean-architecture</artifactId>
-  <name>Spring Clean Architecture :: Clean Arch Lib</name>
+  <name>SCA :: Clean Architecture Library</name>
 
 </project>

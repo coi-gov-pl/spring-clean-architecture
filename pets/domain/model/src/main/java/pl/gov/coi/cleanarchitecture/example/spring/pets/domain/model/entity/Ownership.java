@@ -1,28 +1,31 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
+import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 /**
- * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>
- * @since 19.12.16
+ * @author <a href="krzysztof.suszynski@wavesoftware.pl">Krzysztof Suszyński</a>
+ * @since 2018-03-07
  */
 @Getter
-@Builder
-@ToString
-public class Ownership implements Entity {
-  private final Pet pet;
-  private final Person person;
-  private final Instant from;
+@Setter
+@AllArgsConstructor
+public final class Ownership extends AbstractEntity<Ownership> implements Serializable {
 
-  public Ownership(Pet pet, Person person, Instant from) {
-    this.pet = pet;
-    this.person = person;
-    this.from = from;
+  private static final long serialVersionUID = 20180412143844L;
 
-    person.addOwnership(this);
+  private Pet pet;
+  private Person person;
+  private Instant from;
+
+  /**
+   * Default constructor
+   */
+  public Ownership() {
+    from = Instant.now();
   }
 }

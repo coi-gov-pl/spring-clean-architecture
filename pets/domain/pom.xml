@@ -11,7 +11,7 @@
 
   <artifactId>pets-domain-pom</artifactId>
   <packaging>pom</packaging>
-  <name>Spring Clean Architecture :: Pets :: Domain :: POM</name>
+  <name>SCA :: Pets :: Domain</name>
 
   <modules>
     <module>model</module>

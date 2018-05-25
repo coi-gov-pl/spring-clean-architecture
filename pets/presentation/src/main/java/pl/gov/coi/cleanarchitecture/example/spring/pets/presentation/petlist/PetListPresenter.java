@@ -21,6 +21,9 @@ import java.util.stream.StreamSupport;
 class PetListPresenter implements Presenter<PetListView>, FetchPetsResponse {
   private static final String EMPTY_OWNER = "-";
   private PetListViewModel pets;
+  private long totalNumberOfElements;
+  private int elementsPerPage;
+  private int pageNumber;
   private final RacePresenter racePresenter;
 
   @Override
@@ -33,6 +36,15 @@ class PetListPresenter implements Presenter<PetListView>, FetchPetsResponse {
   @Override
   public void setPets(Iterable<Pet> pets) {
     this.pets = createViewModel(pets);
+  }
+
+  @Override
+  public void setPageInfo(long totalNumberOfElements,
+                          int elementsPerPage,
+                          int pageNumber) {
+    this.totalNumberOfElements = totalNumberOfElements;
+    this.elementsPerPage = elementsPerPage;
+    this.pageNumber = pageNumber;
   }
 
   private PetListViewModel createViewModel(Iterable<Pet> pets) {

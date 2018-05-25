@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import org.hibernate.validator.constraints.NotBlank;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.validation.constraint.Capitalized;
 import pl.gov.coi.cleanarchitecture.usecase.Request;
 
@@ -12,6 +11,7 @@ import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author <a href="mailto:krzysztof.suszynski@coi.gov.pl">Krzysztof Suszynski</a>

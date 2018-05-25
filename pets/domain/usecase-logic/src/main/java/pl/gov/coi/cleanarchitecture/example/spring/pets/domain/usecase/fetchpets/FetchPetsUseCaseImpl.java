@@ -5,6 +5,8 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Owne
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Pet;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.entity.Race;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.gateway.PetsGateway;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Paginated;
+import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.model.scope.Pagination;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.domain.usecase.registernewpet.RegisterNewPetRequestModel;
 
 import java.util.List;
@@ -29,18 +31,24 @@ class FetchPetsUseCaseImpl implements FetchPetsUseCase {
 
   @Override
   public void execute(FetchPetsRequest request, FetchPetsResponse response) {
-    Iterable<Pet> pets = petsGateway.getAllActive();
+    Pagination pagination = new Pagination(request.getMaxElements());
+    Paginated<Pet> pets = petsGateway.getPets(pagination);
     List<FetchPetsResponseModel.Pet> limited = StreamSupport
-      .stream(pets.spliterator(), false)
+      .stream(pets.getElements().spliterator(), false)
       .limit(request.getMaxElements())
       .map(this::toResponseModel)
       .collect(Collectors.toList());
     response.setPets(limited);
+    response.setPageInfo(
+      pets.getPageInfo().getTotalNumberOfElements(),
+      pets.getPageInfo().getPagination().getElementsPerPage(),
+      pets.getPageInfo().getPagination().getPageNumber()
+    );
   }
 
   private FetchPetsResponseModel.Pet toResponseModel(Pet pet) {
     FetchPetsResponseModel.Owner owner = null;
-    Optional<Ownership> optionalOwnership = Optional.ofNullable(pet.getOwnership());
+    Optional<Ownership> optionalOwnership = pet.getOwnership();
     if (optionalOwnership.isPresent()) {
       owner = new FetchPetsResponseModel.Owner(
         optionalOwnership.get().getPerson().getName(),

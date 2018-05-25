@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>pets-persistence-stub</artifactId>
-  <name>Spring Clean Architecture :: Pets :: PersistenceStub</name>
+  <name>SCA :: Pets :: Persistence :: Stub</name>
 
   <dependencies>
     <dependency>
@@ -25,6 +25,10 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
     </dependency>
   </dependencies>
 </project>

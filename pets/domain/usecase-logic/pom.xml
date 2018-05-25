@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>pets-domain-usecase-logic</artifactId>
-  <name>Spring Clean Architecture :: Pets :: Domain :: UseCase Logic</name>
+  <name>SCA :: Pets :: Domain :: UseCase Logic</name>
 
   <dependencies>
     <dependency>
@@ -42,6 +42,10 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
     </dependency>
   </dependencies>
 </project>
