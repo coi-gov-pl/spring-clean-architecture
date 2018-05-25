@@ -31,6 +31,9 @@ import pl.wavesoftware.utils.mapstruct.jpa.collection.LazyInitializationExceptio
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -144,6 +147,7 @@ public class HibernatePetsGatewayIT {
     // when
     Optional<Pet> pet = petsGateway.findByReference(reference)
       .fetch(PetFetchProfile.SOLE);
+    entityManager.flush();
 
     // then
     assertThat(pet).isPresent();
@@ -152,9 +156,8 @@ public class HibernatePetsGatewayIT {
       assertThat(p.getFormerOwners().toString())
         .isEqualTo("UninitializedList<FormerOwnershipData>");
     });
-    // TODO: Can it be loaded in single query?
     assertThat(queryInterceptor.getExecutedQueries())
-      .hasSize(2);
+      .hasSize(1);
   }
 
   @Test
@@ -171,25 +174,23 @@ public class HibernatePetsGatewayIT {
     // when
     Optional<Pet> pet = petsGateway.findByReference(reference)
       .fetch(PetFetchProfile.WITH_OWNERSHIPS);
+    entityManager.flush();
 
     // then
     assertThat(pet).isPresent();
     pet.ifPresent(p -> {
       assertThat(p.getName()).isEqualTo("Kitie");
       assertThat(p.getFormerOwners()).hasSize(1);
-      assertThat(p.getFormerOwners().toString())
-        .contains("<FormerOwnership person=<Person name=\"Lindsay\", surname=\"Lohan\"");
       FormerOwnership fo = p.getFormerOwners().iterator().next();
       assertThat(fo.getFrom()).isNotNull();
       assertThat(fo.getTo()).isNotNull();
       Person person = fo.getPerson();
       assertThat(person).isNotNull();
       assertThat(person.getOwnershipCount()).isEqualTo(2);
-      // assertThat(fo.getPet()).isEqualTo(p); // FIXME: should be equal
+      assertThat(fo.getPet()).isEqualTo(p);
     });
-    // TODO: Can it be loaded in single query?
     assertThat(queryInterceptor.getExecutedQueries())
-      .hasSize(2);
+      .hasSize(1);
   }
 
   @Test
@@ -204,10 +205,47 @@ public class HibernatePetsGatewayIT {
     // when
     kitie.setOwner(llohan);
     petsGateway.update(reference, kitie);
+    entityManager.flush();
 
     // then
     assertThat(queryInterceptor.getExecutedQueries())
-      .hasSize(3);
+      .hasSize(5)
+      .usingComparator(new SubstringComparator())
+      .isEqualTo(Arrays.asList(
+        "call next value for hibernate_sequence",
+        "call next value for hibernate_sequence",
+        "insert into ownership_data",
+        "insert into former_ownership_data",
+        "update pet_data"
+      ));
+  }
+
+  @Test
+  public void testUpdatePetBySettingCompletelyNewOwner() {
+    // given
+    Examples examples = exampleRepository.createExamples();
+    Pet kitie = getPetFromGateway(examples, PetExample.KITIE);
+    Reference reference = getReferenceFrom(kitie);
+    queryInterceptor.clear();
+
+    // when
+    kitie.setOwner(new Person("Jon", "Hamm"));
+    petsGateway.update(reference, kitie);
+    entityManager.flush();
+
+    // then
+    assertThat(queryInterceptor.getExecutedQueries())
+      .hasSize(7)
+      .usingComparator(new SubstringComparator())
+      .isEqualTo(Arrays.asList(
+        "call next value for hibernate_sequence",
+        "call next value for hibernate_sequence",
+        "call next value for hibernate_sequence",
+        "insert into person_data",
+        "insert into ownership_data",
+        "insert into former_ownership_data",
+        "update pet_data"
+      ));
   }
 
   @Test
@@ -221,6 +259,7 @@ public class HibernatePetsGatewayIT {
     // when
     kitie.setRace(Race.PIG);
     petsGateway.update(reference, kitie);
+    entityManager.flush();
 
     // then
     assertThat(queryInterceptor.getExecutedQueries())
@@ -259,5 +298,26 @@ public class HibernatePetsGatewayIT {
       .getMetadata()
       .get(Reference.class)
       .orElseThrow(HibernatePetsGatewayIT::loadError);
+  }
+
+  private static final class SubstringComparator implements Comparator<List<? extends String>> {
+
+    @Override
+    public int compare(List<? extends String> sqls, List<? extends String> substrings) {
+      int sum = 0;
+      for (String sql : sqls) {
+        boolean found = false;
+        for (String substring : substrings) {
+          if (sql.contains(substring)) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          sum += 1;
+        }
+      }
+      return sum;
+    }
   }
 }

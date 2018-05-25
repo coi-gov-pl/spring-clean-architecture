@@ -15,8 +15,6 @@ import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.en
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.mapper.MapperFacade;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.sql.QueryProvider;
 import pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate.sql.QueryProvider.OnGoingQueryProviding;
-import pl.wavesoftware.eid.exceptions.Eid;
-import pl.wavesoftware.eid.exceptions.EidIndexOutOfBoundsException;
 
 import javax.annotation.Nullable;
 import javax.persistence.EntityGraph;
@@ -62,9 +60,7 @@ final class HibernatePetsGateway implements PetsGateway {
 
   @Override
   public void update(Reference reference, Pet pet) {
-    EntityGraph<PetData> graph = getGraphByProfile(PetFetchProfile.WITH_OWNERSHIPS);
-    PetData petData = findDataByReference(reference, graph)
-      .orElseThrow(() -> new EidIndexOutOfBoundsException(new Eid("20180516:161818")));
+    PetData petData = entityManager.find(PetData.class, reference.get());
     mapper.update(petData).with(pet);
     entityManager.persist(petData);
   }

@@ -1,7 +1,7 @@
 package pl.gov.coi.cleanarchitecture.example.spring.pets.persistence.hibernate;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.EmptyInterceptor;
+import org.hibernate.resource.jdbc.spi.StatementInspector;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +16,8 @@ import java.util.Map;
  */
 @Component
 @RequiredArgsConstructor
-final class QueryInterceptor extends EmptyInterceptor
-  implements HibernatePropertiesCustomizer {
+final class QueryInterceptor
+  implements HibernatePropertiesCustomizer, StatementInspector {
 
   private final ThreadLocal<List<String>> queries = ThreadLocal.withInitial(ArrayList::new);
 
@@ -32,13 +32,13 @@ final class QueryInterceptor extends EmptyInterceptor
   }
 
   @Override
-  public String onPrepareStatement(String sql) {
+  public String inspect(String sql) {
     queries.get().add(sql);
-    return super.onPrepareStatement(sql);
+    return sql;
   }
 
   @Override
   public void customize(Map<String, Object> hibernateProperties) {
-    hibernateProperties.put("hibernate.session_factory.interceptor", this);
+    hibernateProperties.put("hibernate.session_factory.statement_inspector", this);
   }
 }

@@ -48,7 +48,12 @@ public class PersonData extends Record {
     return surname;
   }
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
+  @OneToMany(
+    cascade = CascadeType.ALL,
+    fetch = FetchType.LAZY,
+    mappedBy = "person",
+    orphanRemoval = true
+  )
   public Set<OwnershipData> getOwnerships() {
     return ownerships;
   }

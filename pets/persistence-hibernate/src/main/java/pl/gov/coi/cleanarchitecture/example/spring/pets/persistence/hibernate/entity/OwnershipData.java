@@ -36,18 +36,15 @@ public class OwnershipData extends Record {
   private Date from;
 
   @Valid
-  @NotNull
   @OneToOne(
     cascade = CascadeType.ALL,
-    fetch = FetchType.LAZY,
-    mappedBy = "ownership"
+    fetch = FetchType.LAZY
   )
   public PetData getPet() {
     return pet;
   }
 
   @Valid
-  @NotNull
   @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   public PersonData getPerson() {
     return person;
